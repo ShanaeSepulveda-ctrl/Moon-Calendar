@@ -100,7 +100,9 @@
     <p id="dayText">Click a day to see its energy.</p>
 
 <script>
-
+    const calendar = document.getElementById("calendar"); 
+    const dayText = document.getElementById("dayText");
+  
   // --- Render calendar ---
   function renderMonth(year, month) {
 
@@ -126,8 +128,6 @@ A day for presence, reflection, and gentle alignment.
   
     const firstDay = new Date(year, month, 1);
     const daysInMonth = new Date(year, month + 1, 0).getDate();
-    const calendar = document.getElementById("calendar"); 
-    const dayText = document.getElementById("dayText");
   
     // Pad start of week
     for (let i = 0; i < firstDay.getDay(); i++) {
@@ -143,10 +143,6 @@ A day for presence, reflection, and gentle alignment.
       const cell = document.createElement("div");
       cell.className = "day";
       if (isToday) cell.classList.add("today");
-      
-  // --- Run it ---
-  const now = 
-  renderMonth(now.getFullYear(), now.getMonth(),now.getToday());
       
       // --- TODAY (safe version) ---
   const today =
@@ -169,7 +165,11 @@ A day for presence, reflection, and gentle alignment.
     if (phase < 0.78) return "🌗 Last Quarter";
     return "🌘 Waning Crescent";
   }
-
+      
+  // --- Run it ---
+  const now = 
+  renderMonth(now.getFullYear(), now.getMonth(),now.getToday());
+      
   // --- Service worker ---
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("service-worker.js");
