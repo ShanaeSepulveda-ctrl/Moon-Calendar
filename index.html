@@ -100,6 +100,7 @@
     <p id="dayText">Click a day to see its energy.</p></div>
 
 <script>
+document.addEventListener("DOMContentLoaded", () => {
     const calendar = document.getElementById("calendar"); 
     const dayText = document.getElementById("dayText");
   
@@ -127,7 +128,8 @@ A day for presence, reflection, and gentle alignment.
   
     const firstDay = new Date(year, month, 1);
     const daysInMonth = new Date(year, month + 1, 0).getDate();
-  </script>
+  });
+</script>
   
     // Pad start of week
     for (let i = 0; i < firstDay.getDay(); i++) {
