@@ -143,7 +143,7 @@
 
       const cell = document.createElement("div");
       cell.className = "day";
-      if (istoday) cell.classList.add("today");
+      if (istodayDate) cell.classList.add("todayDate");
 
       cell.innerHTML = `
         <div class="gregorian">${date.toDateString()}</div>
@@ -167,7 +167,7 @@ A day for presence, reflection, and gentle alignment.
 
   // --- Run it ---
   const now = new Date();
-  renderMonth(now.getFullYear(), now.getMonth());
+  renderMonth(now.getFullYear(), now.getMonth(),now.getTodayDate());
 
   // --- Service worker ---
   if ("serviceWorker" in navigator) {
