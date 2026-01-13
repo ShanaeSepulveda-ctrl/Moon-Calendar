@@ -104,22 +104,6 @@
   const calendar = document.getElementById("calendar");
   const dayText = document.getElementById("dayText");
 
-  // --- Moon phase helper ---
-  function getMoonPhase(date) {
-    if (typeof SunCalc === "undefined") return "🌙 Moon";
-
-    const phase = SunCalc.getMoonIllumination(date).phase;
-
-    if (phase < 0.03 || phase > 0.97) return "🌑 New Moon";
-    if (phase < 0.22) return "🌒 Waxing Crescent";
-    if (phase < 0.28) return "🌓 First Quarter";
-    if (phase < 0.47) return "🌔 Waxing Gibbous";
-    if (phase < 0.53) return "🌕 Full Moon";
-    if (phase < 0.72) return "🌖 Waning Gibbous";
-    if (phase < 0.78) return "🌗 Last Quarter";
-    return "🌘 Waning Crescent";
-  }
-
   // --- Render calendar ---
   function renderMonth(year, month) {
     calendar.innerHTML = "";
@@ -171,6 +155,22 @@ A day for presence, reflection, and gentle alignment.
 
       calendar.appendChild(cell);
     }
+  }
+
+   // --- Moon phase helper ---
+  function getMoonPhase(date) {
+    if (typeof SunCalc === "undefined") return "🌙 Moon";
+
+    const phase = SunCalc.getMoonIllumination(date).phase;
+
+    if (phase < 0.03 || phase > 0.97) return "🌑 New Moon";
+    if (phase < 0.22) return "🌒 Waxing Crescent";
+    if (phase < 0.28) return "🌓 First Quarter";
+    if (phase < 0.47) return "🌔 Waxing Gibbous";
+    if (phase < 0.53) return "🌕 Full Moon";
+    if (phase < 0.72) return "🌖 Waning Gibbous";
+    if (phase < 0.78) return "🌗 Last Quarter";
+    return "🌘 Waning Crescent";
   }
 
   // --- Service worker ---
