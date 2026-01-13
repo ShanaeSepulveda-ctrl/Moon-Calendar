@@ -94,7 +94,24 @@
   <h1>13 Moon Calendar</h1>
 
   <div id="calendar"></div>
-   cell.innerHTML = `
+
+  <div id="dayInfo">
+    <h2>Selected Day</h2>
+    <p id="dayText">Click a day to see its energy.</p>
+  </div>
+
+<script>
+
+  // --- Render calendar ---
+  function renderMonth(year, month) {
+    calendar.innerHTML = "";
+
+    const firstDay = new Date(year, month, 1);
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const calendar = document.getElementById("calendar"); 
+    const dayText = document.getElementById("dayText");
+
+    cell.innerHTML = `
         <div class="gregorian">${date.toDateString()}</div>
         <div class="moon-day">${moonDay}</div>
         <div class="moon-name">${moonPhase}</div>
@@ -113,22 +130,6 @@ A day for presence, reflection, and gentle alignment.
       calendar.appendChild(cell);
     }
   }
-
-  <div id="dayInfo">
-    <h2>Selected Day</h2>
-    <p id="dayText">Click a day to see its energy.</p>
-  </div>
-
-<script>
-
-  // --- Render calendar ---
-  function renderMonth(year, month) {
-    calendar.innerHTML = "";
-
-    const firstDay = new Date(year, month, 1);
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
-    const calendar = document.getElementById("calendar"); 
-    const dayText = document.getElementById("dayText");
 
     // Pad start of week
     for (let i = 0; i < firstDay.getDay(); i++) {
