@@ -123,12 +123,12 @@ A day for presence, reflection, and gentle alignment.
 
       calendar.appendChild(cell);
     }
-  }
 
     const firstDay = new Date(year, month, 1);
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const calendar = document.getElementById("calendar"); 
     const dayText = document.getElementById("dayText");
+  
     // Pad start of week
     for (let i = 0; i < firstDay.getDay(); i++) {
       calendar.appendChild(document.createElement("div"));
