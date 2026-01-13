@@ -104,13 +104,6 @@
   const calendar = document.getElementById("calendar");
   const dayText = document.getElementById("dayText");
 
-  // --- TODAY (safe version) ---
-  const Date = new Date(year, month, day);
-  const Today =
-  date.getDate() === todayDate.getDate() &&
-  date.getMonth() === todayDate.getMonth() &&
-  date.getFullYear() === todayDate.getFullYear();
-
   // --- Moon phase helper ---
   function getMoonPhase(date) {
     if (typeof SunCalc === "undefined") return "🌙 Moon";
@@ -148,9 +141,17 @@
       const cell = document.createElement("div");
       cell.className = "day";
       if (isToday) cell.classList.add("today");
+      
   // --- Run it ---
-  const now = new Date();
+  const now = new Date(year, month, day);
   renderMonth(now.getFullYear(), now.getMonth(),now.getToday());
+      
+      // --- TODAY (safe version) ---
+  const date = new Date(year, month, day);
+  const today =
+  date.getDate() === todayDate.getDate() &&
+  date.getMonth() === todayDate.getMonth() &&
+  date.getFullYear() === todayDate.getFullYear();
       
       cell.innerHTML = `
         <div class="gregorian">${date.toDateString()}</div>
