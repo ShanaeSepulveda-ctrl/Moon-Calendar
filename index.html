@@ -102,8 +102,71 @@
 <script>
 document.addEventListener("DOMContentLoaded", function () {
   var calendar = document.getElementById("calendar");
+  var dayText = document.getElementById("dayText");
 
-  calendar.innerHTML = "<div style='padding:20px; background:#15192d;'>JS IS RUNNING 🌙</div>";
+  var todayDate = new Date();
+
+  function getMoonPhase(date) {
+    if (typeof SunCalc === "undefined") return "🌙 Moon";
+
+    var phase = SunCalc.getMoonIllumination(date).phase;
+
+    if (phase < 0.03 || phase > 0.97) return "🌑 New Moon";
+    if (phase < 0.22) return "🌒 Waxing Crescent";
+    if (phase < 0.28) return "🌓 First Quarter";
+    if (phase < 0.47) return "🌔 Waxing Gibbous";
+    if (phase < 0.53) return "🌕 Full Moon";
+    if (phase < 0.72) return "🌖 Waning Gibbous";
+    if (phase < 0.78) return "🌗 Last Quarter";
+    return "🌘 Waning Crescent";
+  }
+
+  function renderMonth(year, month) {
+    calendar.innerHTML = "";
+
+    var firstDay = new Date(year, month, 1);
+    var daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    for (var i = 0; i < firstDay.getDay(); i++) {
+      calendar.appendChild(document.createElement("div"));
+    }
+
+    for (var day = 1; day <= daysInMonth; day++) {
+      var date = new Date(year, month, day);
+
+      var isToday =
+        date.getDate() === todayDate.getDate() &&
+        date.getMonth() === todayDate.getMonth() &&
+        date.getFullYear() === todayDate.getFullYear();
+
+      var moonDay = ((day - 1) % 28) + 1;
+      var moonPhase = getMoonPhase(date);
+
+      var cell = document.createElement("div");
+      cell.className = "day";
+      if (isToday) cell.classList.add("today");
+
+      cell.innerHTML =
+        '<div class="gregorian">' + date.toDateString() + '</div>' +
+        '<div class="moon-day">Moon Day ' + moonDay + '</div>' +
+        '<div class="moon-name">' + moonPhase + '</div>';
+
+      cell.onclick = function (d, md, mp) {
+        return function () {
+          dayText.innerText =
+            d.toDateString() +
+            "\nMoon Day " + md +
+            "\n" + mp +
+            "\n\nA day for presence, reflection, and gentle alignment.";
+        };
+      }(date, moonDay, moonPhase);
+
+      calendar.appendChild(cell);
+    }
+  }
+
+  var now = new Date();
+  renderMonth(now.getFullYear(), now.getMonth());
 });
 </script>
 
