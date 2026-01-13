@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>13 Moon Calendar</title>
+    
+<script src="https://unpkg.com/suncalc@1.9.0/suncalc.js"></script>
+    
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background: #0b0d17;
+      color: #eee;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    #calendar {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 10px;
+    }
+
+    .day {
+      background: #15192d;
+      border-radius: 10px;
+      padding: 10px;
+      cursor: pointer;
+      min-height: 90px;
+      transition: background 0.2s;
+    }
+
+    .day:hover {
+      background: #1f2550;
+    }
+
+    .gregorian {
+      font-size: 0.8rem;
+      opacity: 0.7;
+    }
+
+    .moon-day {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-top: 5px;
+    }
+
+    .moon-name {
+      font-size: 0.75rem;
+      opacity: 0.8;
+      margin-top: 4px;
+    }
+
+    #dayInfo {
+      margin-top: 30px;
+      padding: 20px;
+      border-radius: 12px;
+      background: #15192d;
+    }
+  </style>
+    
+    <link rel="manifest" href="manifest.json">
+
+</head>
+
+<body>
+  <h1>13 Moon Calendar</h1>
+
+  <div id="calendar"></div>
+
+  <div id="dayInfo">
+    <h2>Selected Day</h2>
+    <p id="dayText">Click a day to see its energy.</p>
+  </div>
+
+  <script>
+    const calendar = document.getElementById("calendar");
+    const dayText = document.getElementById("dayText");
+
+    // Example moon names (inspired, not authoritative)
+    const moonNames = [
+      "Wolf Moon", "Snow Moon", "Seed Moon", "Pink Moon",
+      "Flower Moon", "Strawberry Moon", "Thunder Moon",
+      "Harvest Moon", "Corn Moon", "Hunter Moon",
+      "Frost Moon", "Long Night Moon", "Renewal Moon"
+    ];
+
+function renderMonth(year, month) {
+  calendar.innerHTML = "";
+
+  const firstDay = new Date(year, month, 1);
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+  for (let i = 0; i < firstDay.getDay(); i++) {
+    calendar.appendChild(document.createElement("div"));
+  }
+
+  for (let day = 1; day <= daysInMonth; day++) {
+    const date = new Date(year, month, day);
+    const moonPhase = getMoonPhase(date);
+
+    const cell = document.createElement("div");
+    cell.className = "day";
+
+    cell.innerHTML = `
+      <div class="gregorian">${date.toDateString()}</div>
+      <div class="moon-name">${moonPhase}</div>
+    `;
+
+    cell.onclick = () => {
+      dayText.innerText =
+`${date.toDateString()}
+${moonPhase}
+
+A day for presence, reflection, and gentle alignment.`;
+    };
+
+    calendar.appendChild(cell);
+  }
+}
+
+function getMoonPhase(date) {
+  if (typeof SunCalc === "undefined") {
+    return "🌙 Moon";
+  }
+
+  const phase = SunCalc.getMoonIllumination(date).phase;
+
+  if (phase < 0.03 || phase > 0.97) return "🌑 New Moon";
+  if (phase < 0.22) return "🌒 Waxing Crescent";
+  if (phase < 0.28) return "🌓 First Quarter";
+  if (phase < 0.47) return "🌔 Waxing Gibbous";
+  if (phase < 0.53) return "🌕 Full Moon";
+  if (phase < 0.72) return "🌖 Waning Gibbous";
+  if (phase < 0.78) return "🌗 Last Quarter";
+  return "🌘 Waning Crescent";
+}
+      
+      const phaseFocus = {
+  "🌑 New Moon": "Set intentions. Begin gently.",
+  "🌒 Waxing Crescent": "Nurture new ideas.",
+  "🌓 First Quarter": "Take small action.",
+  "🌔 Waxing Gibbous": "Refine and adjust.",
+  "🌕 Full Moon": "Celebrate, reflect, release.",
+  "🌖 Waning Gibbous": "Share wisdom.",
+  "🌗 Last Quarter": "Let go of what no longer serves.",
+  "🌘 Waning Crescent": "Rest and restore."
+};
+      const today = new Date();
+renderMonth(today.getFullYear(), today.getMonth());
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("service-worker.js");
+}
+
+  </script>
+</body>
+</html>
