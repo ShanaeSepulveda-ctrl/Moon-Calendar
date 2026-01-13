@@ -103,7 +103,6 @@
 document.addEventListener("DOMContentLoaded", () => {
   const calendar = document.getElementById("calendar");
   const dayText = document.getElementById("dayText");
-
   const todayDate = new Date();
 
   function getMoonPhase(date) {
@@ -130,7 +129,10 @@ document.addEventListener("DOMContentLoaded", () => {
     for (let i = 0; i < firstDay.getDay(); i++) {
       calendar.appendChild(document.createElement("div"));
     }
-
+  
+    const now = new Date();
+  renderMonth(now.getFullYear(), now.getMonth());
+    
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(year, month, day);
 
@@ -152,22 +154,17 @@ document.addEventListener("DOMContentLoaded", () => {
         <div class="moon-name">${moonPhase}</div>
       `;
 
-      cell.onclick = () => {
-        dayText.innerText = `
-${date.toDateString()}
-Moon Day ${moonDay}
-${moonPhase}
-
-A day for presence, reflection, and gentle alignment.
-        `;
-      };
+     cell.onclick = () => {
+  dayText.innerText =
+    date.toDateString() +
+    "\nMoon Day " + moonDay +
+    "\n" + moonPhase +
+    "\n\nA day for presence, reflection, and gentle alignment.";
+};
 
       calendar.appendChild(cell);
     }
   }
-
-  const now = new Date();
-  renderMonth(now.getFullYear(), now.getMonth());
 
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("service-worker.js");
