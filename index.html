@@ -124,6 +124,7 @@ function renderMonth(year, month) {
 
   for (let day = 1; day <= daysInMonth; day++) {
     const date = new Date(year, month, day);
+    const isToday = date.getTime() === today.getTime();
     const moonPhase = getMoonPhase(date);
 
     const cell = document.createElement("div");
