@@ -100,15 +100,16 @@
     <p id="dayText">Click a day to see its energy.</p></div>
 
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-  const calendar = document.getElementById("calendar");
-  const dayText = document.getElementById("dayText");
-  const todayDate = new Date();
+document.addEventListener("DOMContentLoaded", function () {
+  var calendar = document.getElementById("calendar");
+  var dayText = document.getElementById("dayText");
+
+  var todayDate = new Date();
 
   function getMoonPhase(date) {
     if (typeof SunCalc === "undefined") return "🌙 Moon";
 
-    const phase = SunCalc.getMoonIllumination(date).phase;
+    var phase = SunCalc.getMoonIllumination(date).phase;
 
     if (phase < 0.03 || phase > 0.97) return "🌑 New Moon";
     if (phase < 0.22) return "🌒 Waxing Crescent";
@@ -123,52 +124,49 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderMonth(year, month) {
     calendar.innerHTML = "";
 
-    const firstDay = new Date(year, month, 1);
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    var firstDay = new Date(year, month, 1);
+    var daysInMonth = new Date(year, month + 1, 0).getDate();
 
-    for (let i = 0; i < firstDay.getDay(); i++) {
+    for (var i = 0; i < firstDay.getDay(); i++) {
       calendar.appendChild(document.createElement("div"));
     }
-  
-    const now = new Date();
-  renderMonth(now.getFullYear(), now.getMonth());
-    
-    for (let day = 1; day <= daysInMonth; day++) {
-      const date = new Date(year, month, day);
 
-      const isToday =
+    for (var day = 1; day <= daysInMonth; day++) {
+      var date = new Date(year, month, day);
+
+      var isToday =
         date.getDate() === todayDate.getDate() &&
         date.getMonth() === todayDate.getMonth() &&
         date.getFullYear() === todayDate.getFullYear();
 
-      const moonDay = ((day - 1) % 28) + 1;
-      const moonPhase = getMoonPhase(date);
+      var moonDay = ((day - 1) % 28) + 1;
+      var moonPhase = getMoonPhase(date);
 
-      const cell = document.createElement("div");
+      var cell = document.createElement("div");
       cell.className = "day";
       if (isToday) cell.classList.add("today");
 
-      cell.innerHTML = `
-        <div class="gregorian">${date.toDateString()}</div>
-        <div class="moon-day">Moon Day ${moonDay}</div>
-        <div class="moon-name">${moonPhase}</div>
-      `;
+      cell.innerHTML =
+        '<div class="gregorian">' + date.toDateString() + '</div>' +
+        '<div class="moon-day">Moon Day ' + moonDay + '</div>' +
+        '<div class="moon-name">' + moonPhase + '</div>';
 
-     cell.onclick = () => {
-  dayText.innerText =
-    date.toDateString() +
-    "\nMoon Day " + moonDay +
-    "\n" + moonPhase +
-    "\n\nA day for presence, reflection, and gentle alignment.";
-};
+      cell.onclick = function (d, md, mp) {
+        return function () {
+          dayText.innerText =
+            d.toDateString() +
+            "\nMoon Day " + md +
+            "\n" + mp +
+            "\n\nA day for presence, reflection, and gentle alignment.";
+        };
+      }(date, moonDay, moonPhase);
 
       calendar.appendChild(cell);
     }
   }
 
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("service-worker.js");
-  }
+  var now = new Date();
+  renderMonth(now.getFullYear(), now.getMonth());
 });
 </script>
 
