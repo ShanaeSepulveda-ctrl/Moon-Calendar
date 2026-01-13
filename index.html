@@ -64,7 +64,7 @@
       background: #15192d;
     }
     
- .day.today {
+ .day.todayDate {
   border: 1px solid rgba(255, 255, 255, 0.4);
   box-shadow: 0 0 12px rgba(180, 200, 255, 0.6);
   background: radial-gradient(
@@ -81,7 +81,7 @@
   100% { box-shadow: 0 0 8px rgba(180, 200, 255, 0.4); }
 }
 
-.day.today {
+.day.todayDate {
   animation: softGlow 4s ease-in-out infinite;
 }
   </style>
@@ -104,8 +104,8 @@
   const calendar = document.getElementById("calendar");
   const dayText = document.getElementById("dayText");
 
-  // --- TODAY (safe version) ---
-  const todayDate = new Date();
+  // --- todayDate (safe version) ---
+  const todayDateDate = new Date();
 
   // --- Moon phase helper ---
   function getMoonPhase(date) {
@@ -143,7 +143,7 @@
 
       const cell = document.createElement("div");
       cell.className = "day";
-      if (isToday) cell.classList.add("today");
+      if (istodayDate) cell.classList.add("todayDate");
 
       cell.innerHTML = `
         <div class="gregorian">${date.toDateString()}</div>
