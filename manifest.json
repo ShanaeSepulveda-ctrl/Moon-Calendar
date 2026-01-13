@@ -2,7 +2,7 @@
   "name": "Lunar Rhythm Calendar",
   "short_name": "Moon Calendar",
   "description": "A lunar-inspired calendar overlay for aligning daily life with moon phases and cosmic rhythms.",
-  "start_url": ".",
+  "start_url": "/Moon-Calendar/",
   "display": "standalone",
   "background_color": "#0b0d17",
   "theme_color": "#0b0d17",
