@@ -1,9 +1,9 @@
 const CACHE_NAME = "lunar-calendar-v1";
 
 const FILES_TO_CACHE = [
-  "./",
-  "./index.html",
-  "./manifest.json"
+  "/Moon-Calendar/",
+  "/Moon-Calendar/index.html",
+  "/Moon-Calendar/manifest.json"
 ];
 
 self.addEventListener("install", (event) => {
