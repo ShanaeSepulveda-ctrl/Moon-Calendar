@@ -1,4 +1,4 @@
-const CACHE_NAME = "lunar-calendar-v9";
+const CACHE_NAME = "lunar-calendar-v10";
 
 const FILES_TO_CACHE = [
   "/Moon-Calendar/",
