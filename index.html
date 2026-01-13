@@ -138,11 +138,6 @@
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(year, month, day);
 
-      const isToday =
-        date.getDate() === today.getDate() &&
-        date.getMonth() === today.getMonth() &&
-        date.getFullYear() === today.getFullYear();
-
       const moonDay = ((day - 1) % 28) + 1;
       const moonPhase = getMoonPhase(date);
 
