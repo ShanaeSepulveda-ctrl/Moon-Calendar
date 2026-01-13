@@ -64,7 +64,7 @@
       background: #15192d;
     }
     
- .day.todayDate {
+ .day.today {
   border: 1px solid rgba(255, 255, 255, 0.4);
   box-shadow: 0 0 12px rgba(180, 200, 255, 0.6);
   background: radial-gradient(
@@ -81,7 +81,7 @@
   100% { box-shadow: 0 0 8px rgba(180, 200, 255, 0.4); }
 }
 
-.day.todayDate {
+.day.today {
   animation: softGlow 4s ease-in-out infinite;
 }
   </style>
@@ -104,8 +104,12 @@
   const calendar = document.getElementById("calendar");
   const dayText = document.getElementById("dayText");
 
-  // --- todayDate (safe version) ---
+  // --- TODAY (safe version) ---
   const todayDate = new Date();
+  const isToday =
+  date.getDate() === todayDate.getDate() &&
+  date.getMonth() === todayDate.getMonth() &&
+  date.getFullYear() === todayDate.getFullYear();
 
   // --- Moon phase helper ---
   function getMoonPhase(date) {
@@ -143,7 +147,7 @@
 
       const cell = document.createElement("div");
       cell.className = "day";
-      if (istodayDate) cell.classList.add("todayDate");
+      if (isToday) cell.classList.add("today");
 
       cell.innerHTML = `
         <div class="gregorian">${date.toDateString()}</div>
@@ -167,7 +171,7 @@ A day for presence, reflection, and gentle alignment.
 
   // --- Run it ---
   const now = new Date();
-  renderMonth(now.getFullYear(), now.getMonth(),now.getTodayDate());
+  renderMonth(now.getFullYear(), now.getMonth(),now.getToday());
 
   // --- Service worker ---
   if ("serviceWorker" in navigator) {
