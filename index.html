@@ -105,7 +105,7 @@
   const dayText = document.getElementById("dayText");
 
   // --- TODAY (safe version) ---
-  const Date = new Date();
+  const Date = new Date(year, month, day);
   const Today =
   date.getDate() === todayDate.getDate() &&
   date.getMonth() === todayDate.getMonth() &&
