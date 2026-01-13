@@ -104,12 +104,6 @@
 
   // --- Render calendar ---
   function renderMonth(year, month) {
-    calendar.innerHTML = "";
-
-    const firstDay = new Date(year, month, 1);
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
-    const calendar = document.getElementById("calendar"); 
-    const dayText = document.getElementById("dayText");
 
     cell.innerHTML = `
         <div class="gregorian">${date.toDateString()}</div>
@@ -120,7 +114,7 @@
       cell.onclick = () => {
         dayText.innerText = `
 ${date.toDateString()}
-Moon Day ${moonDay}
+${moonDay}
 ${moonPhase}
 
 A day for presence, reflection, and gentle alignment.
@@ -131,6 +125,10 @@ A day for presence, reflection, and gentle alignment.
     }
   }
 
+    const firstDay = new Date(year, month, 1);
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const calendar = document.getElementById("calendar"); 
+    const dayText = document.getElementById("dayText");
     // Pad start of week
     for (let i = 0; i < firstDay.getDay(); i++) {
       calendar.appendChild(document.createElement("div"));
