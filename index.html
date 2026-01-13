@@ -101,8 +101,6 @@
   </div>
 
 <script>
-  const calendar = document.getElementById("calendar");
-  const dayText = document.getElementById("dayText");
 
   // --- Render calendar ---
   function renderMonth(year, month) {
@@ -110,6 +108,8 @@
 
     const firstDay = new Date(year, month, 1);
     const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const calendar = document.getElementById("calendar"); 
+    const dayText = document.getElementById("dayText");
 
     // Pad start of week
     for (let i = 0; i < firstDay.getDay(); i++) {
