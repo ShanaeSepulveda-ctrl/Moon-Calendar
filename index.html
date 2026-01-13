@@ -148,7 +148,10 @@
       const cell = document.createElement("div");
       cell.className = "day";
       if (isToday) cell.classList.add("today");
-
+  // --- Run it ---
+  const now = new Date();
+  renderMonth(now.getFullYear(), now.getMonth(),now.getToday());
+      
       cell.innerHTML = `
         <div class="gregorian">${date.toDateString()}</div>
         <div class="moon-day">Moon Day ${moonDay}</div>
@@ -168,10 +171,6 @@ A day for presence, reflection, and gentle alignment.
       calendar.appendChild(cell);
     }
   }
-
-  // --- Run it ---
-  const now = new Date();
-  renderMonth(now.getFullYear(), now.getMonth(),now.getToday());
 
   // --- Service worker ---
   if ("serviceWorker" in navigator) {
