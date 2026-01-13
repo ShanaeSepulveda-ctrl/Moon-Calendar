@@ -128,7 +128,11 @@ function renderMonth(year, month) {
     const moonPhase = getMoonPhase(date);
 
     const cell = document.createElement("div");
-    cell.className = "day";
+cell.className = "day";
+
+if (isToday) {
+  cell.classList.add("today");
+}
 
     cell.innerHTML = `
       <div class="gregorian">${date.toDateString()}</div>
