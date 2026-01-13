@@ -61,6 +61,27 @@
       border-radius: 12px;
       background: #15192d;
     }
+    
+ .day.today {
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 0 12px rgba(180, 200, 255, 0.6);
+  background: radial-gradient(
+    circle at top,
+    rgba(255, 255, 255, 0.08),
+    #15192d
+  );
+}
+
+/* Optional gentle pulse */
+@keyframes softGlow {
+  0% { box-shadow: 0 0 8px rgba(180, 200, 255, 0.4); }
+  50% { box-shadow: 0 0 16px rgba(180, 200, 255, 0.8); }
+  100% { box-shadow: 0 0 8px rgba(180, 200, 255, 0.4); }
+}
+
+.day.today {
+  animation: softGlow 4s ease-in-out infinite;
+}
   </style>
     
     <link rel="manifest" href="manifest.json">
