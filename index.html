@@ -119,19 +119,15 @@ ${date.toDateString()}
 ${moonDay}
 ${moonPhase}
 
-A day for presence, reflection, and gentle alignment.
+A day for presence, reflection, and gentle alignment. 
         `;
       };
 
       calendar.appendChild(cell);
     }
 
-  const currentYear = new Date().getFullYear(); 
-const releaseYear = 2026;
     const firstDay = new Date(year, month, 1);
     const daysInMonth = new Date(year, month + 1, 0).getDate();
-  });
-</script>
   
     // Pad start of week
     for (let i = 0; i < firstDay.getDay(); i++) {
@@ -139,6 +135,8 @@ const releaseYear = 2026;
     }
 
     for (let day = 1; day <= daysInMonth; day++) {
+      const currentYear = new Date().getFullYear(); 
+const releaseYear = 2026;
       const date = new Date(year, month, day);
 
       const moonDay = ((day - 1) % 28) + 1;
@@ -178,6 +176,7 @@ const releaseYear = 2026;
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("service-worker.js");
   }
-
+ });
+  </script>
 </body>
 </html>
