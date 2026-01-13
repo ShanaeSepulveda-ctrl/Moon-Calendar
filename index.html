@@ -94,6 +94,25 @@
   <h1>13 Moon Calendar</h1>
 
   <div id="calendar"></div>
+   cell.innerHTML = `
+        <div class="gregorian">${date.toDateString()}</div>
+        <div class="moon-day">${moonDay}</div>
+        <div class="moon-name">${moonPhase}</div>
+      `;
+
+      cell.onclick = () => {
+        dayText.innerText = `
+${date.toDateString()}
+Moon Day ${moonDay}
+${moonPhase}
+
+A day for presence, reflection, and gentle alignment.
+        `;
+      };
+
+      calendar.appendChild(cell);
+    }
+  }
 
   <div id="dayInfo">
     <h2>Selected Day</h2>
@@ -136,26 +155,6 @@
   date.getMonth() === todayDate.getMonth() &&
   date.getFullYear() === todayDate.getFullYear();
       
-      cell.innerHTML = `
-        <div class="gregorian">${date.toDateString()}</div>
-        <div class="moon-day">${moonDay}</div>
-        <div class="moon-name">${moonPhase}</div>
-      `;
-
-      cell.onclick = () => {
-        dayText.innerText = `
-${date.toDateString()}
-Moon Day ${moonDay}
-${moonPhase}
-
-A day for presence, reflection, and gentle alignment.
-        `;
-      };
-
-      calendar.appendChild(cell);
-    }
-  }
-
    // --- Moon phase helper ---
   function getMoonPhase(date) {
     if (typeof SunCalc === "undefined") return "🌙 Moon";
