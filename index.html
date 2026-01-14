@@ -167,7 +167,48 @@ document.addEventListener("DOMContentLoaded", function () {
 
       var moonDay = ((day - 1) % 28) + 1;
       var moonPhase = getMoonPhase(date);
+function getLunarGuidance(phase) {
+  var guidance = {
+    "🌑 New Moon": {
+      affirmation: "I welcome new beginnings with clarity and trust.",
+      ritual: "Set intentions in a journal or quietly reflect on what you are calling in."
+    },
+    "🌒 Waxing Crescent": {
+      affirmation: "I gently nurture what is growing within me.",
+      ritual: "Take one small aligned action toward a goal or dream."
+    },
+    "🌓 First Quarter": {
+      affirmation: "I move forward with courage and commitment.",
+      ritual: "Clear obstacles—physically or mentally—making space for progress."
+    },
+    "🌔 Waxing Gibbous": {
+      affirmation: "I refine my path with patience and awareness.",
+      ritual: "Review your intentions and adjust what no longer feels aligned."
+    },
+    "🌕 Full Moon": {
+      affirmation: "I honor my growth and release what no longer serves me.",
+      ritual: "Practice a release ritual: write down what you’re letting go of and safely discard it."
+    },
+    "🌖 Waning Gibbous": {
+      affirmation: "I integrate wisdom gained through experience.",
+      ritual: "Express gratitude or share insights with someone you trust."
+    },
+    "🌗 Last Quarter": {
+      affirmation: "I release with compassion and intention.",
+      ritual: "Cleanse your space or take a restorative bath or shower."
+    },
+    "🌘 Waning Crescent": {
+      affirmation: "I rest, restore, and prepare for renewal.",
+      ritual: "Slow down, meditate, or spend quiet time in nature."
+    }
+  };
 
+  return guidance[phase] || {
+    affirmation: "I flow with the natural rhythms of life.",
+    ritual: "Pause and take a mindful breath."
+  };
+}
+      
       var cell = document.createElement("div");
       cell.className = "day";
       if (isToday) cell.classList.add("today");
