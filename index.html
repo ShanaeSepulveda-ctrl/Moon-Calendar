@@ -151,40 +151,50 @@ function getLunarGuidance(phase) {
   var guidance = {
     "🌑 New Moon": {
       affirmation: "I welcome new beginnings with clarity and trust.",
-      ritual: "Set intentions in a journal or quietly reflect on what you are calling in."
+      ritual: "Set intentions in a journal or sit quietly with what is ready to be born.",
+      message: "This is a sacred pause. Listen inward and allow new seeds to form."
     },
     "🌒 Waxing Crescent": {
       affirmation: "I gently nurture what is growing within me.",
-      ritual: "Take one small aligned action toward a goal or dream."
+      ritual: "Take one small aligned action toward a goal or dream.",
+      message: "Growth is subtle today. Honor small steps and quiet momentum."
     },
     "🌓 First Quarter": {
       affirmation: "I move forward with courage and commitment.",
-      ritual: "Clear obstacles—physically or mentally—making space for progress."
+      ritual: "Clear obstacles or make a decision you’ve been postponing.",
+      message: "Tension invites clarity. Choose forward motion with intention."
     },
     "🌔 Waxing Gibbous": {
       affirmation: "I refine my path with patience and awareness.",
-      ritual: "Review your intentions and adjust what no longer feels aligned."
+      ritual: "Adjust plans and release perfectionism.",
+      message: "Refinement brings wisdom. Let your vision evolve."
     },
     "🌕 Full Moon": {
       affirmation: "I honor my growth and release what no longer serves me.",
-      ritual: "Practice a release ritual: write down what you’re letting go of and safely discard it."
+      ritual: "Practice a release ritual or celebrate how far you’ve come.",
+      message: "Illumination is strong. Feel fully, release gently, celebrate truth."
     },
     "🌖 Waning Gibbous": {
       affirmation: "I integrate wisdom gained through experience.",
-      ritual: "Express gratitude or share insights with someone you trust."
+      ritual: "Share gratitude or reflect on recent insights.",
+      message: "Meaning settles in now. Let lessons land softly."
     },
     "🌗 Last Quarter": {
       affirmation: "I release with compassion and intention.",
-      ritual: "Cleanse your space or take a restorative bath or shower."
+      ritual: "Let go of habits, commitments, or thoughts that drain you.",
+      message: "Clearing creates space. Choose what truly supports you."
     },
     "🌘 Waning Crescent": {
       affirmation: "I rest, restore, and prepare for renewal.",
-      ritual: "Slow down, meditate, or spend quiet time in nature."
+      ritual: "Slow down, rest deeply, or spend time in quiet reflection.",
+      message: "This is a time of rest and surrender. Restoration is sacred."
     }
   };
-   return guidance[phase] || {
+
+  return guidance[phase] || {
     affirmation: "I flow with the natural rhythms of life.",
-    ritual: "Pause and take a mindful breath."
+    ritual: "Pause and take a mindful breath.",
+    message: "Move gently and listen to what your body and spirit need."
   };
 }
   
@@ -226,6 +236,7 @@ function getLunarGuidance(phase) {
       d.toDateString() +
       "\n" + mp +
       "\nMoon Day " + md +
+      "\n\n" + guidance.message +
       "\n\nAffirmation:\n" + guidance.affirmation +
       "\n\nSuggested Ritual:\n" + guidance.ritual;
   };
