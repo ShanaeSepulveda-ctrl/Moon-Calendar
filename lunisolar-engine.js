@@ -9,14 +9,17 @@
      previewMigrateAffirmations(affirmationsArray, options)
      applyMigration(migrationPreview)  // optional helper to transform data
 */
-import * as julian from 'https://cdn.jsdelivr.net/npm/astronomia@2.2.0/src/julian/index.js';
-import * as moonphase from 'https://cdn.jsdelivr.net/npm/astronomia@2.2.0/src/moonphase/index.js';
-import * as solar from 'https://cdn.jsdelivr.net/npm/astronomia@2.2.0/src/solar/index.js';
-import * as coord from 'https://cdn.jsdelivr.net/npm/astronomia@2.2.0/src/coord/index.js';
-import * as planetposition from 'https://cdn.jsdelivr.net/npm/astronomia@2.2.0/src/planetposition/index.js';
-import * as dataEarth from 'https://cdn.jsdelivr.net/npm/astronomia@2.2.0/data/vsop87Bearth.json';
 
-// NOTE: CDN module paths / versions may need updating depending on astronomia packaging. If imports fail, tell me the console error and I'll correct paths.
+// Use esm.sh to load browser-ready ESM for astronomia submodules
+import * as julian from 'https://esm.sh/astronomia@2.2.0/julian';
+import * as moonphase from 'https://esm.sh/astronomia@2.2.0/moonphase';
+import * as solar from 'https://esm.sh/astronomia@2.2.0/solar';
+import * as coord from 'https://esm.sh/astronomia@2.2.0/coord';
+import * as planetposition from 'https://esm.sh/astronomia@2.2.0/planetposition';
+
+// Load JSON data via fetch (JSON import assertions are less consistent across CDNs/browsers)
+const dataUrl = 'https://cdn.jsdelivr.net/npm/astronomia@2.2.0/data/vsop87Bearth.json';
+const dataEarth = await (await fetch(dataUrl)).json();
 
 const EARTH = new planetposition.Planet(dataEarth);
 
