@@ -265,10 +265,10 @@ function getLunarGuidance(phase) {
       cell.className = "day";
       if (isToday) cell.classList.add("today");
 
-      cell.innerHTML =
-        '<div class="gregorian">' + date.toDateString() + '</div>' +
-        '<div class="moon-day">Moon Day ' + moonDay + '</div>' +
-        '<div class="moon-name">' + moonPhase + '</div>';
+cell.innerHTML =
+  '<div class="gregorian">' + date.toDateString() + '</div>' +
+  '<div class="moon-day">Moon ' + moonNumber + ' · Day ' + moonDay + '</div>' +
+  '<div class="moon-name">' + moonPhase + '</div>';
 
       cell.onclick = function (d, md, mp) {
   return function () {
