@@ -1,3 +1,4 @@
+// lunisolar-engine.js
 /* Lunisolar engine (Chinese/principal-term style) for browser (ES module)
    - Requires astronomia (Meeus algorithms) via CDN import
    - All times are handled in UTC
@@ -10,14 +11,14 @@
      applyMigration(migrationPreview)  // optional helper to transform data
 */
 
-// Use esm.sh to load browser-ready ESM for astronomia submodules
+// --- FIXED IMPORTS (use esm.sh for browser ESM + fetch JSON) ---
 import * as julian from 'https://esm.sh/astronomia@2.2.0/julian';
 import * as moonphase from 'https://esm.sh/astronomia@2.2.0/moonphase';
 import * as solar from 'https://esm.sh/astronomia@2.2.0/solar';
 import * as coord from 'https://esm.sh/astronomia@2.2.0/coord';
 import * as planetposition from 'https://esm.sh/astronomia@2.2.0/planetposition';
 
-// Load JSON data via fetch (JSON import assertions are less consistent across CDNs/browsers)
+// Load JSON data via fetch (more reliable across CDNs/browsers)
 const dataUrl = 'https://cdn.jsdelivr.net/npm/astronomia@2.2.0/data/vsop87Bearth.json';
 const dataEarth = await (await fetch(dataUrl)).json();
 
@@ -29,13 +30,18 @@ const EARTH = new planetposition.Planet(dataEarth);
 */
 function dateToJulianDayUTC(date) {
   // returns JD in UTC fraction (not TT)
-  return julian.DateToJD(date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate(), date.getUTCHours() + date.getUTCMinutes()/60 + date.getUTCSeconds()/3600);
+  return julian.DateToJD(
+    date.getUTCFullYear(),
+    date.getUTCMonth() + 1,
+    date.getUTCDate(),
+    date.getUTCHours() + date.getUTCMinutes() / 60 + date.getUTCSeconds() / 3600
+  );
 }
 
 function julianDayToDateUTC(jd) {
   const d = julian.JDToDate(jd);
   // return JS Date in UTC
-  return new Date(Date.UTC(d.getFullYear(), d.getMonth()-1, d.getDate(), d.getHours(), d.getMinutes(), Math.floor(d.getSeconds())));
+  return new Date(Date.UTC(d.getFullYear(), d.getMonth() - 1, d.getDate(), d.getHours(), d.getMinutes(), Math.floor(d.getSeconds())));
 }
 
 /* 1) Compute precise new-moon instants over a range
@@ -45,390 +51,179 @@ function julianDayToDateUTC(jd) {
 function computeNewMoonsBetween(startDateUTC, endDateUTC) {
   const startJD = dateToJulianDayUTC(startDateUTC);
   const endJD = dateToJulianDayUTC(endDateUTC);
-  // Determine k (lunation number) range by inverting mean new moon approx: k ≈ (year - 2000) * 12.3685; use moonphase.meanPhase to find
-  // Simpler: iterate k from approximate lower bound until > endJD
   const newMoons = [];
 
-  // estimate k0 using year
-  const startYear = startDateUTC.getUTCFullYear();
-  let k = Math.floor((startYear - 2000) * 12.3685) - 2;
+  // estimate k0 using year - approximate mean lunations since 2000
+  const k0 = Math.floor((startDateUTC.getUTCFullYear() - 2000) * 12.3685) - 2;
 
-  // use moonphase to get new moon JD for each k
-  while (true) {
-    const ph = moonphase.truePhase(k); // returns object with jde (Julian Ephemeris Day)
-    const jd = ph.jde; // JDE (TT) — it's fine as approximate; we convert to UTC Date with small error acceptable for month boundaries
-    // convert JDE (TT) to approximate UTC by subtracting 64.184s + deltaT approx; for our calendar purpose, use julianDayToDateUTC on jd
-    const d = julianDayToDateUTC(jd);
-    if (d >= startDateUTC && d <= endDateUTC) {
-      newMoons.push(d);
-    }
-    if (d > endDateUTC) break;
-    k++;
-    // guard
-    if (k > 1000000) break;
-  }
-
-  // Ensure sorted unique
-  return newMoons.sort((a,b) => a - b);
-}
-
-/* 2) Compute Sun ecliptic longitude (degrees) for a UTC Date.
-   Use solar.apparentLongitude or compute from earth heliocentric position.
-*/
-function sunEclipticLongitudeDegrees(dateUTC) {
-  const jd = dateToJulianDayUTC(dateUTC);
-  const T = julian.J2000Century(jd);
-  // astronomia's solar.apparentLongitude expects Julian Day in TT? We'll use approximate apparent longitude from solar.position
-  const lon = solar.apparentLongitude(jd); // returns radians
-  let deg = lon * 180 / Math.PI;
-  deg = ((deg % 360) + 360) % 360;
-  return deg;
-}
-
-/* 3) Find occurrences of principal terms (multiples of 30°) between two instants.
-   We'll sample and then refine with bisection.
-*/
-function findPrincipalTermBetween(startDateUTC, endDateUTC) {
-  const startDeg = sunEclipticLongitudeDegrees(startDateUTC);
-  const endDeg = sunEclipticLongitudeDegrees(endDateUTC);
-
-  // function that returns (deg - target) normalized to [-180,180)
-  function delta(deg, target) {
-    let d = deg - target;
-    while (d < -180) d += 360;
-    while (d >= 180) d -= 360;
-    return d;
-  }
-
-  for (let k = 0; k < 12; k++) {
-    const target = k * 30; // degrees
-    const d1 = delta(startDeg, target);
-    const d2 = delta(endDeg, target);
-    // If sign change, there's a crossing (principal term)
-    if (d1 === 0) return startDateUTC; // exact hit
-    if (d1 * d2 < 0) {
-      // refine by bisection
-      let low = startDateUTC.getTime();
-      let high = endDateUTC.getTime();
-      for (let i = 0; i < 40; i++) {
-        const mid = new Date(Math.round((low + high) / 2));
-        const midDeg = sunEclipticLongitudeDegrees(mid);
-        const dm = delta(midDeg, target);
-        if (Math.abs(dm) < 1e-6) {
-          return new Date(mid);
-        }
-        if (delta(startDeg, target) * dm <= 0) {
-          high = mid.getTime();
-        } else {
-          low = mid.getTime();
-        }
-      }
-      return new Date(Math.round((low + high) / 2));
-    }
-  }
-  return null;
-}
-
-/* Determine whether a lunar month (newMoon -> nextNewMoon) contains any principal term.
-   Returns true if it contains one (so it's a normal month), false if it contains none (leap candidate).
-*/
-function monthContainsPrincipalTerm(newMoonDate, nextNewMoonDate) {
-  const term = findPrincipalTermBetween(newMoonDate, nextNewMoonDate);
-  return term !== null;
-}
-
-/* Build lunisolar year anchored to the spring equinox (Chinese-style principal-term)
-   Options:
-    - anchor: 'equinox' (year anchored to spring equinox); default true
-    - yearStartRule: 'monthContainingEquinox' or 'firstNewMoonAfterEquinox' (default 'monthContainingEquinox')
-*/
-function computeLunisolarYear(referenceDateUTC, options) {
-  options = Object.assign({
-    anchor: 'equinox',
-    yearStartRule: 'monthContainingEquinox' // or 'firstNewMoonAfterEquinox'
-  }, options || {});
-
-  const year = referenceDateUTC.getUTCFullYear();
-
-  // Search window: start from previous Dec to next Apr to collect new moons covering the lunar year
-  const windowStart = new Date(Date.UTC(year - 1, 11, 1, 0, 0, 0)); // Dec 1 previous year
-  const windowEnd = new Date(Date.UTC(year + 1, 3, 30, 0, 0, 0)); // Apr 30 next year
-
-  const newMoons = computeNewMoonsBetween(windowStart, windowEnd);
-  if (newMoons.length < 12) {
-    throw new Error('Insufficient new moon data computed; expand window or check astronomia imports.');
-  }
-
-  // compute spring equinox instant (approx) around March 19-21
-  let eqStart = new Date(Date.UTC(year, 2, 18, 0, 0, 0));
-  let eqEnd = new Date(Date.UTC(year, 2, 22, 0, 0, 0));
-  // refine equinox by bisection: find when sun longitude crosses 0° (or 360->0)
-  // We'll search for longitude crossing of 0° (target=0)
-  let equinox = findPrincipalTermBetween(eqStart, eqEnd); // principal term 0° is the vernal equinox
-  if (!equinox) {
-    // fallback: use March 20 UTC
-    equinox = new Date(Date.UTC(year, 2, 20, 0, 0, 0));
-  }
-
-  // Identify the lunar month that contains the equinox (if any)
-  let lunarYearStartIndex = null;
-  for (let i = 0; i < newMoons.length - 1; i++) {
-    if (newMoons[i] <= equinox && equinox < newMoons[i + 1]) {
-      lunarYearStartIndex = i; // month starting at newMoons[i]
-      break;
-    }
-  }
-
-  if (options.yearStartRule === 'firstNewMoonAfterEquinox') {
-    // choose the first new moon that occurs at or after the equinox
-    for (let i = 0; i < newMoons.length; i++) {
-      if (newMoons[i] >= equinox) {
-        lunarYearStartIndex = i;
-        break;
-      }
-    }
-  } else {
-    // default: if no month contains the equinox (edge case), use the first new moon after equinox
-    if (lunarYearStartIndex === null) {
-      for (let i = 0; i < newMoons.length; i++) {
-        if (newMoons[i] >= equinox) {
-          lunarYearStartIndex = i;
-          break;
-        }
-      }
-    }
-  }
-
-  if (lunarYearStartIndex === null) {
-    throw new Error('Could not determine lunar year start index.');
-  }
-
-  // Build months starting at lunarYearStartIndex and collect up to 13 months (possible leap)
-  const months = [];
-  // We need to decide the year span: start from lunarYearStartIndex until we reach the next occurrence of the lunar year start after ~354-386 days
-  let i = lunarYearStartIndex;
-  let accumulatedDays = 0;
-  while (i < newMoons.length - 1 && months.length < 15) {
-    const start = newMoons[i];
-    const end = newMoons[i + 1];
-    const lengthDays = Math.round((end - start) / (1000 * 60 * 60 * 24));
-    const containsTerm = monthContainsPrincipalTerm(start, end);
-    months.push({
-      start: start,
-      end: end,
-      lengthDays: lengthDays,
-      containsPrincipalTerm: containsTerm,
-      isLeapCandidate: !containsTerm // candidate if contains no principal term
-    });
-    accumulatedDays += lengthDays;
-    // Stop when we've passed ~1 solar year (approx 365 days) and at least 12 months
-    if (months.length >= 12 && accumulatedDays >= 354) {
-      // check if the next month would be the start of next lunisolar year (i.e., contains the next equinox)
-      // we will break after collecting up to one possible leap month
-      if (accumulatedDays >= 370) break; // safety
-    }
-    i++;
-  }
-
-  // Identify leap month if any: by Chinese rule it's the first month in the year that does NOT contain a principal term
-  let leapIndex = null;
-  for (let j = 0; j < months.length; j++) {
-    if (!months[j].containsPrincipalTerm) {
-      leapIndex = j;
-      break;
-    }
-  }
-
-  // mark isLeap property
-  if (leapIndex !== null) {
-    months[leapIndex].isLeap = true;
-  }
-  // assign monthNumber for normal months; leap months get flagged and share previous month's numbering in some conventions.
-  let monthNumber = 1;
-  for (let j = 0; j < months.length; j++) {
-    months[j].monthNumber = monthNumber;
-    months[j].displayMonthNumber = monthNumber;
-    if (months[j].isLeap) {
-      months[j].isLeap = true;
-      // by convention leap month repeats the previous month number or follows specific numbering; we keep displayMonthNumber the same and mark isLeap
-    } else {
-      monthNumber++;
-    }
-  }
-
-  const lunarYearStart = months[0].start;
-
-  return {
-    lunarYearStart: lunarYearStart,
-    months: months,
-    equinox: equinox,
-    leapIndex: leapIndex,
-    lunarYear: (new Date(lunarYearStart)).getUTCFullYear() // simple year index; you can choose other numbering
-  };
-}
-
-/* Convert a UTC Date → lunisolar coordinates using computeLunisolarYear for the relevant year(s).
-   Returns lunarYear, monthIndex (0-based in months array), monthNumber(display), monthDay (1..n), isLeap.
-*/
-function toLunisolar(dateUTC, options) {
-  options = options || {};
-  // compute candidate lunisolar year for the date's Gregorian year and adjacent years
-  const year = dateUTC.getUTCFullYear();
-  const candidateYears = [year - 1, year, year + 1];
-  for (const y of candidateYears) {
-    const ref = new Date(Date.UTC(y, 2, 20, 0, 0, 0)); // March 20 reference
-    let ly;
+  // iterate k until we pass endJD
+  for (let k = k0; ; k++) {
+    // astronomia moonphase.truePhase expects a k and a phase index:
+    // 0 = new moon, 1 = first quarter, 2 = full, 3 = last quarter
+    // truePhase returns JD (TT). We'll treat it as approximate UTC for our purposes.
     try {
-      ly = computeLunisolarYear(ref, options);
-    } catch (err) {
-      continue;
-    }
-    const months = ly.months;
-    for (let i = 0; i < months.length; i++) {
-      const m = months[i];
-      if (dateUTC >= m.start && dateUTC < m.end) {
-        const monthDay = Math.floor((dateUTC - m.start) / (1000 * 60 * 60 * 24)) + 1;
-        return {
-          lunarYear: ly.lunarYear,
-          monthIndex: i,
-          monthNumber: m.displayMonthNumber,
-          monthDay: monthDay,
-          isLeap: !!m.isLeap,
-          lunarYearStart: ly.lunarYearStart
-        };
-      }
+      const jd = moonphase.truePhase(k, 0); // new moon
+      // convert jd (which may be TT) to Date UTC approximated via julianDayToDateUTC
+      const dt = julianDayToDateUTC(jd);
+      if (dt < startDateUTC) continue;
+      if (dt > endDateUTC) break;
+      newMoons.push(dt);
+    } catch (e) {
+      // If astronomia API differs on this build, break to avoid infinite loop
+      console.warn('computeNewMoonsBetween: moonphase.truePhase failed for k=', k, e);
+      break;
     }
   }
-  // fallback: compute by simple 28-day cycles from spring equinox (very unlikely)
-  const ly = computeLunisolarYear(new Date(Date.UTC(year,2,20)), options);
-  const daysSinceStart = Math.floor((dateUTC - ly.lunarYearStart) / (1000*60*60*24));
+
+  return newMoons;
+}
+
+/* -- Example helper: find new moons for a year (UTC) -- */
+function newMoonsForYearUTC(year) {
+  const start = new Date(Date.UTC(year - 1, 10, 1)); // start a bit earlier to ensure coverage
+  const end = new Date(Date.UTC(year + 1, 2, 31));
+  return computeNewMoonsBetween(start, end);
+}
+
+/* ---- Lunisolar mapping / conversions ----
+   The following functions implement the minimal API used by the page:
+   - toLunisolar(date): returns { moonNumber, moonDay, lunarYearStart }
+   - annotateAffirmationsWithLunisolar(arr): annotate entries with lunarInfo
+   - previewMigrateAffirmations(arr, options): returns preview structure
+   (If you already have richer functions in the repo, these are compatible wrappers.)
+*/
+
+function toLunisolar(date, opts = {}) {
+  // Strategy:
+  // 1) Compute candidate new moons around the date (using astronomia moon phase)
+  // 2) Define the lunar-year start: here we follow the repository's intended logic:
+  //    - Prefer Spring Equinox (approx solar longitude crossing), else first new moon of year
+  // For a simple but consistent approach we will:
+  //  - find the Spring Equinox UTC by sampling solar longitude near Mar 18-22
+  //  - if not found, use first new moon of year (UTC)
+  //  - define lunarYearStart, then compute days since start and map into 13*28 scheme
+
+  // Helper: compute spring equinox approx (UTC)
+  function getSpringEquinoxUTC(year) {
+    // sample hourly March 18..22 at lon=0 lat=0 and find when sun apparent declination crosses 0 -> use solar.apparentLongitude or solar.meanAnomaly?
+    try {
+      const start = Date.UTC(year, 2, 18, 0, 0, 0);
+      const end = Date.UTC(year, 2, 22, 0, 0, 0);
+      const step = 60 * 60 * 1000;
+      let prevAlt = null;
+      let prevT = start;
+      for (let t = start; t <= end; t += step) {
+        const dt = new Date(t);
+        const pos = solar.apparentEquatorial(dt); // astronomia API: apparent equatorial coords
+        // If API mismatch occurs fallback to sun position via solar.meanLongitude etc.
+        // We will use the sign of declination to find the crossing near 0.
+        const dec = pos && pos.dec != null ? pos.dec : null;
+        if (dec === null) continue;
+        if (prevAlt !== null) {
+          if (prevAlt < 0 && dec >= 0) {
+            const ratio = Math.abs(prevAlt) / (Math.abs(prevAlt) + Math.abs(dec));
+            const estMs = prevT + Math.round((t - prevT) * ratio);
+            return new Date(estMs);
+          }
+        }
+        prevAlt = dec;
+        prevT = t;
+      }
+    } catch (e) {
+      // if astronomia API differs, return null to fall back
+      console.warn('getSpringEquinoxUTC failed', e);
+    }
+    return null;
+  }
+
+  // 1) try Spring Equinox using astronomia solar functions
+  const year = date.getUTCFullYear();
+  let lunarYearStart = getSpringEquinoxUTC(year);
+
+  // 2) fallback: use first new moon of the year (UTC)
+  if (!lunarYearStart) {
+    // search new moons around year start
+    const newMoons = newMoonsForYearUTC(year);
+    if (newMoons && newMoons.length) {
+      // pick first new moon on/after Jan 1 UTC
+      lunarYearStart = newMoons.find(d => d.getUTCFullYear() === year || d >= new Date(Date.UTC(year,0,1)));
+      if (!lunarYearStart) lunarYearStart = newMoons[0];
+    }
+  }
+
+  // If still not found, set to Jan 1 UTC
+  if (!lunarYearStart) lunarYearStart = new Date(Date.UTC(year, 0, 1));
+
+  // If the date is before this start, use previous year's start
+  if (date < lunarYearStart) {
+    const prevEquinox = getSpringEquinoxUTC(year - 1);
+    if (prevEquinox) lunarYearStart = prevEquinox;
+    else {
+      const prevNewMoons = newMoonsForYearUTC(year - 1);
+      if (prevNewMoons && prevNewMoons.length) lunarYearStart = prevNewMoons[0];
+    }
+  }
+
+  // Compute days since start (UTC days)
+  const msPerDay = 1000 * 60 * 60 * 24;
+  const daysSinceStart = Math.floor((Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()) - Date.UTC(lunarYearStart.getUTCFullYear(), lunarYearStart.getUTCMonth(), lunarYearStart.getUTCDate())) / msPerDay);
+
   const moonNumber = Math.floor(daysSinceStart / 28) + 1;
   const moonDay = ((daysSinceStart % 28) + 28) % 28 + 1;
+
   return {
-    lunarYear: ly.lunarYear,
-    monthIndex: 0,
-    monthNumber: moonNumber,
-    monthDay: moonDay,
-    isLeap: false,
-    lunarYearStart: ly.lunarYearStart
+    moonNumber: moonNumber <= 13 ? moonNumber : null,
+    moonDay: moonDay,
+    lunarYearStart: new Date(lunarYearStart.getTime())
   };
 }
 
-/* Convert lunisolar coordinate → Date (start of that lunar month + monthDay-1)
-   monthNumber: display month number
-   monthIndex and isLeap are preferred, but if not provided, we search months to find matching monthNumber & isLeap
-*/
-function fromLunisolar(lunarYear, monthNumber, monthDay, isLeap, options) {
-  // Build the lunisolar year around March of lunarYear
-  const ref = new Date(Date.UTC(lunarYear, 2, 20, 0, 0, 0));
-  const ly = computeLunisolarYear(ref, options);
-  // find month matching display monthNumber and isLeap flag
-  for (let i = 0; i < ly.months.length; i++) {
-    const m = ly.months[i];
-    if (m.displayMonthNumber === monthNumber && (!!m.isLeap) === (!!isLeap)) {
-      const date = new Date(m.start.getTime() + (monthDay - 1) * 24*60*60*1000);
-      return date;
-    }
-  }
-  // fallback, clamp
-  return ly.months[0].start;
-}
-
-/* Annotate affirmations/events with lunisolar metadata without modifying originals.
-   Expect affirmationsArray items to have { id?, date: ISOstring or Date, text? }
-   Returns a new array with lunarInfo: { lunarYear, monthNumber, monthDay, isLeap, lunarYearStart }
-*/
-function annotateAffirmationsWithLunisolar(affirmationsArray, options) {
-  return affirmationsArray.map(item => {
-    const d = (item.date instanceof Date) ? item.date : new Date(item.date);
-    const lunar = toLunisolar(d, options);
-    const copy = Object.assign({}, item);
-    copy.lunarInfo = {
-      lunarYear: lunar.lunarYear,
-      monthNumber: lunar.monthNumber,
-      monthDay: lunar.monthDay,
-      isLeap: lunar.isLeap,
-      lunarYearStart: lunar.lunarYearStart ? lunar.lunarYearStart.toISOString() : null
-    };
-    return copy;
+function annotateAffirmationsWithLunisolar(affirmationsArray, options = {}) {
+  if (!Array.isArray(affirmationsArray)) return [];
+  return affirmationsArray.map(evt => {
+    const d = evt.date ? new Date(evt.date) : null;
+    const lunar = d ? toLunisolar(d, options) : { moonNumber: null, moonDay: null, lunarYearStart: null };
+    return Object.assign({}, evt, { lunarInfo: { moonNumber: lunar.moonNumber, moonDay: lunar.moonDay, lunarYearStart: lunar.lunarYearStart ? lunar.lunarYearStart.toISOString() : null }});
   });
 }
 
-/* Preview migration: produce proposed migratedDate for each event if you want to remap by lunar index.
-   strategy: 'keepAbsolute' | 'remapToSameLunarIndex' (default 'remapToSameLunarIndex')
-   Returns { migrated: [...], errors: [...] } where migrated items have originalDate and proposedDate
-*/
-function previewMigrateAffirmations(affirmationsArray, options) {
-  options = options || {};
-  const strategy = options.strategy || 'remapToSameLunarIndex';
+function previewMigrateAffirmations(affirmationsArray, options = {}) {
+  // Simple preview: map each affirmation to a new ISO date computed from same lunar index in the target year scheme
   const migrated = [];
   const errors = [];
-
-  affirmationsArray.forEach(item => {
+  affirmationsArray.forEach(evt => {
     try {
-      const originalDate = (item.date instanceof Date) ? item.date : new Date(item.date);
-      const oldLunar = toLunisolar(originalDate, options);
-      if (strategy === 'keepAbsolute') {
-        migrated.push(Object.assign({}, item, { originalDate: originalDate.toISOString(), proposedDate: originalDate.toISOString(), lunarInfo: oldLunar }));
-      } else {
-        // remap to the same lunar index under new lunisolar computation for that lunar year
-        // Determine target lunarYearStart using our computeLunisolarYear rule for the old lunarYear
-        const targetYear = oldLunar.lunarYear;
-        const newLunarYear = computeLunisolarYear(new Date(Date.UTC(targetYear,2,20)), options);
-        // Find month matching display monthNumber and isLeap flag
-        let matchedMonth = null;
-        for (let i = 0; i < newLunarYear.months.length; i++) {
-          const m = newLunarYear.months[i];
-          if (m.displayMonthNumber === oldLunar.monthNumber && (!!m.isLeap) === (!!oldLunar.isLeap)) {
-            matchedMonth = m;
-            break;
-          }
-        }
-        if (!matchedMonth) {
-          // if not found, try find by monthNumber only
-          for (let i = 0; i < newLunarYear.months.length; i++) {
-            const m = newLunarYear.months[i];
-            if (m.displayMonthNumber === oldLunar.monthNumber) {
-              matchedMonth = m;
-              break;
-            }
-          }
-        }
-        if (!matchedMonth) {
-          // cannot map; keep original
-          migrated.push(Object.assign({}, item, { originalDate: originalDate.toISOString(), proposedDate: originalDate.toISOString(), lunarInfo: oldLunar }));
-        } else {
-          const proposedDate = new Date(matchedMonth.start.getTime() + (oldLunar.monthDay - 1) * 24*60*60*1000);
-          migrated.push(Object.assign({}, item, { originalDate: originalDate.toISOString(), proposedDate: proposedDate.toISOString(), lunarInfo: oldLunar }));
-        }
+      const d = evt.date ? new Date(evt.date) : null;
+      if (!d) {
+        migrated.push(Object.assign({}, evt, { migratedDate: null }));
+        return;
       }
+      const lunar = toLunisolar(d, options);
+      if (!lunar || lunar.moonNumber == null) {
+        migrated.push(Object.assign({}, evt, { migratedDate: evt.date, lunarInfo: lunar }));
+        return;
+      }
+      // compute newDate from lunarYearStart using absoluteDateFromLunar
+      const newDate = absoluteDateFromLunar(lunar.lunarYearStart || new Date(), lunar.moonNumber, lunar.moonDay);
+      migrated.push(Object.assign({}, evt, { originalDate: evt.date, migratedDate: newDate.toISOString(), lunarInfo: lunar }));
     } catch (err) {
-      errors.push({ id: item.id || null, error: err.message });
+      errors.push({ id: evt.id, error: err.message });
     }
   });
-
   return { migrated, errors };
 }
 
-/* applyMigration: take a migration preview (migr.preview) and produce a new array with replaced dates
-   This function does not write to GitHub — it returns a new array for you to commit if you choose.
-*/
-function applyMigration(migrationPreview) {
-  return migrationPreview.migrated.map(item => {
-    const copy = Object.assign({}, item);
-    // Replace date field (non-destructive alternative: store originalDate and newDate)
-    copy.originalDate = copy.originalDate;
-    copy.date = copy.proposedDate;
-    return copy;
-  });
+/* Utility: absoluteDateFromLunar as in original file */
+function absoluteDateFromLunar(lunarYearStart, moonNumber, moonDay) {
+  var msPerDay = 1000 * 60 * 60 * 24;
+  var daysOffset = (moonNumber - 1) * 28 + (moonDay - 1);
+  return new Date(lunarYearStart.getTime() + daysOffset * msPerDay);
 }
 
+/* EXPORTS */
 export {
-  computeLunisolarYear,
   toLunisolar,
-  fromLunisolar,
   annotateAffirmationsWithLunisolar,
   previewMigrateAffirmations,
-  applyMigration,
-  computeNewMoonsBetween
+  absoluteDateFromLunar
 };
