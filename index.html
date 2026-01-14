@@ -198,6 +198,41 @@ function getLunarGuidance(phase) {
   };
 }
  
+  function getMoonDayMeaning(moonDay) {
+  var meanings = {
+    1:  "Initiation — a spark of beginning energy is present.",
+    2:  "Polarity — notice balance, contrast, and relationship.",
+    3:  "Activation — movement begins; ideas want expression.",
+    4:  "Form — structure and boundaries support growth.",
+    5:  "Empowerment — confidence and personal power rise.",
+    6:  "Balance — harmony, care, and adjustment are needed.",
+    7:  "Reflection — pause, observe, and realign.",
+    8:  "Integration — lessons begin to settle into the body.",
+    9:  "Intention — refocus on what truly matters.",
+    10: "Manifestation — effort meets visible outcome.",
+    11: "Release — clear tension, emotion, or resistance.",
+    12: "Understanding — insight and perspective deepen.",
+    13: "Transformation — something shifts at the core.",
+    14: "Illumination — truth is revealed; clarity peaks.",
+    15: "Expression — share, communicate, or celebrate.",
+    16: "Adjustment — course-correct with compassion.",
+    17: "Trust — surrender control and allow flow.",
+    18: "Healing — tend to emotional or physical needs.",
+    19: "Completion — acknowledge what has been fulfilled.",
+    20: "Devotion — recommit to what nourishes you.",
+    21: "Expansion — openness and possibility widen.",
+    22: "Mastery — skills and wisdom stabilize.",
+    23: "Flow — allow ease and natural movement.",
+    24: "Gratitude — appreciation softens and opens the heart.",
+    25: "Surrender — release expectations and outcomes.",
+    26: "Clearing — simplify, declutter, cleanse.",
+    27: "Stillness — quiet awareness prepares renewal.",
+    28: "Renewal — rest, reset, and prepare to begin again."
+  };
+
+  return meanings[moonDay] || "";
+}
+
   function getFirstNewMoonOfYear(year) {
   for (var month = 0; month < 12; month++) {
     for (var day = 1; day <= 31; day++) {
