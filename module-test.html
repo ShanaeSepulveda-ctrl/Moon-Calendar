@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>ES Module Test</title>
+</head>
+<body>
+  <h1>ES Module Test</h1>
+  <pre id="output">Loading…</pre>
+
+  <script type="module">
+    import { hello } from './hello-module.js';
+    document.getElementById('output').textContent = hello('Shanae');
+    console.log('Module loaded successfully.');
+  </script>
+</body>
+</html>
