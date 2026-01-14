@@ -278,30 +278,24 @@ function getLunarGuidance(phase) {
 var _equinoxCache = {};
 
 // --- Compute an approximate Spring Equinox (northern hemisphere) ---
-// Uses SunCalc.getPosition at lat=0,lng=0 sampled hourly around Mar 18–22 UTC.
-// Returns a Date (UTC) for the approximated equinox moment, or null.
 function getSpringEquinox(year) {
   if (typeof SunCalc === "undefined") return null;
   if (_equinoxCache[year]) return new Date(_equinoxCache[year].getTime());
 
-  // Search window: March 18 00:00 UTC → March 22 00:00 UTC
-  var start = Date.UTC(year, 2, 18, 0, 0, 0); // month index 2 = March
+  var start = Date.UTC(year, 2, 18, 0, 0, 0);
   var end = Date.UTC(year, 2, 22, 0, 0, 0);
-  var stepMs = 60 * 60 * 1000; // 1 hour samples
+  var stepMs = 60 * 60 * 1000;
 
   var prevTime = start;
   var prevAlt = null;
 
   for (var t = start; t <= end; t += stepMs) {
     var sample = new Date(t);
-    // Evaluate sun altitude at the equator (lat=0, lon=0)
     var pos = SunCalc.getPosition(sample, 0, 0);
-    var alt = pos.altitude; // radians
+    var alt = pos.altitude;
 
     if (prevAlt !== null) {
-      // Look for sign change from negative to positive (sun crossing celestial equator)
       if (prevAlt < 0 && alt >= 0) {
-        // Linear interpolation between prevTime and t for a better estimate
         var ratio = Math.abs(prevAlt) / (Math.abs(prevAlt) + Math.abs(alt));
         var estMs = prevTime + Math.round((t - prevTime) * ratio);
         var est = new Date(estMs);
@@ -313,11 +307,9 @@ function getSpringEquinox(year) {
     prevTime = t;
   }
 
-  // If no crossing found, return null
   return null;
 }
 
-// --- ORIGINAL: find first new moon of a year (kept for fallback) ---
 function getFirstNewMoonOfYear(year) {
   for (var month = 0; month < 12; month++) {
     for (var day = 1; day <= 31; day++) {
@@ -328,7 +320,6 @@ function getFirstNewMoonOfYear(year) {
       var illum = SunCalc.getMoonIllumination(date);
       if (!illum || typeof illum.phase === "undefined") continue;
       var phase = illum.phase;
-      // phase is 0 at new moon. Allow small tolerance
       if (phase < 0.03 || phase > 0.97) {
         return date;
       }
@@ -337,20 +328,14 @@ function getFirstNewMoonOfYear(year) {
   return null;
 }
 
-// --- Use Spring Equinox as the start of the lunar-year (if available).
-// If the date is before that year's equinox, use the previous year's.
-// Falls back to your original new-moon approach if equinox isn't found. ---
 function getLunarPosition(date) {
-  // Work in UTC consistently
   var year = date.getUTCFullYear();
   var lunarYearStart = getSpringEquinox(year);
 
-  // If we couldn't find an equinox for that year, fall back to first new moon
   if (!lunarYearStart) {
     lunarYearStart = getFirstNewMoonOfYear(year);
   }
 
-  // If the date is BEFORE this year's equinox, use last year's equinox/new-moon
   if (lunarYearStart && date < lunarYearStart) {
     var prevEquinox = getSpringEquinox(year - 1);
     if (!prevEquinox) {
@@ -359,17 +344,14 @@ function getLunarPosition(date) {
     lunarYearStart = prevEquinox || lunarYearStart;
   }
 
-  // If still null (very unlikely), fall back to Jan 1 UTC
   if (!lunarYearStart) lunarYearStart = new Date(Date.UTC(year, 0, 1));
 
   var msPerDay = 1000 * 60 * 60 * 24;
-  // daysSinceStart is integer days difference (UTC)
   var daysSinceStart = Math.floor((date.getTime() - lunarYearStart.getTime()) / msPerDay);
 
   var moonNumber = Math.floor(daysSinceStart / 28) + 1;
-  var moonDay = ((daysSinceStart % 28) + 28) % 28 + 1; // keep 1..28
+  var moonDay = ((daysSinceStart % 28) + 28) % 28 + 1;
 
-  // if moonNumber > 13, return null for moonNumber (or handle how you wish)
   return {
     moonNumber: moonNumber <= 13 ? moonNumber : null,
     moonDay: moonDay,
@@ -377,23 +359,15 @@ function getLunarPosition(date) {
   };
 }
 
-// --- Convert a lunar index to an absolute Date given a lunar-year start ---
-// lunarYearStart: Date (UTC)
-// moonNumber: 1..13
-// moonDay: 1..28
 function absoluteDateFromLunar(lunarYearStart, moonNumber, moonDay) {
   var msPerDay = 1000 * 60 * 60 * 24;
   var daysOffset = (moonNumber - 1) * 28 + (moonDay - 1);
   return new Date(lunarYearStart.getTime() + daysOffset * msPerDay);
 }
 
-// --- Migration helper: given your stored affirmations/events, add/update lunar metadata
-// Example storedAffirmations: [{ id: 1, date: "2025-03-20T00:00:00Z", text: "..."}]
-// This function will return a new array with added lunarInfo { moonNumber, moonDay, lunarYearStart }
 function annotateAffirmationsWithLunarInfo(storedAffirmations) {
-  // Do not modify in-place unless you want to; return a new array
   return storedAffirmations.map(function(evt) {
-    var evtDate = new Date(evt.date); // assume ISO string or Date object
+    var evtDate = new Date(evt.date);
     var lunar = getLunarPosition(evtDate);
     var copy = Object.assign({}, evt);
     copy.lunarInfo = {
@@ -405,12 +379,7 @@ function annotateAffirmationsWithLunarInfo(storedAffirmations) {
   });
 }
 
-// --- Example migration function: re-map affirmations stored by absolute date to match the new scheme
-// This demonstrates how you could reassign an affirmation that was previously tied to a specific absolute date
-// into the same lunar index but anchored to the (possibly new) lunar year's start.
-// Use with caution: best to store both originalDate and newDate and perform this offline or behind a flag.
 function migrateAffirmationsToNewScheme(storedAffirmations) {
-  // returns { migrated: [...], errors: [...] }
   var migrated = [];
   var errors = [];
 
@@ -419,17 +388,13 @@ function migrateAffirmationsToNewScheme(storedAffirmations) {
       var evtDate = new Date(evt.date);
       var oldLunar = getLunarPosition(evtDate);
 
-      // If oldLunar null -> skip or attach metadata
       if (!oldLunar || !oldLunar.lunarYearStart) {
-        // just annotate and keep original
         migrated.push(Object.assign({}, evt, { migratedDate: evt.date, lunarInfo: oldLunar }));
         return;
       }
 
-      // Compute new lunarYearStart for that lunar year's calendar according to new logic
       var year = evtDate.getUTCFullYear();
       var newLunarStart = getSpringEquinox(year) || getFirstNewMoonOfYear(year);
-      // If the event is before the newLunarStart for the year, use previous year's start:
       if (newLunarStart && evtDate < newLunarStart) {
         newLunarStart = getSpringEquinox(year - 1) || getFirstNewMoonOfYear(year - 1);
       }
@@ -437,9 +402,7 @@ function migrateAffirmationsToNewScheme(storedAffirmations) {
         newLunarStart = new Date(Date.UTC(year, 0, 1));
       }
 
-      // Use same lunar index (moonNumber/moonDay) to compute the new absolute date
       if (oldLunar.moonNumber == null) {
-        // can't map, keep as-is but annotate
         migrated.push(Object.assign({}, evt, { migratedDate: evt.date, lunarInfo: oldLunar }));
       } else {
         var newDate = absoluteDateFromLunar(newLunarStart, oldLunar.moonNumber, oldLunar.moonDay);
@@ -520,22 +483,54 @@ document.getElementById("ritual").innerText = guidance.ritual;
   
   <script type="module">
     import {
+      toLunisolar,
       annotateAffirmationsWithLunisolar,
       previewMigrateAffirmations
     } from './lunisolar-engine.js';
 
     (async function() {
-      // Annotate for UI display (non-destructive)
       try {
-        const annotated = annotateAffirmationsWithLunisolar(window.myAffirmations);
-        console.log('Annotated affirmations (preview):', annotated);
+        // Save the original fallback so we can revert or log if needed
+        if (typeof window.getLunarPosition === 'function') {
+          window.getLunarPositionOriginal = window.getLunarPosition;
+        }
 
-        // Preview migration (to remap to same lunisolar index)
-        const preview = previewMigrateAffirmations(window.myAffirmations, { strategy: 'remapToSameLunarIndex' });
-        console.log('Migration preview:', preview);
+        // If the module provides toLunisolar, patch the page's getLunarPosition to use it.
+        if (typeof toLunisolar === 'function') {
+          window._toLunisolar = toLunisolar;
+          window.getLunarPosition = function(date) {
+            try {
+              // toLunisolar may return an object like { moonNumber, moonDay, lunarYearStart, ... }
+              var lunar = window._toLunisolar(date);
+              // Normalize output for the page
+              return {
+                moonNumber: lunar && typeof lunar.moonNumber !== 'undefined' ? lunar.moonNumber : null,
+                moonDay: lunar && typeof lunar.moonDay !== 'undefined' ? lunar.moonDay : null,
+                lunarYearStart: lunar && lunar.lunarYearStart ? new Date(lunar.lunarYearStart) : (lunar && lunar.lunarYearStart === null ? null : (window.getLunarPositionOriginal ? window.getLunarPositionOriginal(date).lunarYearStart : null))
+              };
+            } catch (e) {
+              console.warn('toLunisolar failed — falling back to original getLunarPosition', e);
+              return window.getLunarPositionOriginal ? window.getLunarPositionOriginal(date) : { moonNumber: null, moonDay: null, lunarYearStart: null };
+            }
+          };
+          // Re-render the calendar using the module's calculations
+          if (typeof renderMonth === 'function') {
+            var now = new Date();
+            renderMonth(now.getFullYear(), now.getMonth());
+          }
+        } else {
+          console.warn('lunisolar-engine.js did not export toLunisolar — continuing with local lunar logic');
+        }
 
-        // You can show preview.migrated to the user and ask to commit changes to GitHub manually,
-        // or if you want me to help produce a patch you can commit, I can help format a diff or file edits.
+        // Annotate & preview (optional UI/console)
+        try {
+          const annotated = typeof annotateAffirmationsWithLunisolar === 'function' ? annotateAffirmationsWithLunisolar(window.myAffirmations || []) : [];
+          console.log('Annotated affirmations (preview):', annotated);
+          const preview = typeof previewMigrateAffirmations === 'function' ? previewMigrateAffirmations(window.myAffirmations || [], { strategy: 'remapToSameLunarIndex' }) : null;
+          console.log('Migration preview:', preview);
+        } catch (e) {
+          console.warn('Annotate/preview step failed:', e);
+        }
 
       } catch (err) {
         console.error('Lunisolar engine error:', err);
