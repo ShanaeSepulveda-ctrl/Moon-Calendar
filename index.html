@@ -167,6 +167,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       var moonDay = ((day - 1) % 28) + 1;
       var moonPhase = getMoonPhase(date);
+      
 function getLunarGuidance(phase) {
   var guidance = {
     "🌑 New Moon": {
@@ -234,6 +235,12 @@ function getLunarGuidance(phase) {
 
   var now = new Date();
   renderMonth(now.getFullYear(), now.getMonth());
+  var todayPhase = getMoonPhase(todayDate);
+var guidance = getLunarGuidance(todayPhase);
+
+document.getElementById("lunarPhase").innerText = todayPhase;
+document.getElementById("affirmation").innerText = guidance.affirmation;
+document.getElementById("ritual").innerText = guidance.ritual;
 });
 </script>
 
