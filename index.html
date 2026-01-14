@@ -9,17 +9,20 @@
     body { font-family: system-ui, sans-serif; background: #0b0d17; color: #eee; padding: 20px; }
     h1 { text-align: center; margin-bottom: 20px; }
     #calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; }
-    .day { background: #15192d; border-radius: 10px; padding: 10px; cursor: pointer; min-height: 90px; transition: background 0.2s; }
+    .day { background: #15192d; border-radius: 10px; padding: 10px; cursor: pointer; min-height: 90px; transition: background 0.2s; position: relative; }
     .day:hover { background: #1f2550; }
     .gregorian { font-size: 0.8rem; opacity: 0.7; }
-    .moon-day { font-size: 1.2rem; font-weight: bold; margin-top: 5px; }
+    .moon-day { font-size: 1.1rem; font-weight: bold; margin-top: 5px; }
     .moon-name { font-size: 0.75rem; opacity: 0.8; margin-top: 4px; }
+    .label-weekday { text-align:center; font-size:0.85rem; opacity:0.75; margin-bottom:8px; }
     #dayInfo { margin-top: 30px; padding: 20px; border-radius: 12px; background: #15192d; }
-    .day.today { border: 1px solid rgba(255,255,255,0.4); box-shadow: 0 0 12px rgba(180,200,255,0.6); background: radial-gradient(circle at top, rgba(255,255,255,0.08), #15192d); animation: softGlow 4s ease-in-out infinite; }
-    @keyframes softGlow { 0%{box-shadow:0 0 8px rgba(180,200,255,0.4);} 50%{box-shadow:0 0 16px rgba(180,200,255,0.8);} 100%{box-shadow:0 0 8px rgba(180,200,255,0.4);} }
-    #lunarGuidance { background: linear-gradient(160deg,#15192d,#0b0d17); border-radius:16px; padding:20px; margin-bottom:25px; box-shadow:0 0 20px rgba(180,200,255,0.15); }
-    #lunarGuidance h2 { margin-top:0; text-align:center; }
-    #lunarGuidance p { line-height:1.4; margin:10px 0; }
+    .day.today { border: 1px solid rgba(255,255,255,0.4); box-shadow: 0 0 12px rgba(180,200,255,0.6); background: radial-gradient(circle at top, rgba(255,255,255,0.08), #15192d); }
+    .solstice { outline: 2px solid rgba(255,200,100,0.18); box-shadow: 0 0 8px rgba(255,200,100,0.06) inset; }
+    .equinox { outline: 2px solid rgba(100,200,255,0.18); box-shadow: 0 0 8px rgba(100,200,255,0.06) inset; }
+    .special-badge { position: absolute; top: 6px; right: 8px; font-size: 0.7rem; padding: 2px 6px; border-radius: 8px; opacity: 0.95; }
+    .solstice .special-badge { background: rgba(255,200,100,0.12); color: #ffdca0; }
+    .equinox .special-badge { background: rgba(100,200,255,0.10); color: #bfe8ff; }
+    .legend { display:flex; gap:10px; justify-content:center; margin-bottom:12px; font-size:0.9rem; opacity:0.85; }
   </style>
   <link rel="manifest" href="manifest.json">
 </head>
@@ -31,6 +34,11 @@
     <p id="lunarPhase"></p>
     <p><strong>Affirmation:</strong> <span id="affirmation"></span></p>
     <p><strong>Suggested Ritual:</strong> <span id="ritual"></span></p>
+  </div>
+
+  <div class="legend">
+    <div><span style="background:rgba(255,200,100,0.12); padding:4px 8px; border-radius:6px; color:#ffdca0;">☀ Solstice</span></div>
+    <div><span style="background:rgba(100,200,255,0.10); padding:4px 8px; border-radius:6px; color:#bfe8ff;">⚖ Equinox</span></div>
   </div>
 
   <div id="calendar"></div>
@@ -59,14 +67,12 @@ document.addEventListener("DOMContentLoaded", function () {
     return "🌘 Waning Crescent";
   }
 
-  // ---- Original (fallback) lunisolar logic (kept, attached globally) ----
-  // Use UTC-aware implementation (same logic as before, but stored as a named function)
+  // fallback lunar function (kept available)
   function getLunarPositionOriginal(date) {
     var year = date.getUTCFullYear();
-    // helper: compute equinox by sampling (uses SunCalc if available)
-    function getSpringEquinox(year) {
+    function getSpringEquinox(y) {
       if (typeof SunCalc === "undefined") return null;
-      var start = Date.UTC(year,2,18,0,0,0), end = Date.UTC(year,2,22,0,0,0), stepMs = 60*60*1000;
+      var start = Date.UTC(y,2,18,0,0,0), end = Date.UTC(y,2,22,0,0,0), stepMs = 60*60*1000;
       var prevAlt = null, prevTime = start;
       for (var t = start; t <= end; t += stepMs) {
         var sample = new Date(t);
@@ -122,117 +128,243 @@ document.addEventListener("DOMContentLoaded", function () {
     };
   }
 
-  // expose the fallback globally so modules can reference it
   window.getLunarPositionOriginal = getLunarPositionOriginal;
 
-  // wrapper the page will call so it can be overridden by a module at runtime
+  // wrapper that modules can override by setting window.getLunarPosition
   window.getLunarPositionWrapper = function(date) {
-    // if a module has replaced window.getLunarPosition (the override), use it;
-    // otherwise use the original fallback.
     if (typeof window.getLunarPosition === 'function' && window.getLunarPosition !== window.getLunarPositionOriginal) {
       try {
         return window.getLunarPosition(date);
       } catch (e) {
-        console.warn('window.getLunarPosition (override) failed, falling back:', e);
+        console.warn('Override lunar function failed; falling back.', e);
         return window.getLunarPositionOriginal(date);
       }
     }
     return window.getLunarPositionOriginal(date);
   };
 
-  // ---- UI rendering uses the wrapper function above ----
+  // determine if a date matches an equinox/solstice (approx) by sampling around expected days using SunCalc
+  function findAnnualSolarEvents(year) {
+    var events = {}; // keyed by ISO date string
+    if (typeof SunCalc === 'undefined' || typeof SunCalc.getPosition !== 'function') return events;
+
+    // helper to sample around an expected day and find sign change or extremum
+    function findCrossing(startDateMS, endDateMS, stepMs, comparator) {
+      var best = null;
+      var prevVal = null, prevT = startDateMS;
+      for (var t = startDateMS; t <= endDateMS; t += stepMs) {
+        var dt = new Date(t);
+        var pos = SunCalc.getPosition(dt, 0, 0);
+        var val = pos && typeof pos.altitude === 'number' ? pos.altitude : null;
+        if (val === null) { prevVal = null; prevT = t; continue; }
+        if (prevVal !== null) {
+          // comparator: 'crossZero' or 'extremum'
+          if (comparator === 'crossZero') {
+            if (prevVal < 0 && val >= 0) {
+              var ratio = Math.abs(prevVal) / (Math.abs(prevVal) + Math.abs(val));
+              var estMs = prevT + Math.round((t - prevT) * ratio);
+              return new Date(estMs);
+            }
+          } else if (comparator === 'extremum') {
+            // look for local max/min comparing prevVal, val and next sample
+            // here we'll accumulate and return the time with the maximum absolute altitude value in range
+            if (!best || Math.abs(val) > Math.abs(best.val)) {
+              best = { t: t, val: val };
+            }
+          }
+        } else {
+          if (!best && comparator === 'extremum' && Math.abs(val) > 0) best = { t: t, val: val };
+        }
+        prevVal = val;
+        prevT = t;
+      }
+      return best ? new Date(best.t) : null;
+    }
+
+    // approximate windows (UTC)
+    var approx = [
+      { name: 'spring-equinox', mid: Date.UTC(year,2,20) , cmp:'crossZero',   window:-3 },
+      { name: 'summer-solstice', mid: Date.UTC(year,5,21), cmp:'extremum',    window:7 },
+      { name: 'autumn-equinox', mid: Date.UTC(year,8,22), cmp:'crossZero',   window:-3 },
+      { name: 'winter-solstice', mid: Date.UTC(year,11,21), cmp:'extremum',   window:7 }
+    ];
+
+    approx.forEach(a => {
+      var start = a.mid + (a.window - 5) * 24*60*60*1000;
+      var end = a.mid + (a.window + 5) * 24*60*60*1000;
+      var found = findCrossing(start, end, 60*60*1000, a.cmp);
+      if (found) {
+        events[new Date(Date.UTC(found.getUTCFullYear(), found.getUTCMonth(), found.getUTCDate())).toISOString().slice(0,10)] = a.name;
+      }
+    });
+
+    return events;
+  }
+
+  // cache of events per year to avoid recomputing
+  var _solarEventCache = {};
+
+  function getSolarEventsForYear(year) {
+    if (_solarEventCache[year]) return _solarEventCache[year];
+    _solarEventCache[year] = findAnnualSolarEvents(year);
+    return _solarEventCache[year];
+  }
+
+  // render month with weeks starting on Monday (0=Monday,6=Sunday)
   function renderMonth(year, month) {
     calendar.innerHTML = "";
 
-    var firstDay = new Date(year, month, 1);
-    var daysInMonth = new Date(year, month + 1, 0).getDate();
+    // weekday labels Monday..Sunday
+    var labels = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+    labels.forEach(function(l){ var el = document.createElement('div'); el.className='label-weekday'; el.innerText = l; calendar.appendChild(el); });
 
-    for (var i = 0; i < firstDay.getDay(); i++) {
-      calendar.appendChild(document.createElement("div"));
+    var firstDay = new Date(year, month, 1);
+    // shift so Monday is 0: shift = (weekday + 6) % 7
+    var firstWeekdayShift = (firstDay.getDay() + 6) % 7;
+
+    // fill leading blanks
+    for (var i = 0; i < firstWeekdayShift; i++) {
+      var blank = document.createElement('div');
+      blank.className = 'day';
+      calendar.appendChild(blank);
     }
 
+    var daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    // get solar events for the year once
+    var solarEvents = getSolarEventsForYear(year);
+
     for (var day = 1; day <= daysInMonth; day++) {
-      var date = new Date(year, month, day);
+      (function(day){
+        var date = new Date(year, month, day);
+        var isToday = date.getDate() === todayDate.getDate() && date.getMonth() === todayDate.getMonth() && date.getFullYear() === todayDate.getFullYear();
 
-      var isToday =
-        date.getDate() === todayDate.getDate() &&
-        date.getMonth() === todayDate.getMonth() &&
-        date.getFullYear() === todayDate.getFullYear();
+        var lunar = window.getLunarPositionWrapper(date);
+        var moonDay = lunar.moonDay;
+        var moonNumber = lunar.moonNumber;
+        var moonPhase = getMoonPhase(date);
 
-      // <- use the wrapper which may call the module override
-      var lunar = window.getLunarPositionWrapper(date);
-      var moonDay = lunar.moonDay;
-      var moonNumber = lunar.moonNumber;
+        var cell = document.createElement("div");
+        cell.className = "day";
+        if (isToday) cell.classList.add("today");
 
-      var moonPhase = getMoonPhase(date);
+        // check for solar events on this UTC date
+        var iso = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())).toISOString().slice(0,10);
+        if (solarEvents[iso]) {
+          if (solarEvents[iso].indexOf('equinox') !== -1) cell.classList.add('equinox');
+          if (solarEvents[iso].indexOf('solstice') !== -1) cell.classList.add('solstice');
+          var badge = document.createElement('span');
+          badge.className = 'special-badge';
+          badge.innerText = solarEvents[iso] === 'spring-equinox' || solarEvents[iso] === 'autumn-equinox' ? '⚖ Equinox' : '☀ Solstice';
+          cell.appendChild(badge);
+        }
 
-      var cell = document.createElement("div");
-      cell.className = "day";
-      if (isToday) cell.classList.add("today");
+        cell.innerHTML += '<div class="gregorian">' + date.toDateString() + '</div>' +
+          '<div class="moon-day">Moon ' + (moonNumber === null ? '—' : moonNumber) + ' · Day ' + (moonDay === null ? '—' : moonDay) + '</div>' +
+          '<div class="moon-name">' + moonPhase + '</div>';
 
-      cell.innerHTML =
-        '<div class="gregorian">' + date.toDateString() + '</div>' +
-        '<div class="moon-day">Moon ' + moonNumber + ' · Day ' + moonDay + '</div>' +
-        '<div class="moon-name">' + moonPhase + '</div>';
-
-      cell.onclick = (function (d, md, mp) {
-        return function () {
-          var guidance = getLunarGuidance(mp);
-          var dayMeaning = getMoonDayMeaning(md);
+        cell.onclick = function () {
+          var guidance = getLunarGuidance(moonPhase);
+          var dayMeaning = getMoonDayMeaning(moonDay);
           dayText.innerText =
-            d.toDateString() +
-            "\n" + mp +
-            "\nMoon Day " + md +
+            date.toDateString() +
+            "\n" + moonPhase +
+            "\nMoon Day " + moonDay +
             "\n\n" + dayMeaning +
             "\n\n" + guidance.message +
             "\n\nAffirmation:\n" + guidance.affirmation +
             "\n\nSuggested Ritual:\n" + guidance.ritual;
         };
-      })(date, moonDay, moonPhase);
 
-      calendar.appendChild(cell);
+        calendar.appendChild(cell);
+      })(day);
+    }
+
+    // fill trailing blanks so the grid keeps full weeks (total children multiple of 7 + the 7 label cells)
+    var totalCells = calendar.children.length; // includes weekday labels
+    var remainder = totalCells % 7;
+    if (remainder !== 0) {
+      var toAdd = 7 - remainder;
+      for (var j = 0; j < toAdd; j++) {
+        var blank2 = document.createElement('div');
+        blank2.className = 'day';
+        calendar.appendChild(blank2);
+      }
     }
   }
 
-  // export renderMonth so the module can call it after it patches the lunar function
+  // expose renderMonth for module to call
   window.renderMonth = renderMonth;
 
-  // initial render using current logic (module may re-render later)
+  // initial render
   var now = new Date();
   renderMonth(now.getFullYear(), now.getMonth());
 
-  // fill lunar guidance UI using wrapper (today's values will reflect override when module sets it)
+  // fill lunar guidance UI
   var todayPhase = getMoonPhase(todayDate);
   var guidance = getLunarGuidance(todayPhase);
   document.getElementById("lunarPhase").innerText = todayPhase;
   document.getElementById("affirmation").innerText = guidance.affirmation;
   document.getElementById("ritual").innerText = guidance.ritual;
 
-  // helper functions for guidance and meanings (unchanged)
+  // helper functions (same as before)
   function getLunarGuidance(phase) {
-    var guidance = { "🌑 New Moon": { affirmation: "I welcome new beginnings with clarity and trust.", ritual: "Set intentions in a journal or sit quietly with what is ready to be born.", message: "This is a sacred pause. Listen inward and allow new seeds to form." }, "🌒 Waxing Crescent": { affirmation: "I gently nurture what is growing within me.", ritual: "Take one small aligned action toward a goal or dream.", message: "Growth is subtle today. Honor small steps and quiet momentum." }, "🌓 First Quarter": { affirmation: "I move forward with courage and commitment.", ritual: "Clear obstacles or make a decision you’ve been postponing.", message: "Tension invites clarity. Choose forward motion with intention." }, "🌔 Waxing Gibbous": { affirmation: "I refine my path with patience and awareness.", ritual: "Adjust plans and release perfectionism.", message: "Refinement brings wisdom. Let your vision evolve." }, "🌕 Full Moon": { affirmation: "I honor my growth and release what no longer serves me.", ritual: "Practice a release ritual or celebrate how far you’ve come.", message: "Illumination is strong. Feel fully, release gently, celebrate truth." }, "🌖 Waning Gibbous": { affirmation: "I integrate wisdom gained through experience.", ritual: "Share gratitude or reflect on recent insights.", message: "Meaning settles in now. Let lessons land softly." }, "🌗 Last Quarter": { affirmation: "I release with compassion and intention.", ritual: "Let go of habits, commitments, or thoughts that drain you.", message: "Clearing creates space. Choose what truly supports you." }, "🌘 Waning Crescent": { affirmation: "I rest, restore, and prepare for renewal.", ritual: "Slow down, rest deeply, or spend time in quiet reflection.", message: "This is a time of rest and surrender. Restoration is sacred." } };
+    var guidance = {
+      "🌑 New Moon": { affirmation: "I welcome new beginnings with clarity and trust.", ritual: "Set intentions in a journal or sit quietly with what is ready to be born.", message: "This is a sacred pause. Listen inward and allow new seeds to form." },
+      "🌒 Waxing Crescent": { affirmation: "I gently nurture what is growing within me.", ritual: "Take one small aligned action toward a goal or dream.", message: "Growth is subtle today. Honor small steps and quiet momentum." },
+      "🌓 First Quarter": { affirmation: "I move forward with courage and commitment.", ritual: "Clear obstacles or make a decision you’ve been postponing.", message: "Tension invites clarity. Choose forward motion with intention." },
+      "🌔 Waxing Gibbous": { affirmation: "I refine my path with patience and awareness.", ritual: "Adjust plans and release perfectionism.", message: "Refinement brings wisdom. Let your vision evolve." },
+      "🌕 Full Moon": { affirmation: "I honor my growth and release what no longer serves me.", ritual: "Practice a release ritual or celebrate how far you’ve come.", message: "Illumination is strong. Feel fully, release gently, celebrate truth." },
+      "🌖 Waning Gibbous": { affirmation: "I integrate wisdom gained through experience.", ritual: "Share gratitude or reflect on recent insights.", message: "Meaning settles in now. Let lessons land softly." },
+      "🌗 Last Quarter": { affirmation: "I release with compassion and intention.", ritual: "Let go of habits, commitments, or thoughts that drain you.", message: "Clearing creates space. Choose what truly supports you." },
+      "🌘 Waning Crescent": { affirmation: "I rest, restore, and prepare for renewal.", ritual: "Slow down, rest deeply, or spend time in quiet reflection.", message: "This is a time of rest and surrender. Restoration is sacred." }
+    };
     return guidance[phase] || { affirmation: "I flow with the natural rhythms of life.", ritual: "Pause and take a mindful breath.", message: "Move gently and listen to what your body and spirit need." };
   }
 
   function getMoonDayMeaning(moonDay) {
-    var meanings = { 1: "Initiation — a spark of beginning energy is present.", 2: "Polarity — notice balance, contrast, and relationship.", 3: "Activation — movement begins; ideas want expression.", 4: "Form — structure and boundaries support growth.", 5: "Empowerment — confidence and personal power rise.", 6: "Balance — harmony, care, and adjustment are needed.", 7: "Reflection — pause, observe, and realign.", 8: "Integration — lessons begin to settle into the body.", 9: "Intention — refocus on what truly matters.", 10: "Manifestation — effort meets visible outcome.", 11: "Release — clear tension, emotion, or resistance.", 12: "Understanding — insight and perspective deepen.", 13: "Transformation — something shifts at the core.", 14: "Illumination — truth is revealed; clarity peaks.", 15: "Expression — share, communicate, or celebrate.", 16: "Adjustment — course-correct with compassion.", 17: "Trust — surrender control and allow flow.", 18: "Healing — tend to emotional or physical needs.", 19: "Completion — acknowledge what has been fulfilled.", 20: "Devotion — recommit to what nourishes you.", 21: "Expansion — openness and possibility widen.", 22: "Mastery — skills and wisdom stabilize.", 23: "Flow — allow ease and natural movement.", 24: "Gratitude — appreciation softens and opens the heart.", 25: "Surrender — release expectations and outcomes.", 26: "Clearing — simplify, declutter, cleanse.", 27: "Stillness — quiet awareness prepares renewal.", 28: "Renewal — rest, reset, and prepare to begin again." };
+    var meanings = {
+      1: "Initiation — a spark of beginning energy is present.",
+      2: "Polarity — notice balance, contrast, and relationship.",
+      3: "Activation — movement begins; ideas want expression.",
+      4: "Form — structure and boundaries support growth.",
+      5: "Empowerment — confidence and personal power rise.",
+      6: "Balance — harmony, care, and adjustment are needed.",
+      7: "Reflection — pause, observe, and realign.",
+      8: "Integration — lessons begin to settle into the body.",
+      9: "Intention — refocus on what truly matters.",
+      10: "Manifestation — effort meets visible outcome.",
+      11: "Release — clear tension, emotion, or resistance.",
+      12: "Understanding — insight and perspective deepen.",
+      13: "Transformation — something shifts at the core.",
+      14: "Illumination — truth is revealed; clarity peaks.",
+      15: "Expression — share, communicate, or celebrate.",
+      16: "Adjustment — course-correct with compassion.",
+      17: "Trust — surrender control and allow flow.",
+      18: "Healing — tend to emotional or physical needs.",
+      19: "Completion — acknowledge what has been fulfilled.",
+      20: "Devotion — recommit to what nourishes you.",
+      21: "Expansion — openness and possibility widen.",
+      22: "Mastery — skills and wisdom stabilize.",
+      23: "Flow — allow ease and natural movement.",
+      24: "Gratitude — appreciation softens and opens the heart.",
+      25: "Surrender — release expectations and outcomes.",
+      26: "Clearing — simplify, declutter, cleanse.",
+      27: "Stillness — quiet awareness prepares renewal.",
+      28: "Renewal — rest, reset, and prepare to begin again."
+    };
     return meanings[moonDay] || "";
   }
 
 });
 </script>
 
-<!-- Module import: this module should set window.getLunarPosition(date) and call window.renderMonth(...) -->
+<!-- module import that overrides lunar mapping when available -->
 <script type="module">
-  import {
-    toLunisolar,
-    annotateAffirmationsWithLunisolar,
-    previewMigrateAffirmations
-  } from './lunisolar-engine.js';
+  import { toLunisolar, annotateAffirmationsWithLunisolar, previewMigrateAffirmations } from './lunisolar-engine.js';
 
   (async function() {
     try {
-      // Provide a wrapper that uses the engine's toLunisolar
       if (typeof toLunisolar === 'function') {
         window.getLunarPosition = function(date) {
           try {
@@ -240,24 +372,21 @@ document.addEventListener("DOMContentLoaded", function () {
             return {
               moonNumber: lunar && typeof lunar.moonNumber !== 'undefined' ? lunar.moonNumber : null,
               moonDay: lunar && typeof lunar.moonDay !== 'undefined' ? lunar.moonDay : null,
-              lunarYearStart: lunar && lunar.lunarYearStart ? new Date(lunar.lunarYearStart) : (lunar && lunar.lunarYearStart === null ? null : (window.getLunarPositionOriginal ? window.getLunarPositionOriginal(date).lunarYearStart : null))
+              lunarYearStart: lunar && lunar.lunarYearStart ? new Date(lunar.lunarYearStart) : null
             };
           } catch (e) {
-            console.warn('toLunisolar failed — falling back to original getLunarPosition', e);
+            console.warn('toLunisolar failed — falling back to original', e);
             return window.getLunarPositionOriginal ? window.getLunarPositionOriginal(date) : { moonNumber: null, moonDay: null, lunarYearStart: null };
           }
         };
-
-        // Re-render current month using the newly set lunar function
         if (typeof window.renderMonth === 'function') {
           const now = new Date();
           window.renderMonth(now.getFullYear(), now.getMonth());
         }
       } else {
-        console.warn('lunisolar-engine did not export toLunisolar — continuing with local logic');
+        console.warn('lunisolar-engine did not export toLunisolar');
       }
 
-      // Log annotate/preview if available
       try {
         const annotated = typeof annotateAffirmationsWithLunisolar === 'function' ? annotateAffirmationsWithLunisolar(window.myAffirmations || []) : [];
         console.log('Annotated affirmations (preview):', annotated);
@@ -266,6 +395,7 @@ document.addEventListener("DOMContentLoaded", function () {
       } catch (e) {
         console.warn('Annotate/preview step failed:', e);
       }
+
     } catch (err) {
       console.error('Lunisolar engine error:', err);
     }
