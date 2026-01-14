@@ -197,7 +197,22 @@ function getLunarGuidance(phase) {
     message: "Move gently and listen to what your body and spirit need."
   };
 }
-  
+ 
+  function getFirstNewMoonOfYear(year) {
+  for (var month = 0; month < 12; month++) {
+    for (var day = 1; day <= 31; day++) {
+      var date = new Date(year, month, day);
+      if (date.getMonth() !== month) continue;
+
+      var phase = SunCalc.getMoonIllumination(date).phase;
+      if (phase < 0.03 || phase > 0.97) {
+        return date;
+      }
+    }
+  }
+  return null;
+}
+
   function renderMonth(year, month) {
     calendar.innerHTML = "";
 
