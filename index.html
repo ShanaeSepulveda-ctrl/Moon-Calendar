@@ -219,14 +219,17 @@ function getLunarGuidance(phase) {
         '<div class="moon-name">' + moonPhase + '</div>';
 
       cell.onclick = function (d, md, mp) {
-        return function () {
-          dayText.innerText =
-            d.toDateString() +
-            "\nMoon Day " + md +
-            "\n" + mp +
-            "\n\nA day for presence, reflection, and gentle alignment.";
-        };
-      }(date, moonDay, moonPhase);
+  return function () {
+    var guidance = getLunarGuidance(mp);
+
+    dayText.innerText =
+      d.toDateString() +
+      "\n" + mp +
+      "\nMoon Day " + md +
+      "\n\nAffirmation:\n" + guidance.affirmation +
+      "\n\nSuggested Ritual:\n" + guidance.ritual;
+  };
+}(date, moonDay, moonPhase);
 
       calendar.appendChild(cell);
     }
