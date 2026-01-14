@@ -517,6 +517,30 @@ document.getElementById("affirmation").innerText = guidance.affirmation;
 document.getElementById("ritual").innerText = guidance.ritual;
 });
 </script>
+  
+  <script type="module">
+    import {
+      annotateAffirmationsWithLunisolar,
+      previewMigrateAffirmations
+    } from './lunisolar-engine.js';
 
+    (async function() {
+      // Annotate for UI display (non-destructive)
+      try {
+        const annotated = annotateAffirmationsWithLunisolar(window.myAffirmations);
+        console.log('Annotated affirmations (preview):', annotated);
+
+        // Preview migration (to remap to same lunisolar index)
+        const preview = previewMigrateAffirmations(window.myAffirmations, { strategy: 'remapToSameLunarIndex' });
+        console.log('Migration preview:', preview);
+
+        // You can show preview.migrated to the user and ask to commit changes to GitHub manually,
+        // or if you want me to help produce a patch you can commit, I can help format a diff or file edits.
+
+      } catch (err) {
+        console.error('Lunisolar engine error:', err);
+      }
+    })();
+    </script>
 </body>
 </html>
