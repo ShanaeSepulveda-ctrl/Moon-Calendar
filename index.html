@@ -255,7 +255,10 @@ function getLunarGuidance(phase) {
         date.getMonth() === todayDate.getMonth() &&
         date.getFullYear() === todayDate.getFullYear();
 
-      var moonDay = ((day - 1) % 28) + 1;
+      var lunar = getLunarPosition(date);
+      var moonDay = lunar.moonDay;
+      var moonNumber = lunar.moonNumber;
+
       var moonPhase = getMoonPhase(date);
       
       var cell = document.createElement("div");
