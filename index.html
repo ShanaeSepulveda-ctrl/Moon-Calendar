@@ -1,3 +1,4 @@
+ url=https://github.com/ShanaeSepulveda-ctrl/Moon-Calendar/blob/main/index.html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,9 +20,11 @@
     .day.today { border: 1px solid rgba(255,255,255,0.4); box-shadow: 0 0 12px rgba(180,200,255,0.6); background: radial-gradient(circle at top, rgba(255,255,255,0.08), #15192d); }
     .solstice { outline: 2px solid rgba(255,200,100,0.18); box-shadow: 0 0 8px rgba(255,200,100,0.06) inset; }
     .equinox { outline: 2px solid rgba(100,200,255,0.18); box-shadow: 0 0 8px rgba(100,200,255,0.06) inset; }
+    .lunar-new-year { outline: 2px solid rgba(255,120,200,0.18); box-shadow: 0 0 8px rgba(255,120,200,0.06) inset; }
     .special-badge { position: absolute; top: 6px; right: 8px; font-size: 0.7rem; padding: 2px 6px; border-radius: 8px; opacity: 0.95; }
     .solstice .special-badge { background: rgba(255,200,100,0.12); color: #ffdca0; }
     .equinox .special-badge { background: rgba(100,200,255,0.10); color: #bfe8ff; }
+    .lunar-new-year .special-badge { background: rgba(255,120,200,0.10); color:#ffd0f0; }
     .legend { display:flex; gap:10px; justify-content:center; margin-bottom:12px; font-size:0.9rem; opacity:0.85; }
   </style>
   <link rel="manifest" href="manifest.json">
@@ -38,7 +41,8 @@
 
   <div class="legend">
     <div><span style="background:rgba(255,200,100,0.12); padding:4px 8px; border-radius:6px; color:#ffdca0;">☀ Solstice</span></div>
-    <div><span style="background:rgba(100,200,255,0.10); padding:4px 8px; border-radius:6px; color:#bfe8ff;">⚖ Equinox</span></div>
+    <div><span style="background:rgba(100,200,255,0.10); padding:4px 8px; border-radius:6px; color:#bfe8ff;">⚖ True Rebirth (Spring Equinox)</span></div>
+    <div><span style="background:rgba(255,120,200,0.10); padding:4px 8px; border-radius:6px; color:#ffd0f0;">🏮 Lunar New Year</span></div>
   </div>
 
   <div id="calendar"></div>
@@ -143,12 +147,11 @@ document.addEventListener("DOMContentLoaded", function () {
     return window.getLunarPositionOriginal(date);
   };
 
-  // determine if a date matches an equinox/solstice (approx) by sampling around expected days using SunCalc
+  // determine solar events and include special hard-coded lunar-new-year date(s)
   function findAnnualSolarEvents(year) {
-    var events = {}; // keyed by ISO date string
+    var events = {};
     if (typeof SunCalc === 'undefined' || typeof SunCalc.getPosition !== 'function') return events;
 
-    // helper to sample around an expected day and find sign change or extremum
     function findCrossing(startDateMS, endDateMS, stepMs, comparator) {
       var best = null;
       var prevVal = null, prevT = startDateMS;
@@ -158,7 +161,6 @@ document.addEventListener("DOMContentLoaded", function () {
         var val = pos && typeof pos.altitude === 'number' ? pos.altitude : null;
         if (val === null) { prevVal = null; prevT = t; continue; }
         if (prevVal !== null) {
-          // comparator: 'crossZero' or 'extremum'
           if (comparator === 'crossZero') {
             if (prevVal < 0 && val >= 0) {
               var ratio = Math.abs(prevVal) / (Math.abs(prevVal) + Math.abs(val));
@@ -166,8 +168,6 @@ document.addEventListener("DOMContentLoaded", function () {
               return new Date(estMs);
             }
           } else if (comparator === 'extremum') {
-            // look for local max/min comparing prevVal, val and next sample
-            // here we'll accumulate and return the time with the maximum absolute altitude value in range
             if (!best || Math.abs(val) > Math.abs(best.val)) {
               best = { t: t, val: val };
             }
@@ -181,7 +181,6 @@ document.addEventListener("DOMContentLoaded", function () {
       return best ? new Date(best.t) : null;
     }
 
-    // approximate windows (UTC)
     var approx = [
       { name: 'spring-equinox', mid: Date.UTC(year,2,20) , cmp:'crossZero',   window:-3 },
       { name: 'summer-solstice', mid: Date.UTC(year,5,21), cmp:'extremum',    window:7 },
@@ -198,31 +197,32 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
+    // Hard-coded special lunar new year dates (so 2026-02-17 appears as Lunar New Year)
+    var hardSpecials = {
+      '2026-02-17': { type: 'lunar-new-year', label: '🏮 Lunar New Year 2026 — Year of the Horse' }
+    };
+    Object.keys(hardSpecials).forEach(k => events[k] = hardSpecials[k]);
+
     return events;
   }
 
-  // cache of events per year to avoid recomputing
   var _solarEventCache = {};
-
   function getSolarEventsForYear(year) {
     if (_solarEventCache[year]) return _solarEventCache[year];
     _solarEventCache[year] = findAnnualSolarEvents(year);
     return _solarEventCache[year];
   }
 
-  // render month with weeks starting on Monday (0=Monday,6=Sunday)
+  // render month Monday..Sunday, highlight equinox as "True Rebirth" and hard-coded lunar new year(s)
   function renderMonth(year, month) {
     calendar.innerHTML = "";
 
-    // weekday labels Monday..Sunday
     var labels = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
     labels.forEach(function(l){ var el = document.createElement('div'); el.className='label-weekday'; el.innerText = l; calendar.appendChild(el); });
 
     var firstDay = new Date(year, month, 1);
-    // shift so Monday is 0: shift = (weekday + 6) % 7
     var firstWeekdayShift = (firstDay.getDay() + 6) % 7;
 
-    // fill leading blanks
     for (var i = 0; i < firstWeekdayShift; i++) {
       var blank = document.createElement('div');
       blank.className = 'day';
@@ -230,8 +230,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     var daysInMonth = new Date(year, month + 1, 0).getDate();
-
-    // get solar events for the year once
     var solarEvents = getSolarEventsForYear(year);
 
     for (var day = 1; day <= daysInMonth; day++) {
@@ -248,15 +246,33 @@ document.addEventListener("DOMContentLoaded", function () {
         cell.className = "day";
         if (isToday) cell.classList.add("today");
 
-        // check for solar events on this UTC date
         var iso = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())).toISOString().slice(0,10);
+
+        // special solar events (equinox/solstice) use enhanced labels
         if (solarEvents[iso]) {
-          if (solarEvents[iso].indexOf('equinox') !== -1) cell.classList.add('equinox');
-          if (solarEvents[iso].indexOf('solstice') !== -1) cell.classList.add('solstice');
-          var badge = document.createElement('span');
-          badge.className = 'special-badge';
-          badge.innerText = solarEvents[iso] === 'spring-equinox' || solarEvents[iso] === 'autumn-equinox' ? '⚖ Equinox' : '☀ Solstice';
-          cell.appendChild(badge);
+          var ev = solarEvents[iso];
+          if (typeof ev === 'string') {
+            if (ev.indexOf('equinox') !== -1) {
+              cell.classList.add('equinox');
+              var badge = document.createElement('span');
+              badge.className = 'special-badge';
+              badge.innerText = '⚖ True Rebirth — Happy New Year';
+              cell.appendChild(badge);
+            }
+            if (ev.indexOf('solstice') !== -1) {
+              cell.classList.add('solstice');
+              var b2 = document.createElement('span');
+              b2.className = 'special-badge';
+              b2.innerText = '☀ Solstice';
+              cell.appendChild(b2);
+            }
+          } else if (typeof ev === 'object' && ev.type === 'lunar-new-year') {
+            cell.classList.add('lunar-new-year');
+            var b3 = document.createElement('span');
+            b3.className = 'special-badge';
+            b3.innerText = ev.label;
+            cell.appendChild(b3);
+          }
         }
 
         cell.innerHTML += '<div class="gregorian">' + date.toDateString() + '</div>' +
@@ -280,8 +296,7 @@ document.addEventListener("DOMContentLoaded", function () {
       })(day);
     }
 
-    // fill trailing blanks so the grid keeps full weeks (total children multiple of 7 + the 7 label cells)
-    var totalCells = calendar.children.length; // includes weekday labels
+    var totalCells = calendar.children.length;
     var remainder = totalCells % 7;
     if (remainder !== 0) {
       var toAdd = 7 - remainder;
@@ -293,21 +308,16 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // expose renderMonth for module to call
   window.renderMonth = renderMonth;
-
-  // initial render
   var now = new Date();
   renderMonth(now.getFullYear(), now.getMonth());
 
-  // fill lunar guidance UI
   var todayPhase = getMoonPhase(todayDate);
   var guidance = getLunarGuidance(todayPhase);
   document.getElementById("lunarPhase").innerText = todayPhase;
   document.getElementById("affirmation").innerText = guidance.affirmation;
   document.getElementById("ritual").innerText = guidance.ritual;
 
-  // helper functions (same as before)
   function getLunarGuidance(phase) {
     var guidance = {
       "🌑 New Moon": { affirmation: "I welcome new beginnings with clarity and trust.", ritual: "Set intentions in a journal or sit quietly with what is ready to be born.", message: "This is a sacred pause. Listen inward and allow new seeds to form." },
