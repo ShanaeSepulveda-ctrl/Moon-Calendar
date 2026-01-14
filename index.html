@@ -308,11 +308,13 @@ cell.innerHTML =
       cell.onclick = function (d, md, mp) {
   return function () {
     var guidance = getLunarGuidance(mp);
+    var dayMeaning = getMoonDayMeaning(md);
 
     dayText.innerText =
       d.toDateString() +
       "\n" + mp +
       "\nMoon Day " + md +
+      "\n\n" + dayMeaning +
       "\n\n" + guidance.message +
       "\n\nAffirmation:\n" + guidance.affirmation +
       "\n\nSuggested Ritual:\n" + guidance.ritual;
