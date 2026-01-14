@@ -146,28 +146,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (phase < 0.78) return "🌗 Last Quarter";
     return "🌘 Waning Crescent";
   }
-
-  function renderMonth(year, month) {
-    calendar.innerHTML = "";
-
-    var firstDay = new Date(year, month, 1);
-    var daysInMonth = new Date(year, month + 1, 0).getDate();
-
-    for (var i = 0; i < firstDay.getDay(); i++) {
-      calendar.appendChild(document.createElement("div"));
-    }
-
-    for (var day = 1; day <= daysInMonth; day++) {
-      var date = new Date(year, month, day);
-
-      var isToday =
-        date.getDate() === todayDate.getDate() &&
-        date.getMonth() === todayDate.getMonth() &&
-        date.getFullYear() === todayDate.getFullYear();
-
-      var moonDay = ((day - 1) % 28) + 1;
-      var moonPhase = getMoonPhase(date);
-      
+  
 function getLunarGuidance(phase) {
   var guidance = {
     "🌑 New Moon": {
@@ -203,12 +182,32 @@ function getLunarGuidance(phase) {
       ritual: "Slow down, meditate, or spend quiet time in nature."
     }
   };
-
-  return guidance[phase] || {
+   return guidance[phase] || {
     affirmation: "I flow with the natural rhythms of life.",
     ritual: "Pause and take a mindful breath."
   };
 }
+  
+  function renderMonth(year, month) {
+    calendar.innerHTML = "";
+
+    var firstDay = new Date(year, month, 1);
+    var daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    for (var i = 0; i < firstDay.getDay(); i++) {
+      calendar.appendChild(document.createElement("div"));
+    }
+
+    for (var day = 1; day <= daysInMonth; day++) {
+      var date = new Date(year, month, day);
+
+      var isToday =
+        date.getDate() === todayDate.getDate() &&
+        date.getMonth() === todayDate.getMonth() &&
+        date.getFullYear() === todayDate.getFullYear();
+
+      var moonDay = ((day - 1) % 28) + 1;
+      var moonPhase = getMoonPhase(date);
       
       var cell = document.createElement("div");
       cell.className = "day";
