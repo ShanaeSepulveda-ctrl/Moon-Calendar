@@ -234,7 +234,8 @@ function getLunarGuidance(phase) {
 
   var now = new Date();
   renderMonth(now.getFullYear(), now.getMonth());
-  var todayPhase = getMoonPhase(todayDate);
+
+var todayPhase = getMoonPhase(todayDate);
 var guidance = getLunarGuidance(todayPhase);
 
 document.getElementById("lunarPhase").innerText = todayPhase;
