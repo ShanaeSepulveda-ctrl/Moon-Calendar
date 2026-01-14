@@ -212,6 +212,29 @@ function getLunarGuidance(phase) {
   }
   return null;
 }
+function getLunarPosition(date) {
+  var year = date.getFullYear();
+  var lunarYearStart = getFirstNewMoonOfYear(year);
+
+  // If date is BEFORE this year's New Moon, use last year's
+  if (date < lunarYearStart) {
+    lunarYearStart = getFirstNewMoonOfYear(year - 1);
+  }
+
+  var msPerDay = 1000 * 60 * 60 * 24;
+  var daysSinceStart = Math.floor(
+    (date - lunarYearStart) / msPerDay
+  );
+
+  var moonNumber = Math.floor(daysSinceStart / 28) + 1;
+  var moonDay = (daysSinceStart % 28) + 1;
+
+  return {
+    moonNumber: moonNumber <= 13 ? moonNumber : null,
+    moonDay: moonDay,
+    lunarYearStart: lunarYearStart
+  };
+}
 
   function renderMonth(year, month) {
     calendar.innerHTML = "";
