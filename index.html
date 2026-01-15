@@ -193,6 +193,25 @@ document.addEventListener("DOMContentLoaded", () => {
       ) {
         cell.classList.add("today");
       }
+      
+function getSeasonalMoonName(date) {
+  const month = date.getMonth(); // 0–11
+  const names = [
+    "Wolf Moon",        // Jan
+    "Snow Moon",        // Feb
+    "Worm Moon",        // Mar
+    "Pink Moon",        // Apr
+    "Flower Moon",      // May
+    "Strawberry Moon",  // Jun
+    "Buck Moon",        // Jul
+    "Sturgeon Moon",    // Aug
+    "Harvest Moon",     // Sep
+    "Hunter’s Moon",    // Oct
+    "Beaver Moon",      // Nov
+    "Cold Moon"         // Dec
+  ];
+  return names[month];
+}
 
       cell.innerHTML = `
         <div class="gregorian">${date.toDateString()}</div>
