@@ -184,6 +184,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const lunar = getLunarData(date);
       const zodiac = getZodiac(date);
       const phase = getMoonPhase(date);
+      const isFullMoon = phase === "🌕 Full Moon";
+      const seasonalMoon = isFullMoon ? getSeasonalMoonName(date) : "";
 
       const cell = document.createElement("div");
       cell.className = "day";
@@ -213,13 +215,20 @@ function getSeasonalMoonName(date) {
   return names[month];
 }
 
-      cell.innerHTML = `
-        <div class="gregorian">${date.toDateString()}</div>
-        <div class="moon-day">${phase}</div>
-        <div class="moon-name">
-          ${lunar.archetype} · Day ${lunar.moonDay} · ${zodiac}
-        </div>
-      `;
+cell.innerHTML = `
+  <div class="gregorian">${date.toDateString()}</div>
+  <div class="moon-day">${phase}</div>
+
+  ${
+    isFullMoon
+      ? `<div class="moon-name">🌕 ${seasonalMoon}</div>`
+      : ""
+  }
+
+  <div class="moon-name">
+    ${lunar.archetype} · Day ${lunar.moonDay} · ${zodiac}
+  </div>
+`;
 
       cell.onclick = () => {
         dayText.innerText = `
