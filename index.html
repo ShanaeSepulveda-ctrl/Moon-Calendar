@@ -234,15 +234,34 @@ function getSeasonalFullMoonName(date) {
   return names[m] || '';
 }
 
+  function getMoonArchetype(date) {
+  // Based on seasonal progression, not fixed math
+  const archetypes = [
+    { name: "The Initiator", theme: "Beginnings, vision, awakening" },
+    { name: "The Stabilizer", theme: "Grounding, patience, rooting" },
+    { name: "The Builder", theme: "Growth, effort, momentum" },
+    { name: "The Harmonizer", theme: "Balance, relationship, care" },
+    { name: "The Blossomer", theme: "Creativity, beauty, expansion" },
+    { name: "The Nurturer", theme: "Emotional depth, protection" },
+    { name: "The Illuminator", theme: "Insight, truth, revelation" },
+    { name: "The Transformer", theme: "Release, power, rebirth" },
+    { name: "The Harvester", theme: "Gratitude, integration" },
+    { name: "The Mystic", theme: "Inner worlds, intuition" },
+    { name: "The Visionary", theme: "Future sight, dreaming" },
+    { name: "The Purifier", theme: "Clearing, simplification" },
+    { name: "The Restorer", theme: "Rest, closure, renewal" }
+  ];
+
+  const monthIndex = date.getMonth();
+  return archetypes[monthIndex % 13];
+}
+  
   // 🌕 Seasonal Full Moon name (only near Full Moon)
 if (isNearFullMoon(date, 1.5)) {
-  var seasonalName = getSeasonalFullMoonName(date);
-  if (seasonalName) {
-    var fm = document.createElement('div');
-    fm.className = 'moon-name';
-    fm.innerText = '🌕 ' + seasonalName;
-    cell.appendChild(fm);
-  }
+  const fm = document.createElement("div");
+  fm.className = "moon-name";
+  fm.innerText = "🌕 " + getSeasonalFullMoonName(date);
+  cell.appendChild(fm);
 }
 
  function approximateMoonZodiacByMonth(date) {
@@ -337,15 +356,34 @@ function isNearFullMoon(date, toleranceDays = 1) {
           }
         }
 
-        cell.innerHTML += '<div class="gregorian">' + date.toDateString() + '</div>' +
-          '<div class="moon-day">Moon ' + (moonNumber === null ? '—' : moonNumber) + ' · Day ' + (moonDay === null ? '—' : moonDay) + '</div>' +
-          '<div class="moon-name">' + moonPhase + '</div>';
+        const zodiac = getZodiacSign(date);
+        const archetype = getMoonArchetype(date);
+
+        cell.innerHTML =
+        `<div class="gregorian">${date.toDateString()}</div>
+         <div class="moon-day">${moonPhase}</div>
+         <div class="moon-name">${zodiac} · ${archetype.name}</div>`;
 
         cell.onclick = function () {
-          var guidance = getLunarGuidance(moonPhase);
-         var dayMeaning = getMoonDayMeaning(moonDay);
-var zodiac = approximateMoonZodiacByMonth(date);
-var seasonalMoon = isNearFullMoon(date, 1.5) ? getSeasonalFullMoonName(date) : null;
+  const zodiac = getZodiacSign(date);
+  const archetype = getMoonArchetype(date);
+  const seasonal = isNearFullMoon(date,1.5) ? getSeasonalFullMoonName(date) : "";
+
+  dayText.innerText =
+    `${date.toDateString()}
+${moonPhase}
+${seasonal ? "🌕 " + seasonal : ""}
+Zodiac: ${zodiac}
+Moon Theme: ${archetype.name}
+
+${archetype.theme}
+
+Affirmation:
+${guidance.affirmation}
+
+Suggested Ritual:
+${guidance.ritual}`;
+};
 
 dayText.innerText =
   date.toDateString() +
