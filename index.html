@@ -66,12 +66,33 @@
       border-radius: 12px;
     }
 
-    #lunarGuidance {
-      background: #15192d;
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 16px;
-    }
+#lunarCard {
+  background: linear-gradient(180deg, #1b1f3b, #0b0d17);
+  border-radius: 18px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 0 20px rgba(180,200,255,0.15);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  opacity: 0.85;
+}
+
+#cardTitle {
+  text-align: center;
+  margin: 12px 0;
+  font-size: 1.3rem;
+  letter-spacing: 0.5px;
+}
+
+.card-section {
+  margin-top: 10px;
+  line-height: 1.4;
+}
 
     #toggleGuidance {
       margin-top: 8px;
@@ -89,16 +110,28 @@
 
 <h1>🌙 13 Moon Calendar</h1>
 
-<div id="lunarGuidance">
-  <h2>Today’s Lunar Guidance</h2>
-  <button id="toggleGuidance">Open</button>
-
-  <div id="guidanceContent" hidden>
-    <p id="lunarPhase"></p>
-    <p><strong>Affirmation</strong><br><span id="affirmation"></span></p>
-    <p><strong>Suggested Ritual</strong><br><span id="ritual"></span></p>
-    <p><strong>Journal Prompt</strong><br><span id="journal"></span></p>
+<div id="lunarCard">
+  <div class="card-header">
+    <span id="cardPhase"></span>
+    <span id="cardZodiac"></span>
   </div>
+
+  <h2 id="cardTitle"></h2>
+
+  <p class="card-section">
+    <strong>Affirmation</strong><br>
+    <span id="cardAffirmation"></span>
+  </p>
+
+  <p class="card-section">
+    <strong>Ritual</strong><br>
+    <span id="cardRitual"></span>
+  </p>
+
+  <p class="card-section">
+    <strong>Journal</strong><br>
+    <span id="cardJournal"></span>
+  </p>
 </div>
 
 <div id="calendar"></div>
@@ -120,11 +153,21 @@ document.addEventListener("DOMContentLoaded", () => {
   // Anchored to a real New Moon
   const LUNAR_ANCHOR = new Date(2024, 0, 11);
 
-  const MOON_ARCHETYPES = [
-    "Initiation","Stability","Growth","Harmony","Blooming",
-    "Nurturing","Illumination","Transformation","Harvest",
-    "Mysticism","Vision","Purification","Restoration"
-  ];
+const MOON_ARCHETYPES = [
+  "Deep Rest",
+  "Dreaming",
+  "Gestation",
+  "Stirring",
+  "Rooting",
+  "Leafing",
+  "Budding",
+  "Flowering",
+  "Radiance",
+  "Fruiting",
+  "Harvest",
+  "Composting",
+  "Stillness"
+];
 
   const FULL_MOON_NAMES = [
     "Wolf Moon","Snow Moon","Worm Moon","Pink Moon","Flower Moon",
@@ -195,6 +238,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const today = new Date();
+    document.getElementById("cardPhase").innerText = phase;
+document.getElementById("cardZodiac").innerText = "🌠 " + zodiac;
+document.getElementById("cardTitle").innerText =
+  `${lunar.archetype} · Moon Day ${lunar.moonDay}`;
+
+document.getElementById("cardAffirmation").innerText = guidance.a;
+document.getElementById("cardRitual").innerText = guidance.r;
+document.getElementById("cardJournal").innerText = guidance.j;
 
     for (let d = 1; d <= daysInMonth; d++) {
       const date = new Date(year, month, d);
