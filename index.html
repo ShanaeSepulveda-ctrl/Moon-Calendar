@@ -234,6 +234,26 @@ function getSeasonalFullMoonName(date) {
   };
   return names[m] || '';
 }
+ 
+ function approximateMoonZodiacByMonth(date) {
+  // rough association — this is NOT precise per-day astrology
+  const month = date.getUTCMonth();
+  const map = {
+    0: 'Cancer',    // Jan example
+    1: 'Leo',       // Feb (your example)
+    2: 'Virgo',     // Mar
+    3: 'Libra',     // Apr
+    4: 'Scorpio',   // May
+    5: 'Sagittarius',// Jun
+    6: 'Capricorn', // Jul
+    7: 'Aquarius',  // Aug
+    8: 'Pisces',    // Sep
+    9: 'Aries',     // Oct
+    10: 'Taurus',   // Nov
+    11: 'Gemini'    // Dec
+  };
+  return map[month] || '';
+}
 
 // Very simple "is this day near a full moon?" check
 function isNearFullMoon(date, toleranceDays = 1) {
