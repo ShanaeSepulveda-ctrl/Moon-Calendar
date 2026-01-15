@@ -80,11 +80,6 @@
   justify-content: space-between;
   font-size: 0.9rem;
   opacity: 0.85;
-  
-    const todayZodiac = getLunarZodiac(today, userLat, userLon);
-
-document.getElementById("cardZodiac").innerText =
-  `🌌 Moon in ${todayZodiac}`;
 }
 
 #cardTitle {
@@ -175,7 +170,11 @@ document.getElementById("cardZodiac").innerText =
 
   const calendar = document.getElementById("calendar");
   const dayText = document.getElementById("dayText");
+  const todayZodiac = getLunarZodiac(today, userLat, userLon);
 
+document.getElementById("cardZodiac").innerText =
+  `🌌 Moon in ${todayZodiac}`;
+  
   const MS_PER_DAY = 86400000;
   const LUNAR_MONTH = 28;
   const LUNAR_ANCHOR = new Date(2024, 0, 11);
