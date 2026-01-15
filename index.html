@@ -149,145 +149,99 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const MS_PER_DAY = 86400000;
   const LUNAR_MONTH = 28;
+  const LUNAR_ANCHOR = new Date(2024, 0, 11); // New Moon anchor
 
-  // Anchored to a real New Moon
-  const LUNAR_ANCHOR = new Date(2024, 0, 11);
-
-const MOON_ARCHETYPES = [
-  "Deep Rest",
-  "Dreaming",
-  "Gestation",
-  "Stirring",
-  "Rooting",
-  "Leafing",
-  "Budding",
-  "Flowering",
-  "Radiance",
-  "Fruiting",
-  "Harvest",
-  "Composting",
-  "Stillness"
-];
+  const MOON_ARCHETYPES = [
+    "Deep Rest",
+    "Dreaming",
+    "Gestation",
+    "Stirring",
+    "Rooting",
+    "Leafing",
+    "Budding",
+    "Flowering",
+    "Radiance",
+    "Fruiting",
+    "Harvest",
+    "Composting",
+    "Stillness"
+  ];
 
   const FULL_MOON_NAMES = [
-    "Wolf Moon","Snow Moon","Worm Moon","Pink Moon","Flower Moon",
-    "Strawberry Moon","Buck Moon","Sturgeon Moon","Harvest Moon",
-    "Hunter’s Moon","Beaver Moon","Cold Moon"
+    "Wolf Moon","Snow Moon","Worm Moon","Pink Moon",
+    "Flower Moon","Strawberry Moon","Buck Moon","Sturgeon Moon",
+    "Harvest Moon","Hunter’s Moon","Beaver Moon","Cold Moon"
   ];
 
   function getMoonPhase(date) {
+    if (!window.SunCalc) return "Moon";
     const p = SunCalc.getMoonIllumination(date).phase;
-    if (p < 0.03 || p > 0.97) return "🌑 New Moon";
-    if (p < 0.22) return "🌒 Waxing Crescent";
-    if (p < 0.28) return "🌓 First Quarter";
-    if (p < 0.47) return "🌔 Waxing Gibbous";
-    if (p < 0.53) return "🌕 Full Moon";
-    if (p < 0.72) return "🌖 Waning Gibbous";
-    if (p < 0.78) return "🌗 Last Quarter";
-    return "🌘 Waning Crescent";
+    if (p < 0.03 || p > 0.97) return "New Moon";
+    if (p < 0.22) return "Waxing Crescent";
+    if (p < 0.28) return "First Quarter";
+    if (p < 0.47) return "Waxing Gibbous";
+    if (p < 0.53) return "Full Moon";
+    if (p < 0.72) return "Waning Gibbous";
+    if (p < 0.78) return "Last Quarter";
+    return "Waning Crescent";
   }
-
- function getLunarZodiac(date) {
-  if (!window.SunCalc) return "—";
-
-  const illum = SunCalc.getMoonIllumination(date);
-  if (!illum || typeof illum.phase !== "number") return "—";
-
-  // phase: 0 → 1 (new → new)
-  const longitude = illum.phase * 360;
-
-  const signs = [
-    "Aries","Taurus","Gemini","Cancer","Leo","Virgo",
-    "Libra","Scorpio","Sagittarius","Capricorn","Aquarius","Pisces"
-  ];
-
-  return signs[Math.floor(longitude / 30)];
-}
 
   function getLunarData(date) {
     const days = Math.floor((date - LUNAR_ANCHOR) / MS_PER_DAY);
     const moonDay = ((days % LUNAR_MONTH) + LUNAR_MONTH) % LUNAR_MONTH + 1;
     const moonIndex = Math.floor(days / LUNAR_MONTH) % 13;
-    return { moonDay, archetype: MOON_ARCHETYPES[moonIndex] };
+    return {
+      moonDay,
+      archetype: MOON_ARCHETYPES[moonIndex]
+    };
   }
-
-  const GUIDANCE = {
-    1:{a:"I welcome new beginnings.",r:"Set intentions by candlelight.",j:"What am I ready to begin?"},
-    7:{a:"I listen inward.",r:"Rest and reflect.",j:"What is my intuition saying?"},
-    14:{a:"I stand in illuminated truth.",r:"Full Moon release ritual.",j:"What is fully seen now?"},
-    28:{a:"I prepare for rebirth.",r:"Close the cycle gently.",j:"What is ready to be reborn?"}
-  };
-
-  function getGuidance(day) {
-    return GUIDANCE[day] || GUIDANCE[1];
-  }
-
-  document.getElementById("toggleGuidance").onclick = () => {
-    const c = document.getElementById("guidanceContent");
-    c.hidden = !c.hidden;
-  };
 
   function renderMonth(year, month) {
     calendar.innerHTML = "";
 
     const firstDay = new Date(year, month, 1);
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const today = new Date();
+
+    // Monday-based week start
     const mondayOffset = (firstDay.getDay() + 6) % 7;
     for (let i = 0; i < mondayOffset; i++) {
       calendar.appendChild(document.createElement("div"));
     }
 
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
-    const today = new Date();
-    document.getElementById("cardPhase").innerText = phase;
-document.getElementById("cardZodiac").innerText = "🌠 " + zodiac;
-document.getElementById("cardTitle").innerText =
-  `${lunar.archetype} · Moon Day ${lunar.moonDay}`;
-
-document.getElementById("cardAffirmation").innerText = guidance.a;
-document.getElementById("cardRitual").innerText = guidance.r;
-document.getElementById("cardJournal").innerText = guidance.j;
-
     for (let d = 1; d <= daysInMonth; d++) {
       const date = new Date(year, month, d);
       const phase = getMoonPhase(date);
       const lunar = getLunarData(date);
-      const zodiac = getLunarZodiac(date);
-      const guidance = getGuidance(lunar.moonDay);
 
       const cell = document.createElement("div");
       cell.className = "day";
 
       if (date.toDateString() === today.toDateString()) {
         cell.classList.add("today");
-        document.getElementById("lunarPhase").innerText = phase;
-        document.getElementById("affirmation").innerText = guidance.a;
-        document.getElementById("ritual").innerText = guidance.r;
-        document.getElementById("journal").innerText = guidance.j;
       }
 
-      const fullMoonName =
-        phase === "🌕 Full Moon" ? FULL_MOON_NAMES[month] : "";
+      const isFullMoon = phase === "Full Moon";
+      const fullMoonName = isFullMoon ? FULL_MOON_NAMES[month % 12] : "";
 
       cell.innerHTML = `
         <div class="gregorian">${date.toDateString()}</div>
-        <div class="moon-name">${phase}</div>
+        <div class="moon-day">${phase}</div>
         ${fullMoonName ? `<div class="moon-name">🌕 ${fullMoonName}</div>` : ""}
-        <div class="moon-name">${lunar.archetype} · Day ${lunar.moonDay} · 🌠 ${zodiac}</div>
+        <div class="moon-name">${lunar.archetype} · Day ${lunar.moonDay}</div>
       `;
 
       cell.onclick = () => {
-        document.getElementById("guidanceContent").hidden = false;
-        document.getElementById("lunarPhase").innerText = phase;
-        document.getElementById("affirmation").innerText = guidance.a;
-        document.getElementById("ritual").innerText = guidance.r;
-        document.getElementById("journal").innerText = guidance.j;
-
         dayText.innerText =
 `${date.toDateString()}
-${phase}
+
+Moon Phase: ${phase}
+${fullMoonName ? "Full Moon Name: " + fullMoonName : ""}
+
+Moon Archetype:
 ${lunar.archetype}
-Moon Day ${lunar.moonDay}
-Lunar Zodiac: ${zodiac}`;
+
+Moon Day: ${lunar.moonDay}`;
       };
 
       calendar.appendChild(cell);
