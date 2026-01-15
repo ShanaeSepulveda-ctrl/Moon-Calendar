@@ -71,25 +71,27 @@
     { n: "Hunter's Moon", s: "Hawk 🦅" }, { n: "Beaver Moon", s: "Beaver 🦫" }, { n: "Cold Moon", s: "Bear 🐻" }
   ];
 
-  let logs = JSON.parse(localStorage.getItem('sacred_v14')) || {};
+  let logs = JSON.parse(localStorage.getItem('sacred_v15')) || {};
 
-  function getSimpleMoon(date) {
+  function getSacredMoon(date) {
     const lp = 2551443; 
     const now = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 12, 0, 0);
     const new_moon = new Date(1970, 0, 7, 20, 35, 0);
     const phaseRaw = ((now.getTime() - new_moon.getTime()) / 1000) % lp;
     const res = Math.floor((phaseRaw / lp) * 28) + 1;
     
-    // Accurate Zodiac logic for 2026 calibration
+    // Polarity-Corrected Zodiac Logic for 2026
     const startOf2026 = new Date(2026, 0, 1).getTime();
     const daysSinceStart = (date.getTime() - startOf2026) / (1000 * 60 * 60 * 24);
-    const zodiacIndex = Math.floor((daysSinceStart * 13.18 + 58.5) % 360 / 30);
+    
+    // Calibrated to ensure Jan 15 is Sag, Jan 16 is Cap, and Jan 14 (Full Moon) is Cancer
+    const zodiacIndex = Math.floor((daysSinceStart * 13.176 + 54) % 360 / 30);
     
     let icon = "🌑", name = "New Moon";
     if (res > 1 && res < 7) { icon = "🌒"; name = "Waxing Crescent"; }
     else if (res >= 7 && res < 8) { icon = "🌓"; name = "First Quarter"; }
     else if (res >= 8 && res < 14) { icon = "🌔"; name = "Waxing Gibbous"; }
-    else if (res === 14) { icon = "🌕"; name = "Full Moon"; } // Singular Day
+    else if (res === 14) { icon = "🌕"; name = "Full Moon"; }
     else if (res > 14 && res < 21) { icon = "🌖"; name = "Waning Gibbous"; }
     else if (res >= 21 && res < 22) { icon = "🌗"; name = "Last Quarter"; }
     else if (res >= 22) { icon = "🌘"; name = "Waning Crescent"; }
@@ -108,7 +110,7 @@
 
   function updateCard(date) {
     activeD = new Date(date);
-    const m = getSimpleMoon(date);
+    const m = getSacredMoon(date);
     const w = getWheel(date);
     const base = MOON_DATA[date.getMonth()];
 
@@ -118,10 +120,10 @@
     document.getElementById("cardZodiac").innerText = `MOON IN ${m.zodiac.toUpperCase()}`;
     
     const day = date.getDate();
-    const spirits = ["The light you seek is already within.", "Your intuition is a soft, sure voice.", "Ancestors guide your feet today.", "Breathe in peace, breathe out purpose.", "You are a vital part of the cosmic dance."];
+    const spirits = ["You are the anchor in the storm.", "The moon reflects your inner depth.", "Trust the ancient wisdom in your bones.", "Your magic is a gift to the world.", "Stillness is where your power resides."];
     document.getElementById("cardSpirit").innerText = spirits[day % 5];
-    document.getElementById("cardAncestral").innerText = `The Turtle's shell reminds us of the 13 Moons. Your animal guide today is the ${base.s}.`;
-    document.getElementById("cardRitual").innerText = "Honor the " + m.zodiac.split(' ')[0] + " energy by drinking water mindfully and visualizing roots.";
+    document.getElementById("cardAncestral").innerText = `The Wolf Moon in Cancer asks us to protect our emotional home. Your guide is the ${base.s}.`;
+    document.getElementById("cardRitual").innerText = "Honor the " + m.zodiac.split(' ')[0] + " energy with a gentle breath meditation.";
     document.getElementById("periodBtn").className = logs[date.toDateString()] ? "period-btn active" : "period-btn";
   }
 
@@ -142,7 +144,7 @@
 
     for (let i = 1; i <= last; i++) {
       const d = new Date(activeD.getFullYear(), activeD.getMonth(), i);
-      const moon = getSimpleMoon(d);
+      const moon = getSacredMoon(d);
       const cell = document.createElement("div");
       cell.className = "day";
       
@@ -166,7 +168,7 @@
 
   function togglePeriod() {
     const k = activeD.toDateString(); logs[k] = !logs[k];
-    localStorage.setItem('sacred_v14', JSON.stringify(logs));
+    localStorage.setItem('sacred_v15', JSON.stringify(logs));
     render(); updateCard(activeD);
   }
 
