@@ -95,20 +95,39 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
 
-  function getMoonDayGuidance(day) {
-    const map = {
-      1:{a:"I open to sacred beginnings.",r:"Set intentions.",m:"Seeds are planted."},
-      7:{a:"I listen inward.",r:"Rest and reflect.",m:"Pause brings clarity."},
-      14:{a:"I release and celebrate.",r:"Full Moon ritual.",m:"Truth is illuminated."},
-      21:{a:"I expand with trust.",r:"Say yes to growth.",m:"Possibility widens."},
-      28:{a:"I prepare for rebirth.",r:"Close the cycle.",m:"The void is fertile."}
-    };
-    return map[day] || {
-      a:"I move with lunar rhythm.",
-      r:"Breathe and align.",
-      m:"Flow with awareness."
-    };
-  }
+function getMoonDayGuidance(day) {
+  const guidance = {
+    1:{a:"I welcome new beginnings.",r:"Set intentions by candlelight.",j:"What am I ready to begin?"},
+    2:{a:"I honor balance.",r:"Reflect on relationships.",j:"Where do I give and receive?"},
+    3:{a:"Creative energy flows through me.",r:"Create freely.",j:"What wants expression?"},
+    4:{a:"I build strong foundations.",r:"Organize or ground.",j:"What supports my growth?"},
+    5:{a:"I step into my power.",r:"Take a bold step.",j:"Where am I claiming my power?"},
+    6:{a:"I move in harmony.",r:"Nurture self or others.",j:"What needs care?"},
+    7:{a:"I listen inward.",r:"Rest and reflect.",j:"What is my intuition saying?"},
+    8:{a:"I integrate wisdom.",r:"Ground through nature.",j:"What lesson is settling in?"},
+    9:{a:"I refine my focus.",r:"Release distractions.",j:"What truly matters now?"},
+    10:{a:"I bring vision into form.",r:"Take aligned action.",j:"What step can I take today?"},
+    11:{a:"I release what no longer serves.",r:"Cleanse space or body.",j:"What am I ready to let go of?"},
+    12:{a:"I seek clarity.",r:"Study or reflect.",j:"What is becoming clear?"},
+    13:{a:"Transformation moves through me.",r:"Honor an ending.",j:"What cycle is closing?"},
+    14:{a:"I stand in illuminated truth.",r:"Full Moon ritual.",j:"What is fully seen now?"},
+    15:{a:"I express authentically.",r:"Share or celebrate.",j:"What truth wants voice?"},
+    16:{a:"I adjust with compassion.",r:"Soften expectations.",j:"Where can I be gentler?"},
+    17:{a:"I trust the unseen.",r:"Surrender control.",j:"What requires faith?"},
+    18:{a:"I allow healing.",r:"Water or rest ritual.",j:"What is healing within me?"},
+    19:{a:"I honor completion.",r:"Acknowledge progress.",j:"What has come full circle?"},
+    20:{a:"I recommit intentionally.",r:"Devote energy wisely.",j:"What deserves devotion?"},
+    21:{a:"I expand beyond limits.",r:"Say yes to growth.",j:"Where am I expanding?"},
+    22:{a:"I embody wisdom.",r:"Practice mastery.",j:"What have I learned?"},
+    23:{a:"I move with ease.",r:"Flow-based movement.",j:"Where can I trust timing?"},
+    24:{a:"I cultivate gratitude.",r:"Offer thanks.",j:"What am I grateful for?"},
+    25:{a:"I release outcomes.",r:"Let go consciously.",j:"What am I holding too tightly?"},
+    26:{a:"I clear stagnant energy.",r:"Cleanse environment.",j:"What needs clearing?"},
+    27:{a:"I rest in stillness.",r:"Silence and rest.",j:"What arises in stillness?"},
+    28:{a:"I prepare for rebirth.",r:"Close the cycle.",j:"What is ready to be reborn?"}
+  };
+  return guidance[day];
+}
 
   function renderMonth(year, month) {
     calendar.innerHTML = "";
@@ -120,6 +139,11 @@ document.addEventListener("DOMContentLoaded", () => {
       const phase = getMoonPhase(date);
       const lunar = getLunarData(date);
       const guidance = getMoonDayGuidance(lunar.moonDay);
+      
+const mondayOffset = (firstDay.getDay() + 6) % 7;
+for (let i = 0; i < mondayOffset; i++) {
+  calendar.appendChild(document.createElement("div"));
+}
 
       const cell = document.createElement("div");
       cell.className = "day";
@@ -154,7 +178,10 @@ Affirmation:
 ${guidance.a}
 
 Suggested Ritual:
-${guidance.r}`;
+${guidance.r}
+
+Journal Prompt:
+${guidance.j}`;
       };
 
       calendar.appendChild(cell);
