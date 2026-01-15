@@ -278,6 +278,32 @@ function isDayOutOfTime(date) {
   return isLunarNewYear(nextDay);
 }
 
+// ===============================
+// 🎴 TODAY’S LUNAR CARD (SAFE)
+// ===============================
+const today = new Date();
+const todayPhase = getMoonPhase(today);
+const todayLunar = getLunarData(today);
+const todayGuidance = getMoonDayGuidance(todayLunar.moonDay);
+
+// Poetic blend title
+document.getElementById("cardTitle").innerText =
+  `${todayLunar.archetype} — ${todayPhase}`;
+
+// Header details
+document.getElementById("cardPhase").innerText = todayPhase;
+document.getElementById("cardZodiac").innerText = `Moon Day ${todayLunar.moonDay}`;
+
+// Card content
+document.getElementById("cardAffirmation").innerText =
+  todayGuidance.a;
+
+document.getElementById("cardRitual").innerText =
+  todayGuidance.r;
+
+document.getElementById("cardJournal").innerText =
+  todayGuidance.j;
+
   const now = new Date();
   renderMonth(now.getFullYear(), now.getMonth());
 
