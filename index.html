@@ -144,12 +144,22 @@ document.addEventListener("DOMContentLoaded", () => {
     return "🌘 Waning Crescent";
   }
 
-  function getLunarZodiac(date) {
-    const pos = SunCalc.getMoonPosition(date, 0, 0);
-    const lon = (pos.ra * 180 / Math.PI + 360) % 360;
-    const signs = ["Aries","Taurus","Gemini","Cancer","Leo","Virgo","Libra","Scorpio","Sagittarius","Capricorn","Aquarius","Pisces"];
-    return signs[Math.floor(lon / 30)];
-  }
+ function getLunarZodiac(date) {
+  if (!window.SunCalc) return "—";
+
+  const illum = SunCalc.getMoonIllumination(date);
+  if (!illum || typeof illum.phase !== "number") return "—";
+
+  // phase: 0 → 1 (new → new)
+  const longitude = illum.phase * 360;
+
+  const signs = [
+    "Aries","Taurus","Gemini","Cancer","Leo","Virgo",
+    "Libra","Scorpio","Sagittarius","Capricorn","Aquarius","Pisces"
+  ];
+
+  return signs[Math.floor(longitude / 30)];
+}
 
   function getLunarData(date) {
     const days = Math.floor((date - LUNAR_ANCHOR) / MS_PER_DAY);
