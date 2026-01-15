@@ -147,80 +147,62 @@ function getLunarZodiac(date) {
 
 function renderMonth(year, month) {
   calendar.innerHTML = "";
-const firstDay = new Date(year, month, 1);
 
-// Monday-based offset (ISO standard)
-const mondayOffset = (firstDay.getDay() + 6) % 7;
-
-for (let i = 0; i < mondayOffset; i++) {
-  calendar.appendChild(document.createElement("div"));
-}
-
-  const lunarZodiac = getLunarZodiac(date);
-
+  const firstDay = new Date(year, month, 1);
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const today = new Date();
+
+  // Monday start offset
+  const mondayOffset = (firstDay.getDay() + 6) % 7;
+  for (let i = 0; i < mondayOffset; i++) {
+    calendar.appendChild(document.createElement("div"));
+  }
 
   for (let d = 1; d <= daysInMonth; d++) {
     const date = new Date(year, month, d);
     const phase = getMoonPhase(date);
     const lunar = getLunarData(date);
     const guidance = getMoonDayGuidance(lunar.moonDay);
+    const lunarZodiac = getLunarZodiac(date);
+
+    const fullMoonName = phase === "🌕 Full Moon" ? FULL_MOON_NAMES[month] : "";
 
     const cell = document.createElement("div");
     cell.className = "day";
-
     if (date.toDateString() === today.toDateString()) {
       cell.classList.add("today");
       document.getElementById("lunarPhase").innerText = phase;
       document.getElementById("affirmation").innerText = guidance.a;
       document.getElementById("ritual").innerText = guidance.r;
+      document.getElementById("journal").innerText = guidance.j;
     }
-document.getElementById("toggleGuidance").onclick = () => {
-  const c = document.getElementById("guidanceContent");
-  c.hidden = !c.hidden;
+
+    document.getElementById("toggleGuidance").onclick = () => {
+  const content = document.getElementById("guidanceContent");
+  content.hidden = !content.hidden;
 };
-document.getElementById("journal").innerText = guidance.j;
-
-     if (Notification.permission !== "granted") {
-  Notification.requestPermission();
-}
-    
-    if (phase === "🌕 Full Moon" && Notification.permission === "granted") {
-  new Notification("🌕 Full Moon Tonight", {
-    body: "A time to release, reflect, and honor what is complete.",
-  });
-}
-
-    const fullMoonName =
-      phase === "🌕 Full Moon" ? FULL_MOON_NAMES[month] : "";
 
     cell.innerHTML = `
       <div class="gregorian">${date.toDateString()}</div>
       <div class="moon-day">${phase}</div>
       ${fullMoonName ? `<div class="moon-name">🌕 ${fullMoonName}</div>` : ""}
-      <div class="moon-name">
-        ${lunar.archetype} · Moon Day ${lunar.moonDay}
-      <div class="moon-name">
-        ${lunar.archetype} · Moon Day ${lunar.moonDay} · 🌠 ${lunarZodiac}
-      </div>
-           `;
+      <div class="moon-name">${lunar.archetype} · Day ${lunar.moonDay} · 🌠 ${lunarZodiac}</div>
+    `;
 
     cell.onclick = () => {
-      dayText.innerText =
-`${date.toDateString()}
+      const content = document.getElementById("guidanceContent");
+      content.hidden = false; // auto-open the card
+      document.getElementById("lunarPhase").innerText = phase;
+      document.getElementById("affirmation").innerText = guidance.a;
+      document.getElementById("ritual").innerText = guidance.r;
+      document.getElementById("journal").innerText = guidance.j;
+
+      dayText.innerText = `
+${date.toDateString()}
 ${phase}
-
 ${lunar.archetype} — Moon Day ${lunar.moonDay}
-
-Affirmation:
-${guidance.a}
-
-Suggested Ritual:
-${guidance.r}
-
-Journal Prompt:
-${guidance.j}`;
+🌠 Lunar Zodiac: ${lunarZodiac}
+      `;
     };
 
     calendar.appendChild(cell);
