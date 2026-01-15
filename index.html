@@ -233,7 +233,18 @@ function getSeasonalFullMoonName(date) {
   };
   return names[m] || '';
 }
- 
+
+  // 🌕 Seasonal Full Moon name (only near Full Moon)
+if (isNearFullMoon(date, 1.5)) {
+  var seasonalName = getSeasonalFullMoonName(date);
+  if (seasonalName) {
+    var fm = document.createElement('div');
+    fm.className = 'moon-name';
+    fm.innerText = '🌕 ' + seasonalName;
+    cell.appendChild(fm);
+  }
+}
+
  function approximateMoonZodiacByMonth(date) {
   // rough association — this is NOT precise per-day astrology
   const month = date.getUTCMonth();
@@ -383,18 +394,6 @@ function isNearFullMoon(date, toleranceDays = 1) {
     return guidance[phase] || { affirmation: "I flow with the natural rhythms of life.", ritual: "Pause and take a mindful breath.", message: "Move gently and listen to what your body and spirit need." };
   }
  
-// attach seasonal full-moon name label if this date is near a full moon
-if (isNearFullMoon(date, 1.5)) {
-  var seasonalName = getSeasonalFullMoonName(date);
-  if (seasonalName) {
-    var fm = document.createElement('div');
-    fm.style.marginTop = '6px';
-    fm.style.fontSize = '0.75rem';
-    fm.style.opacity = '0.9';
-    fm.innerText = seasonalName;
-    cell.appendChild(fm);
-  }
-}
   function getMoonDayMeaning(moonDay) {
     var meanings = {
       1: "Initiation — a spark of beginning energy is present.",
