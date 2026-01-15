@@ -53,85 +53,27 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
+
   const calendar = document.getElementById("calendar");
   const dayText = document.getElementById("dayText");
 
-  if (!calendar) {
-    console.error("Calendar element missing");
-    return;
-  }
-
-  // =========================
-  // 🌑 LUNAR YEAR ANCHOR
-  // =========================
-  // New Moon on Jan 11, 2024 (verified astronomical new moon)
-  const LUNAR_YEAR_ANCHOR = new Date(2024, 0, 11);
-
   const MS_PER_DAY = 86400000;
-  const LUNAR_MONTH_LENGTH = 28;
+  const LUNAR_MONTH = 28;
+  const LUNAR_ANCHOR = new Date(2024, 0, 11); // New Moon anchor
 
-  // =========================
-  // 🌙 MOON ARCHETYPES (13)
-  // =========================
   const MOON_ARCHETYPES = [
-    "Initiation",
-    "Stability",
-    "Growth",
-    "Harmony",
-    "Blooming",
-    "Nurturing",
-    "Illumination",
-    "Transformation",
-    "Harvest",
-    "Mysticism",
-    "Vision",
-    "Purification",
-    "Restoration"
+    "Initiation","Stability","Growth","Harmony","Blooming",
+    "Nurturing","Illumination","Transformation","Harvest",
+    "Mysticism","Vision","Purification","Restoration"
   ];
 
-  // =========================
-  // 🌕 SEASONAL MOON NAMES
-  // =========================
-  const SEASONAL_MOONS = [
-    "Wolf Moon",
-    "Snow Moon",
-    "Worm Moon",
-    "Pink Moon",
-    "Flower Moon",
-    "Strawberry Moon",
-    "Buck Moon",
-    "Sturgeon Moon",
-    "Harvest Moon",
-    "Hunter’s Moon",
-    "Beaver Moon",
-    "Cold Moon"
+  const FULL_MOON_NAMES = [
+    "Wolf Moon","Snow Moon","Worm Moon","Pink Moon",
+    "Flower Moon","Strawberry Moon","Buck Moon","Sturgeon Moon",
+    "Harvest Moon","Hunter’s Moon","Beaver Moon","Cold Moon"
   ];
 
-  // =========================
-  // 🔮 ZODIAC
-  // =========================
-  function getZodiac(date) {
-    const d = date.getDate(), m = date.getMonth() + 1;
-    if ((m==3&&d>=21)||(m==4&&d<=19)) return "Aries";
-    if ((m==4&&d>=20)||(m==5&&d<=20)) return "Taurus";
-    if ((m==5&&d>=21)||(m==6&&d<=20)) return "Gemini";
-    if ((m==6&&d>=21)||(m==7&&d<=22)) return "Cancer";
-    if ((m==7&&d>=23)||(m==8&&d<=22)) return "Leo";
-    if ((m==8&&d>=23)||(m==9&&d<=22)) return "Virgo";
-    if ((m==9&&d>=23)||(m==10&&d<=22)) return "Libra";
-    if ((m==10&&d>=23)||(m==11&&d<=21)) return "Scorpio";
-    if ((m==11&&d>=22)||(m==12&&d<=21)) return "Sagittarius";
-    if ((m==12&&d>=22)||(m==1&&d<=19)) return "Capricorn";
-    if ((m==1&&d>=20)||(m==2&&d<=18)) return "Aquarius";
-    return "Pisces";
-  }
-
-  // =========================
-  // 🌑 MOON PHASE
-  // =========================
   function getMoonPhase(date) {
-    if (!window.SunCalc) return "🌙";
-
     const p = SunCalc.getMoonIllumination(date).phase;
     if (p < 0.03 || p > 0.97) return "🌑 New Moon";
     if (p < 0.22) return "🌒 Waxing Crescent";
@@ -143,288 +85,85 @@ document.addEventListener("DOMContentLoaded", () => {
     return "🌘 Waning Crescent";
   }
 
-  // =========================
-  // 🌙 LUNISOLAR CALC
-  // =========================
   function getLunarData(date) {
-    const daysSinceAnchor =
-      Math.floor((date - LUNAR_YEAR_ANCHOR) / MS_PER_DAY);
-
-    const moonDay =
-      ((daysSinceAnchor % LUNAR_MONTH_LENGTH) + LUNAR_MONTH_LENGTH) %
-        LUNAR_MONTH_LENGTH + 1;
-
-    const moonIndex =
-      Math.floor(daysSinceAnchor / LUNAR_MONTH_LENGTH) % 13;
-
+    const days = Math.floor((date - LUNAR_ANCHOR) / MS_PER_DAY);
+    const moonDay = ((days % LUNAR_MONTH) + LUNAR_MONTH) % LUNAR_MONTH + 1;
+    const moonIndex = Math.floor(days / LUNAR_MONTH) % 13;
     return {
       moonDay,
-      moonIndex,
       archetype: MOON_ARCHETYPES[moonIndex]
     };
   }
-//=================
-  //MOON DAY GUIDANCE//
-//=================
-function getMoonDayGuidance(moonDay) {
-  const guidance = getMoonDayGuidance(moonDay);
 
-dayText.innerText =
-  date.toDateString() +
-  "\n" + phase +
-  "\nMoon Day " + moonDay +
-  "\n\n" + guidance.message +
-  "\n\nAffirmation:\n" + guidance.affirmation +
-  "\n\nSuggested Ritual:\n" + guidance.ritual;
-    1: {
-      affirmation: "I open myself to new beginnings and sacred potential.",
-      ritual: "Set intentions. Light a candle and name what you are calling in.",
-      message: "This is the seed moment. Energy is subtle but powerful. Begin gently."
-    },
-    2: {
-      affirmation: "I honor balance, polarity, and relationship.",
-      ritual: "Reflect on giving and receiving. Journal where balance is needed.",
-      message: "Duality teaches through contrast. Observe without judgment."
-    },
-    3: {
-      affirmation: "I allow creative energy to move through me.",
-      ritual: "Create something small — write, sketch, move your body.",
-      message: "Momentum builds. Expression wants form."
-    },
-    4: {
-      affirmation: "I build foundations that support my growth.",
-      ritual: "Organize, clean, or create structure around an intention.",
-      message: "Form gives safety. Boundaries strengthen what is growing."
-    },
-    5: {
-      affirmation: "I step into my power with trust.",
-      ritual: "Speak a truth aloud. Claim space.",
-      message: "Vitality rises. Confidence fuels forward motion."
-    },
-    6: {
-      affirmation: "I move in harmony with myself and others.",
-      ritual: "Nurture something — a plant, relationship, or yourself.",
-      message: "Adjustment restores balance. Gentleness is strength."
-    },
-    7: {
-      affirmation: "I pause and listen to inner wisdom.",
-      ritual: "Spend time in stillness. Limit stimulation.",
-      message: "Reflection recalibrates your path."
-    },
-    8: {
-      affirmation: "I integrate lessons into embodied knowing.",
-      ritual: "Ground through breath or touch the earth.",
-      message: "Experience becomes wisdom when absorbed fully."
-    },
-    9: {
-      affirmation: "I recommit to what truly matters.",
-      ritual: "Refine an intention. Release distractions.",
-      message: "Focus sharpens power."
-    },
-    10: {
-      affirmation: "I bring intention into form.",
-      ritual: "Take one visible action toward a goal.",
-      message: "Manifestation accelerates."
-    },
-    11: {
-      affirmation: "I release what no longer serves my becoming.",
-      ritual: "Write and safely burn or tear away what you’re done carrying.",
-      message: "Letting go creates space."
-    },
-    12: {
-      affirmation: "I welcome insight and understanding.",
-      ritual: "Study, read, or reflect on recent experiences.",
-      message: "Clarity deepens through perspective."
-    },
-    13: {
-      affirmation: "I allow transformation at the root.",
-      ritual: "Mark an ending. Acknowledge a shift.",
-      message: "Change moves through the core."
-    },
-    14: {
-      affirmation: "I honor truth illuminated.",
-      ritual: "Full Moon ritual — release, gratitude, celebration.",
-      message: "Illumination peaks. Feel fully."
-    },
-    15: {
-      affirmation: "I express myself authentically.",
-      ritual: "Communicate honestly or celebrate joy.",
-      message: "Energy seeks outward flow."
-    },
-    16: {
-      affirmation: "I adjust with compassion.",
-      ritual: "Soften expectations. Course-correct gently.",
-      message: "Flexibility restores alignment."
-    },
-    17: {
-      affirmation: "I trust the unseen flow of life.",
-      ritual: "Surrender control. Rest the mind.",
-      message: "Faith replaces force."
-    },
-    18: {
-      affirmation: "I tend to healing with patience.",
-      ritual: "Self-care, water rituals, emotional release.",
-      message: "Restoration is active work."
-    },
-    19: {
-      affirmation: "I acknowledge completion.",
-      ritual: "Name what has come full circle.",
-      message: "Closure carries wisdom."
-    },
-    20: {
-      affirmation: "I devote energy to what nourishes me.",
-      ritual: "Recommit intentionally.",
-      message: "Devotion renews strength."
-    },
-    21: {
-      affirmation: "I expand beyond old limits.",
-      ritual: "Try something new or say yes to growth.",
-      message: "Possibility widens."
-    },
-    22: {
-      affirmation: "I stabilize wisdom into mastery.",
-      ritual: "Practice a skill with presence.",
-      message: "Experience integrates."
-    },
-    23: {
-      affirmation: "I move with ease and trust timing.",
-      ritual: "Flow-based movement or intuitive action.",
-      message: "Effort softens."
-    },
-    24: {
-      affirmation: "I cultivate gratitude.",
-      ritual: "List what you’re thankful for.",
-      message: "Gratitude opens the heart."
-    },
-    25: {
-      affirmation: "I surrender outcomes.",
-      ritual: "Release expectations into the night.",
-      message: "Acceptance restores peace."
-    },
-    26: {
-      affirmation: "I clear what clouds my energy.",
-      ritual: "Cleanse space, body, or mind.",
-      message: "Simplicity prepares renewal."
-    },
-    27: {
-      affirmation: "I rest in still awareness.",
-      ritual: "Silence, meditation, or early sleep.",
-      message: "Stillness is fertile."
-    },
-    28: {
-      affirmation: "I prepare for rebirth.",
-      ritual: "Close the cycle consciously.",
-      message: "The void holds promise."
-    }
-  };
+  function getMoonDayGuidance(day) {
+    const map = {
+      1:{a:"I open to sacred beginnings.",r:"Set intentions.",m:"Seeds are planted."},
+      7:{a:"I listen inward.",r:"Rest and reflect.",m:"Pause brings clarity."},
+      14:{a:"I release and celebrate.",r:"Full Moon ritual.",m:"Truth is illuminated."},
+      21:{a:"I expand with trust.",r:"Say yes to growth.",m:"Possibility widens."},
+      28:{a:"I prepare for rebirth.",r:"Close the cycle.",m:"The void is fertile."}
+    };
+    return map[day] || {
+      a:"I move with lunar rhythm.",
+      r:"Breathe and align.",
+      m:"Flow with awareness."
+    };
+  }
 
-  return guidance[moonDay] || guidance[1];
-}
-
-  //===================
-  //GUIDANCE//
-  //===================
-  const todayLunar = window.getLunarPositionWrapper(todayDate);
-  const todayGuidance = getMoonDayGuidance(todayLunar.moonDay);
-
-document.getElementById("lunarPhase").innerText =
-  getMoonPhase(todayDate);
-
-document.getElementById("affirmation").innerText =
-  todayGuidance.affirmation;
-
-document.getElementById("ritual").innerText =
-  todayGuidance.ritual;
-
-  // =========================
-  // 🗓️ RENDER MONTH
-  // =========================
   function renderMonth(year, month) {
     calendar.innerHTML = "";
-
-    const firstDay = new Date(year, month, 1);
     const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-    for (let i = 0; i < firstDay.getDay(); i++) {
-      calendar.appendChild(document.createElement("div"));
-    }
-
     const today = new Date();
 
-    for (let day = 1; day <= daysInMonth; day++) {
-      const date = new Date(year, month, day);
-      const lunar = getLunarData(date);
-      const zodiac = getZodiac(date);
+    for (let d = 1; d <= daysInMonth; d++) {
+      const date = new Date(year, month, d);
       const phase = getMoonPhase(date);
-      const isFullMoon = phase === "🌕 Full Moon";
-      const seasonalMoon = isFullMoon ? getSeasonalMoonName(date) : "";
+      const lunar = getLunarData(date);
+      const guidance = getMoonDayGuidance(lunar.moonDay);
 
       const cell = document.createElement("div");
       cell.className = "day";
-
-      if (
-        date.toDateString() === today.toDateString()
-      ) {
+      if (date.toDateString() === today.toDateString()) {
         cell.classList.add("today");
+        document.getElementById("lunarPhase").innerText = phase;
+        document.getElementById("affirmation").innerText = guidance.a;
+        document.getElementById("ritual").innerText = guidance.r;
       }
-      
-function getSeasonalMoonName(date) {
-  const month = date.getMonth(); // 0–11
-  const names = [
-    "Wolf Moon",        // Jan
-    "Snow Moon",        // Feb
-    "Worm Moon",        // Mar
-    "Pink Moon",        // Apr
-    "Flower Moon",      // May
-    "Strawberry Moon",  // Jun
-    "Buck Moon",        // Jul
-    "Sturgeon Moon",    // Aug
-    "Harvest Moon",     // Sep
-    "Hunter’s Moon",    // Oct
-    "Beaver Moon",      // Nov
-    "Cold Moon"         // Dec
-  ];
-  return names[month];
-}
 
-cell.innerHTML = `
-  <div class="gregorian">${date.toDateString()}</div>
-  <div class="moon-day">${phase}</div>
+      const fullMoonName =
+        phase === "🌕 Full Moon" ? FULL_MOON_NAMES[month] : "";
 
-  ${
-    isFullMoon
-      ? `<div class="moon-name">🌕 ${seasonalMoon}</div>`
-      : ""
-  }
-
-  <div class="moon-name">
-    ${lunar.archetype} · Day ${lunar.moonDay} · ${zodiac}
-  </div>
-`;
+      cell.innerHTML = `
+        <div class="gregorian">${date.toDateString()}</div>
+        <div class="moon-day">${phase}</div>
+        ${fullMoonName ? `<div class="moon-name">🌕 ${fullMoonName}</div>` : ""}
+        <div class="moon-name">${lunar.archetype} · Day ${lunar.moonDay}</div>
+      `;
 
       cell.onclick = () => {
-        dayText.innerText = `
-${date.toDateString()}
-
+        dayText.innerText =
+`${date.toDateString()}
 ${phase}
-Moon Archetype: ${lunar.archetype}
-Moon Day: ${lunar.moonDay}
-Zodiac: ${zodiac}
+
+${lunar.archetype} — Moon Day ${lunar.moonDay}
+
+Guidance:
+${guidance.m}
+
+Affirmation:
+${guidance.a}
+
+Suggested Ritual:
+${guidance.r}`;
       };
 
       calendar.appendChild(cell);
     }
   }
 
-  // =========================
-  // 🚀 START
-  // =========================
   const now = new Date();
   renderMonth(now.getFullYear(), now.getMonth());
 
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("service-worker.js");
-  }
 });
 </script>
 
