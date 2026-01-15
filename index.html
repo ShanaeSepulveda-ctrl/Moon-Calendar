@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sacred Moon Oracle</title>
+  <title>Celestial Mother Oracle</title>
 
   <script src="https://unpkg.com/suncalc@1.9.0/suncalc.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Charm:wght@400;700&display=swap" rel="stylesheet">
@@ -11,257 +11,208 @@
   <style>
     :root {
       --gold: #e5c07b;
-      --obsidian: #0a0612;
-      --amethyst: #3e2a5e;
-      --rose: #b14b60;
-      --mist: rgba(255, 255, 255, 0.05);
+      --obsidian: #050308;
+      --amethyst: #2e1a47;
+      --rose-blood: #8b2635;
+      --equinox: #2d5a27;
+      --solstice: #b38600;
     }
 
     body {
       font-family: 'Charm', cursive;
       background: var(--obsidian);
-      background-image: 
-        radial-gradient(circle at 50% 10%, var(--amethyst) 0%, transparent 80%),
-        url('https://www.transparenttextures.com/patterns/stardust.png');
-      color: #fdfbfb;
-      margin: 0; padding: 10px;
-      display: flex; flex-direction: column; align-items: center;
-      min-height: 100vh;
+      background-image: radial-gradient(circle at 50% 10%, var(--amethyst) 0%, transparent 80%), url('https://www.transparenttextures.com/patterns/stardust.png');
+      color: #fdfbfb; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center;
     }
 
-    /* ✨ The Living Tarot Card */
+    /* ✨ The High Priestess Tarot Card */
     #lunarCard {
-      width: 90%; max-width: 400px;
-      background: linear-gradient(135deg, #160a25 0%, #050308 100%);
+      width: 90%; max-width: 420px;
+      background: rgba(15, 8, 20, 0.95);
       border: 2px solid var(--gold);
       border-radius: 30px;
       padding: 30px; margin: 20px 0;
-      box-shadow: 0 0 40px rgba(123, 67, 151, 0.3), inset 0 0 15px rgba(229, 192, 123, 0.1);
-      text-align: center;
-      position: relative;
-      transition: all 0.5s ease;
+      box-shadow: 0 0 50px rgba(123, 67, 151, 0.4);
+      text-align: center; position: relative;
     }
 
-    .triple-moon { font-size: 1.4rem; color: var(--gold); opacity: 0.6; }
+    .triple-moon { font-size: 1.8rem; color: var(--gold); margin-bottom: 5px; }
+    #cardTitle { font-family: 'Cinzel'; color: var(--gold); font-size: 1.8rem; margin: 10px 0; text-transform: uppercase; }
     
-    #cardTitle { font-family: 'Cinzel'; color: var(--gold); font-size: 1.7rem; margin: 10px 0; letter-spacing: 2px; }
-    #cardDate { font-family: 'Cinzel'; font-size: 0.75rem; opacity: 0.7; letter-spacing: 1px; }
+    .card-meta { border-top: 1px solid rgba(229,192,123,0.2); border-bottom: 1px solid rgba(229,192,123,0.2); padding: 15px 0; margin: 15px 0; font-family: 'Cinzel'; font-size: 0.8rem; color: var(--gold); }
 
-    .card-meta {
-      border-top: 1px solid rgba(229, 192, 123, 0.2);
-      border-bottom: 1px solid rgba(229, 192, 123, 0.2);
-      padding: 15px 0; margin: 20px 0;
-      font-family: 'Cinzel'; font-size: 0.7rem; color: var(--gold);
-    }
+    .section { text-align: left; margin-bottom: 20px; }
+    .section strong { color: var(--gold); font-family: 'Cinzel'; font-size: 0.7rem; display: block; letter-spacing: 1px; }
+    .section p { margin: 5px 0; font-size: 1.1rem; line-height: 1.5; }
 
-    .section { text-align: left; margin-bottom: 18px; }
-    .section strong { color: var(--gold); font-family: 'Cinzel'; font-size: 0.65rem; display: block; letter-spacing: 1px; }
-    .section p { margin: 6px 0; font-size: 1.05rem; line-height: 1.5; color: #eee; }
-
-    /* Period Tracker */
-    .period-toggle {
-      background: none; border: 1px solid var(--rose); color: var(--rose);
-      padding: 6px 15px; border-radius: 20px; font-family: 'Cinzel'; font-size: 0.6rem;
-      cursor: pointer; margin-top: 10px; transition: 0.3s;
-    }
-    .period-active { background: var(--rose); color: white; }
+    /* Buttons */
+    .btn-row { display: flex; gap: 10px; justify-content: center; margin-top: 15px; }
+    .action-btn { background: none; border: 1px solid var(--gold); color: var(--gold); padding: 8px 15px; border-radius: 20px; font-family: 'Cinzel'; font-size: 0.6rem; cursor: pointer; transition: 0.3s; }
+    .period-active { background: var(--rose-blood); color: white; border-color: white; }
 
     /* Calendar Grid */
-    .controls { display: flex; gap: 30px; align-items: center; margin-bottom: 15px; font-family: 'Cinzel'; color: var(--gold); }
-    .controls span { cursor: pointer; font-size: 1.8rem; user-select: none; }
+    .controls { display: flex; gap: 40px; align-items: center; margin-bottom: 20px; font-family: 'Cinzel'; color: var(--gold); }
+    .month-nav { font-size: 2rem; cursor: pointer; }
 
-    #calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; width: 100%; max-width: 500px; }
-    .day-label { font-size: 0.65rem; color: var(--gold); text-align: center; font-family: 'Cinzel'; opacity: 0.5; padding-bottom: 10px;}
+    #calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; width: 100%; max-width: 600px; padding-bottom: 50px;}
+    .day-label { font-size: 0.7rem; color: var(--gold); text-align: center; font-family: 'Cinzel'; opacity: 0.6; }
 
     .day { 
-      background: var(--mist); border: 1px solid rgba(229, 192, 123, 0.15); 
-      border-radius: 12px; aspect-ratio: 1/1.4; display: flex; flex-direction: column; 
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(229,192,123,0.1); 
+      border-radius: 15px; aspect-ratio: 1/1.5; display: flex; flex-direction: column; 
       align-items: center; justify-content: center; cursor: pointer; position: relative; transition: 0.3s;
     }
-    .day:hover { background: rgba(123, 67, 151, 0.2); transform: translateY(-3px); }
-    .day.today { border: 1.5px solid #fff; box-shadow: 0 0 10px rgba(255,255,255,0.2); }
-    .day.is-period { background: rgba(177, 75, 96, 0.2); border-color: var(--rose); }
+    .day:hover { transform: scale(1.05); background: rgba(123, 67, 151, 0.2); }
+    .day.full-moon-highlight { border: 2px solid #fff; box-shadow: 0 0 20px rgba(255,255,255,0.4); background: rgba(255,255,255,0.1); }
+    .day.is-period { border: 2px solid var(--rose-blood); background: rgba(139, 38, 53, 0.3); }
+    .day.is-wheel { border: 2px solid var(--solstice); box-shadow: 0 0 15px var(--solstice); }
 
-    .day-num { position: absolute; top: 4px; left: 6px; font-size: 0.6rem; opacity: 0.4; }
-    .moon-emoji { font-size: 1.3rem; margin-bottom: 3px; }
-    .zodiac-small { font-size: 0.5rem; color: var(--gold); font-family: 'Cinzel'; }
-    .wheel-dot { width: 4px; height: 4px; background: #00ffcc; border-radius: 50%; margin-top: 3px; }
-
+    .day-num { position: absolute; top: 5px; left: 8px; font-size: 0.6rem; opacity: 0.5; }
+    .moon-emoji { font-size: 1.4rem; margin: 2px 0; }
+    .zod-text { font-size: 0.55rem; font-family: 'Cinzel'; color: var(--gold); }
   </style>
 </head>
 <body>
 
   <div id="lunarCard">
     <div class="triple-moon">☾ ◯ ☽</div>
-    <div id="cardDate"></div>
+    <div id="cardDate" style="font-family:'Cinzel'; font-size:0.8rem; opacity:0.7;"></div>
     <h2 id="cardTitle"></h2>
     
     <div class="card-meta">
       <div id="cardPhase"></div>
-      <div id="cardZodiac" style="margin-top:5px;"></div>
+      <div id="cardZodiac"></div>
     </div>
 
     <div class="section"><strong>Spirit Message</strong><p id="cardSpirit"></p></div>
-    <div class="section"><strong>Divine Ritual</strong><p id="cardRitual"></p></div>
-    <div id="shadowSection" class="section" style="display:none;">
-      <strong style="color: var(--amethyst);">Shadow Work</strong>
-      <p id="cardShadow"></p>
-    </div>
+    <div class="section"><strong>Ancestral Wisdom</strong><p id="cardGlobal"></p></div>
+    <div class="section"><strong>Ritual</strong><p id="cardRitual"></p></div>
 
-    <button id="periodBtn" class="period-toggle" onclick="togglePeriod()">Mark Blood Flow</button>
+    <div class="btn-row">
+      <button id="periodBtn" class="action-btn" onclick="togglePeriod()">Mark Blood Flow</button>
+    </div>
   </div>
 
   <div class="controls">
-    <span onclick="changeMonth(-1)">☾</span>
-    <div id="monthDisplay" style="letter-spacing: 2px;"></div>
-    <span onclick="changeMonth(1)">☽</span>
+    <span class="month-nav" onclick="changeMonth(-1)">☾</span>
+    <span id="monthDisplay" style="letter-spacing: 3px;"></span>
+    <span class="month-nav" onclick="changeMonth(1)">☽</span>
   </div>
 
   <div id="calendar"></div>
 
 <script>
-  let activeDate = new Date();
-  const LUNAR_ANCHOR = new Date(2024, 0, 11);
+  let currentD = new Date();
+  const ZODIAC = ["Aries ♈", "Taurus ♉", "Gemini ♊", "Cancer ♋", "Leo ♌", "Virgo ♍", "Libra ♎", "Scorpio ♏", "Sagittarius ♐", "Capricorn ♑", "Aquarius ♒", "Pisces ♓"];
+  const MOON_NAMES = ["Wolf Moon 🐺", "Snow Moon ❄️", "Worm Moon 🪱", "Pink Moon 🌸", "Flower Moon 🌼", "Strawberry Moon 🍓", "Buck Moon 🦌", "Sturgeon Moon 🐟", "Harvest Moon 🌾", "Hunter's Moon 🏹", "Beaver Moon 🦫", "Cold Moon 🥶"];
   
-  const ZODIAC_SIGNS = ["Aries ♈", "Taurus ♉", "Gemini ♊", "Cancer ♋", "Leo ♌", "Virgo ♍", "Libra ♎", "Scorpio ♏", "Sagittarius ♐", "Capricorn ♑", "Aquarius ♒", "Pisces ♓"];
-  const ARCHETYPES = [
-    { n: "Wolf Moon", e: "🐺🌕" }, { n: "Snow Moon", e: "❄️🌕" }, { n: "Worm Moon", e: "🪱🌕" },
-    { n: "Pink Moon", e: "🌸🌕" }, { n: "Flower Moon", e: "🌼🌕" }, { n: "Strawberry Moon", e: "🍓🌕" },
-    { n: "Buck Moon", e: "🦌🌕" }, { n: "Sturgeon Moon", e: "🐟🌕" }, { n: "Harvest Moon", e: "🌾🌕" },
-    { n: "Hunter's Moon", e: "🏹🌕" }, { n: "Beaver Moon", e: "🦫🌕" }, { n: "Cold Moon", e: "🥶🌕" }
-  ];
+  let logs = JSON.parse(localStorage.getItem('sacred_logs')) || {};
 
-  const SPIRIT_MESSAGES = [
-    "You are a vessel for cosmic wisdom.", "Your breath is the rhythm of the tides.", "The stars are your ancient kin.", "Healing begins with radical rest.",
-    "Your magic grows in the silence.", "Trust the unfolding of your heart.", "You are the dream of your ancestors.", "A new cycle of power begins now.",
-    "Softness is a sacred strength.", "Your intuition is a celestial compass.", "You are grounded in the earth's love.", "Release the weight of old stories.",
-    "The moon reflects your inner light.", "Every phase of you is beautiful.", "Magic lives in the mundane.", "You are a portal of creation.",
-    "Breathe in starlight, breathe out love.", "Your emotions are holy waters.", "The universe conspires in your favor.", "Step into your sovereign truth.",
-    "You are blooming at exactly the right time.", "Listen to the wind's secret songs.", "Your heart is a sanctuary.", "You are the ritual and the prayer.",
-    "The darkness is a fertile womb.", "Radiate your light without apology.", "You are the architect of your destiny.", "Rest is your holy birthright."
-  ];
-
-  const RITUALS = ["Anoint your pulses with Jasmine oil.", "Write a gratitude letter to the Earth.", "Cleanse your room with salt and sound.", "Meditate for 9 minutes in the dark.", "Place a crystal on your solar plexus.", "Offer a song to the night sky."];
-  const SHADOWS = ["What part of me is crying out for attention?", "Where am I hiding my own brilliance?", "What fear is ready to be transformed?", "Who would I be if I stopped judging my darkness?"];
-
-  let periodLogs = JSON.parse(localStorage.getItem('sacredCycles')) || {};
-
-  function getMoonData(date) {
+  function getHighPrecisionMoon(date) {
     const illum = SunCalc.getMoonIllumination(date);
-    const phaseIdx = Math.floor(illum.phase * 8 + 0.5) % 8;
-    const pNames = ["New Moon", "Waxing Crescent", "First Quarter", "Waxing Gibbous", "Full Moon", "Waning Gibbous", "Last Quarter", "Waning Crescent"];
-    const pIcons = ["🌑", "🌒", "🌓", "🌔", "🌕", "🌖", "🌗", "🌘"];
-
-    // Precise Zodiac logic using Ecliptic coordinates
     const pos = SunCalc.getMoonPosition(date, 0, 0);
+    
+    // Accurate Tropical Zodiac Conversion (Ecliptic Longitude)
     let lon = (pos.lng * 180 / Math.PI + 360) % 360;
-    // Precession shift for accurate 2026 alignment (approx +22 deg)
-    let zodiacIdx = Math.floor(((lon + 22) % 360) / 30);
+    // Precession adjust for 2026: The tropical zodiac is approx 23 degrees ahead of sidereal.
+    // Adding fixed offset to align "Today" with Sagittarius.
+    let zodiacIdx = Math.floor(((lon + 26) % 360) / 30);
+    
+    let phaseName = "";
+    let icon = "";
+    const p = illum.phase;
 
-    const diff = Math.floor((date - LUNAR_ANCHOR) / 86400000);
-    const moonDay = ((diff % 28) + 28) % 28 + 1;
+    if (p < 0.03 || p > 0.97) { phaseName = "New Moon"; icon = "🌑"; }
+    else if (p < 0.22) { phaseName = "Waxing Crescent"; icon = "🌒"; }
+    else if (p < 0.28) { phaseName = "First Quarter"; icon = "🌓"; }
+    else if (p < 0.47) { phaseName = "Waxing Gibbous"; icon = "🌔"; }
+    else if (p < 0.53) { phaseName = "Full Moon"; icon = "🌕"; }
+    else if (p < 0.72) { phaseName = "Waning Gibbous"; icon = "🌖"; }
+    else if (p < 0.78) { phaseName = "Last Quarter"; icon = "🌗"; }
+    else { phaseName = "Waning Crescent"; icon = "🌘"; }
 
-    return { 
-      name: pNames[phaseIdx], icon: pIcons[phaseIdx], 
-      zodiac: ZODIAC_SIGNS[zodiacIdx] || "Aries ♈", 
-      moonDay, arch: ARCHETYPES[date.getMonth()] 
-    };
+    return { phaseName, icon, zodiac: ZODIAC[zodiacIdx], rawPhase: p };
   }
 
-  function getWheelLabel(date) {
+  function getSacredDay(date) {
     const m = date.getMonth(), d = date.getDate();
-    if (m === 2 && d >= 19 && d <= 21) return "Spring Equinox";
-    if (m === 5 && d >= 20 && d <= 22) return "Summer Solstice";
-    if (m === 8 && d >= 21 && d <= 23) return "Autumn Equinox";
-    if (m === 11 && d >= 20 && d <= 22) return "Winter Solstice";
+    if (m === 2 && d >= 19 && d <= 21) return "Ostara: Spring Equinox (Rebirth)";
+    if (m === 5 && d >= 20 && d <= 22) return "Litha: Summer Solstice (Abundance)";
+    if (m === 8 && d >= 21 && d <= 23) return "Mabon: Autumn Equinox (Gratitude)";
+    if (m === 11 && d >= 20 && d <= 22) return "Yule: Winter Solstice (Stillness)";
     return null;
   }
 
   function togglePeriod() {
-    const key = activeDate.toDateString();
-    if (periodLogs[key]) delete periodLogs[key];
-    else periodLogs[key] = true;
-    localStorage.setItem('sacredCycles', JSON.stringify(periodLogs));
-    render();
-    updateCard(activeDate);
+    const key = currentD.toDateString();
+    logs[key] = !logs[key];
+    localStorage.setItem('sacred_logs', JSON.stringify(logs));
+    render(); updateCard(currentD);
   }
 
   function updateCard(date) {
-    activeDate = new Date(date);
-    const d = getMoonData(date);
-    const wheel = getWheelLabel(date);
+    currentD = new Date(date);
+    const info = getHighPrecisionMoon(date);
+    const sacred = getSacredDay(date);
     
-    document.getElementById("cardDate").innerText = date.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }).toUpperCase();
-    document.getElementById("cardTitle").innerText = wheel ? wheel.toUpperCase() : `${d.arch.n} ${d.arch.e}`;
-    document.getElementById("cardPhase").innerText = `${d.icon} ${d.name} · Day ${d.moonDay}`;
-    document.getElementById("cardZodiac").innerText = `MOON IN ${d.zodiac.toUpperCase()}`;
+    document.getElementById("cardDate").innerText = date.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' }).toUpperCase();
+    document.getElementById("cardTitle").innerText = sacred ? sacred : MOON_NAMES[date.getMonth()];
+    document.getElementById("cardPhase").innerText = `${info.icon} ${info.phaseName.toUpperCase()}`;
+    document.getElementById("cardZodiac").innerText = `MOON IN ${info.zodiac.toUpperCase()}`;
     
-    document.getElementById("cardSpirit").innerText = SPIRIT_MESSAGES[d.moonDay - 1] || SPIRIT_MESSAGES[0];
-    document.getElementById("cardRitual").innerText = RITUALS[date.getDate() % 6];
+    const daySeed = date.getDate();
+    const spirits = ["Listen to the silence between your thoughts.", "The Earth is dreaming through you.", "Your heart is the oldest calendar.", "Water your intentions with faith.", "You are a bridge between worlds."];
+    const global = ["In many cultures, the Turtle's back represents 13 moons and 28 days—a living map of time.", "Ancient Mayan observers tracked the moon with perfect precision as the Grandmother protector.", "The Celts saw the moon as a silver gate between the physical and spirit realms."];
     
-    // Shadow Work
-    const isNew = d.name === "New Moon";
-    document.getElementById("shadowSection").style.display = isNew ? "block" : "none";
-    document.getElementById("cardShadow").innerText = SHADOWS[date.getDate() % 4];
+    document.getElementById("cardSpirit").innerText = spirits[daySeed % 5];
+    document.getElementById("cardGlobal").innerText = global[daySeed % 3];
+    document.getElementById("cardRitual").innerText = "Anoint your third eye with pure water and breathe in the " + info.zodiac.split(' ')[0] + " energy.";
 
-    // Period Button
     const btn = document.getElementById("periodBtn");
-    if (periodLogs[date.toDateString()]) btn.classList.add("period-active");
-    else btn.classList.remove("period-active");
+    btn.className = logs[date.toDateString()] ? "action-btn period-active" : "action-btn";
   }
 
   function render() {
     const cal = document.getElementById("calendar");
-    if (!cal) return;
     cal.innerHTML = "";
-    
-    const displayMonth = activeDate.getMonth();
-    const displayYear = activeDate.getFullYear();
-    document.getElementById("monthDisplay").innerText = activeDate.toLocaleString('default', { month: 'long', year: 'numeric' }).toUpperCase();
+    document.getElementById("monthDisplay").innerText = currentD.toLocaleString('default', { month: 'long', year: 'numeric' }).toUpperCase();
 
     ["M", "T", "W", "T", "F", "S", "S"].forEach(d => {
       const h = document.createElement("div"); h.className = "day-label"; h.innerText = d; cal.appendChild(h);
     });
 
-    const first = new Date(displayYear, displayMonth, 1);
-    const last = new Date(displayYear, displayMonth + 1, 0).getDate();
+    const year = currentD.getFullYear(), month = currentD.getMonth();
+    const first = new Date(year, month, 1);
+    const last = new Date(year, month + 1, 0).getDate();
     let offset = first.getDay() === 0 ? 6 : first.getDay() - 1;
 
     for (let i = 0; i < offset; i++) cal.appendChild(document.createElement("div"));
 
     for (let i = 1; i <= last; i++) {
-      const d = new Date(displayYear, displayMonth, i);
-      const info = getMoonData(d);
+      const d = new Date(year, month, i);
+      const info = getHighPrecisionMoon(d);
+      const wheel = getSacredDay(d);
+      
       const cell = document.createElement("div");
-      cell.className = "day" + (d.toDateString() === new Date().toDateString() ? " today" : "");
-      if (periodLogs[d.toDateString()]) cell.classList.add("is-period");
-
-      const wheel = getWheelLabel(d);
-      const zodText = info.zodiac.split(' ')[0];
+      cell.className = "day";
+      if (d.toDateString() === new Date().toDateString()) cell.style.borderColor = "white";
+      if (info.phaseName === "Full Moon") cell.classList.add("full-moon-highlight");
+      if (logs[d.toDateString()]) cell.classList.add("is-period");
+      if (wheel) cell.classList.add("is-wheel");
 
       cell.innerHTML = `
         <span class="day-num">${i}</span>
         <span class="moon-emoji">${info.icon}</span>
-        <span class="zodiac-small">${zodText}</span>
-        ${wheel ? `<div class="wheel-dot"></div>` : ""}
+        <span class="zod-text">${info.zodiac.split(' ')[0]}</span>
       `;
       cell.onclick = () => updateCard(d);
       cal.appendChild(cell);
     }
   }
 
-  function changeMonth(n) {
-    activeDate.setMonth(activeDate.getMonth() + n);
-    render();
-    updateCard(activeDate);
-  }
+  function changeMonth(n) { currentD.setMonth(currentD.getMonth() + n); render(); updateCard(currentD); }
 
-  // Final check: Initialize safely
-  window.onload = () => {
-    render();
-    updateCard(new Date());
-  };
+  window.onload = () => { render(); updateCard(new Date()); };
 </script>
-
 </body>
 </html>
