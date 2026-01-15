@@ -3,159 +3,123 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>13 Moon Calendar</title>
+  <title>Sacred 13 Moon Calendar</title>
 
   <script src="https://unpkg.com/suncalc@1.9.0/suncalc.js"></script>
 
   <style>
+    :root {
+      --bg: #0b0d17;
+      --card-bg: #15192d;
+      --accent: rgba(180,200,255,0.8);
+      --full-moon: rgba(255,220,180,0.9);
+      --new-moon: rgba(120,140,255,0.85);
+    }
+
     body {
-      font-family: system-ui, sans-serif;
-      background: #0b0d17;
+      font-family: system-ui, -apple-system, sans-serif;
+      background: var(--bg);
       color: #eee;
-      padding: 16px;
+      padding: 10px;
+      margin: 0;
     }
 
-    h1 {
-      text-align: center;
-      margin-bottom: 12px;
-    }
-
-    #calendar {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-      gap: 8px;
-      margin-top: 12px;
-    }
-
-    .day {
-      background: #15192d;
-      border-radius: 10px;
-      padding: 8px;
-      min-height: 90px;
-      cursor: pointer;
-      transition: background 0.2s;
-      font-size: 0.8rem;
-    }
-
-    .day:hover {
-      background: #1f2550;
-    }
-
-    .gregorian {
-      font-size: 0.7rem;
-      opacity: 0.7;
-      margin-bottom: 4px;
-    }
-
-    .moon-name {
-      font-size: 0.7rem;
-      opacity: 0.85;
-      margin-top: 4px;
-      line-height: 1.2;
-    }
+    h1 { text-align: center; font-size: 1.5rem; margin: 20px 0; }
 
     #lunarCard {
       background: linear-gradient(180deg, #1b1f3b, #0b0d17);
       border-radius: 18px;
       padding: 20px;
       margin-bottom: 20px;
-      box-shadow: 0 0 20px rgba(180,200,255,0.15);
-      border: 1px solid rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
 
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.9rem;
-      opacity: 0.85;
+    .card-header { display: flex; justify-content: space-between; font-size: 0.85rem; opacity: 0.8; }
+    #cardTitle { text-align: center; margin: 15px 0; color: #fff; }
+    .card-section { margin-bottom: 12px; font-size: 0.95rem; line-height: 1.5; }
+    .card-section strong { color: var(--accent); display: block; margin-bottom: 4px; }
+
+    #calendar {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr); /* 7 Days per week */
+      gap: 6px;
     }
 
-    #cardTitle {
+    .day-label {
       text-align: center;
-      margin: 12px 0;
-      font-size: 1.3rem;
-      letter-spacing: 0.5px;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      opacity: 0.5;
+      padding-bottom: 5px;
     }
 
-    .card-section {
-      margin-top: 10px;
-      line-height: 1.4;
+    .day {
+      background: var(--card-bg);
+      border-radius: 8px;
+      padding: 6px;
+      min-height: 100px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      font-size: 0.75rem;
+      border: 1px solid transparent;
+      transition: 0.3s;
     }
 
-    /* 🌟 Sacred Highlights */
-    .day.today {
-      border: 1px solid rgba(180,200,255,0.9);
-      box-shadow: 0 0 12px rgba(180,200,255,0.8), inset 0 0 12px rgba(180,200,255,0.2);
-    }
+    /* 🌕 Glow Effects */
+    .day.today { border: 1px solid var(--accent); box-shadow: 0 0 10px var(--accent); }
+    .day.full-moon { box-shadow: 0 0 15px var(--full-moon); border: 1px solid var(--full-moon); }
+    .day.new-moon { box-shadow: 0 0 15px var(--new-moon); border: 1px solid var(--new-moon); }
+    .day.sacred { border: 1px dashed #fff; }
 
-    .day.full-moon { box-shadow: 0 0 15px rgba(255,220,180,0.5); }
-    .day.new-moon { box-shadow: 0 0 15px rgba(120,140,255,0.4); }
-    .day.sacred { border: 1px dashed rgba(255,255,255,0.5); }
+    .gregorian-num { font-weight: bold; margin-bottom: 4px; opacity: 0.6; }
+    .emoji-row { font-size: 1.2rem; margin: 4px 0; }
+    .info-row { font-size: 0.65rem; text-align: center; line-height: 1.2; opacity: 0.9; }
+
+    @media (max-width: 500px) {
+      .day { min-height: 85px; padding: 4px; }
+      .info-row { font-size: 0.6rem; }
+    }
   </style>
 </head>
-
 <body>
-
-<h1>🌙 13 Moon Calendar</h1>
 
 <div id="lunarCard">
   <div class="card-header">
     <span id="cardPhase"></span>
     <span id="cardZodiac"></span>
   </div>
-
-  <h2 id="cardTitle"></h2>
-
-  <p class="card-section">
-    <strong>Affirmation</strong><br>
-    <span id="cardAffirmation"></span>
-  </p>
-
-  <p class="card-section">
-    <strong>Ritual</strong><br>
-    <span id="cardRitual"></span>
-  </p>
-
-  <p class="card-section">
-    <strong>Journal</strong><br>
-    <span id="cardJournal"></span>
-  </p>
+  <h2 id="cardTitle">Loading Moon...</h2>
+  <div class="card-section"><strong>Affirmation</strong><span id="cardAff"></span></div>
+  <div class="card-section"><strong>Ritual</strong><span id="cardRit"></span></div>
+  <div class="card-section"><strong>Journal</strong><span id="cardJour"></span></div>
 </div>
 
-<div id="calendar"></div>
+<div id="calendar">
+  <div class="day-label">Mon</div><div class="day-label">Tue</div><div class="day-label">Wed</div>
+  <div class="day-label">Thu</div><div class="day-label">Fri</div><div class="day-label">Sat</div><div class="day-label">Sun</div>
+</div>
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  let userLat = 0;
-  let userLon = 0;
-
-  const calendar = document.getElementById("calendar");
-  const MS_PER_DAY = 86400000;
-  const LUNAR_MONTH = 28;
   const LUNAR_ANCHOR = new Date(2024, 0, 11);
-
+  const MS_PER_DAY = 86400000;
+  
   const MOON_ARCHETYPES = [
     "Deep Rest","Dreaming","Gestation","Stirring","Rooting",
     "Leafing","Budding","Flowering","Radiance",
     "Fruiting","Harvest","Composting","Stillness"
   ];
 
-  const PHASE_EMOJI = {
-    "New Moon": "🌑", "Waxing Crescent": "🌒", "First Quarter": "🌓",
-    "Waxing Gibbous": "🌔", "Full Moon": "🌕", "Waning Gibbous": "🌖",
-    "Last Quarter": "🌗", "Waning Crescent": "🌘"
-  };
+  const FULL_MOON_NAMES = ["Wolf 🐺", "Snow ❄️", "Worm 🪱", "Pink 🌸", "Flower 🌼", "Strawberry 🍓", "Buck 🦌", "Sturgeon 🐟", "Harvest 🌾", "Hunter 🏹", "Beaver 🦫", "Cold 🥶"];
+  
+  const PHASE_EMOJI = { "New Moon": "🌑", "Waxing Crescent": "🌒", "First Quarter": "🌓", "Waxing Gibbous": "🌔", "Full Moon": "🌕", "Waning Gibbous": "🌖", "Last Quarter": "🌗", "Waning Crescent": "🌘" };
 
-  const LUNAR_ZODIAC = [
-    { sign: "Aries", start: 0 }, { sign: "Taurus", start: 30 },
-    { sign: "Gemini", start: 60 }, { sign: "Cancer", start: 90 },
-    { sign: "Leo", start: 120 }, { sign: "Virgo", start: 150 },
-    { sign: "Libra", start: 180 }, { sign: "Scorpio", start: 210 },
-    { sign: "Sagittarius", start: 240 }, { sign: "Capricorn", start: 270 },
-    { sign: "Aquarius", start: 300 }, { sign: "Pisces", start: 330 }
-  ];
+  const ZODIAC_SIGNS = ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"];
 
-  function getMoonPhase(date) {
+  function getMoonPhaseName(date) {
     const p = SunCalc.getMoonIllumination(date).phase;
     if (p < 0.03 || p > 0.97) return "New Moon";
     if (p < 0.22) return "Waxing Crescent";
@@ -167,80 +131,79 @@ document.addEventListener("DOMContentLoaded", () => {
     return "Waning Crescent";
   }
 
-  function getLunarZodiac(date, lat, lon) {
-    const pos = SunCalc.getMoonPosition(date, lat, lon);
-    const deg = (pos.lng * 180 / Math.PI + 360) % 360; // Corrected to .lng
-    for (let i = LUNAR_ZODIAC.length - 1; i >= 0; i--) {
-      if (deg >= LUNAR_ZODIAC[i].start) return LUNAR_ZODIAC[i].sign;
-    }
-    return "Aries";
-  } // Added missing closing brace
+  // Improved Zodiac Calculation to closer match NASA/Almanac (Tropical)
+  function getZodiac(date) {
+    const p = SunCalc.getMoonPosition(date, 0, 0); 
+    // Convert ecliptic longitude to degrees
+    let lon = (p.lng * 180 / Math.PI + 360) % 360;
+    // Offset for Tropical Zodiac alignment
+    const index = Math.floor(lon / 30);
+    return ZODIAC_SIGNS[index];
+  }
 
   function getLunarData(date) {
     const days = Math.floor((date - LUNAR_ANCHOR) / MS_PER_DAY);
-    const moonDay = ((days % LUNAR_MONTH) + LUNAR_MONTH) % LUNAR_MONTH + 1;
-    const moonIndex = Math.floor(days / LUNAR_MONTH) % 13;
-    return { moonDay, archetype: MOON_ARCHETYPES[moonIndex] };
+    const moonDay = ((days % 28) + 28) % 28 + 1;
+    const moonIndex = Math.floor(days / 28) % 13;
+    return { day: moonDay, archetype: MOON_ARCHETYPES[moonIndex] };
   }
 
-  function updateTodayCard(date) {
-    const lunar = getLunarData(date);
-    const phase = getMoonPhase(date);
+  function render() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth();
     
-    document.getElementById("cardTitle").innerText = `${lunar.archetype} — Day ${lunar.moonDay}`;
-    document.getElementById("cardPhase").innerText = `${PHASE_EMOJI[phase]} ${phase}`;
-    document.getElementById("cardAffirmation").innerText = "I move in rhythm with the living cosmos.";
-    document.getElementById("cardRitual").innerText = "Light a candle and breathe with the Moon.";
-    document.getElementById("cardJournal").innerText = "What part of me is asking for gentleness?";
-  }
+    // Header Card
+    const todayData = getLunarData(now);
+    const todayPhase = getMoonPhaseName(now);
+    document.getElementById("cardTitle").innerText = `${todayData.archetype} (Day ${todayData.day})`;
+    document.getElementById("cardPhase").innerText = `${PHASE_EMOJI[todayPhase]} ${todayPhase}`;
+    document.getElementById("cardZodiac").innerText = `🌌 Moon in ${getZodiac(now)}`;
+    document.getElementById("cardAff").innerText = "I trust the timing of my life.";
+    document.getElementById("cardRit").innerText = "Visualize your intentions under the lunar glow.";
+    document.getElementById("cardJour").innerText = "What am I ready to release to the universe?";
 
-  function renderMonth(year, month) {
-    calendar.innerHTML = "";
-    const today = new Date();
+    // Calendar
+    const firstDay = new Date(year, month, 1);
     const daysInMonth = new Date(year, month + 1, 0).getDate();
+    
+    // Shift to start on Monday (0 is Sunday, so 1 is Monday)
+    let startOffset = firstDay.getDay() - 1;
+    if (startOffset === -1) startOffset = 6;
+
+    for (let i = 0; i < startOffset; i++) {
+      document.getElementById("calendar").appendChild(document.createElement("div"));
+    }
 
     for (let d = 1; d <= daysInMonth; d++) {
       const date = new Date(year, month, d);
-      const phase = getMoonPhase(date);
+      const phase = getMoonPhaseName(date);
       const lunar = getLunarData(date);
-      const zodiac = getLunarZodiac(date, userLat, userLon);
-
+      const zodiac = getZodiac(date);
+      
       const cell = document.createElement("div");
-      cell.classList.add("day");
-      if (date.toDateString() === today.toDateString()) cell.classList.add("today");
+      cell.className = "day";
+      
+      if (date.toDateString() === now.toDateString()) cell.classList.add("today");
+      if (phase === "Full Moon") cell.classList.add("full-moon");
+      if (phase === "New Moon") cell.classList.add("new-moon");
+
+      const fmName = (phase === "Full Moon") ? FULL_MOON_NAMES[month] : "";
 
       cell.innerHTML = `
-        <div class="gregorian">${date.getDate()} ${date.toLocaleString('default', { month: 'short' })}</div>
-        <div>${PHASE_EMOJI[phase]}</div>
-        <div class="moon-name">In ${zodiac}</div>
-        <div class="moon-name">${lunar.archetype}</div>
+        <div class="gregorian-num">${d}</div>
+        <div class="emoji-row">${PHASE_EMOJI[phase]}</div>
+        <div class="info-row">${zodiac}</div>
+        <div class="info-row" style="color:#aaa">${lunar.archetype}</div>
+        ${fmName ? `<div class="info-row" style="color:gold; font-weight:bold">${fmName}</div>` : ""}
       `;
-      calendar.appendChild(cell);
+      document.getElementById("calendar").appendChild(cell);
     }
   }
 
-  /* INIT */
-  const now = new Date();
-  updateTodayCard(now);
-
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      pos => {
-        userLat = pos.coords.latitude;
-        userLon = pos.coords.longitude;
-        document.getElementById("cardZodiac").innerText = `🌌 Moon in ${getLunarZodiac(now, userLat, userLon)}`;
-        renderMonth(now.getFullYear(), now.getMonth());
-      },
-      () => {
-        document.getElementById("cardZodiac").innerText = "🌌 Moon (Standard)";
-        renderMonth(now.getFullYear(), now.getMonth());
-      }
-    );
-  } else {
-    renderMonth(now.getFullYear(), now.getMonth());
-  }
+  render();
 });
 </script>
+
 </body>
 </html>
-
