@@ -212,6 +212,13 @@ document.addEventListener("DOMContentLoaded", () => {
     for (let d = 1; d <= daysInMonth; d++) {
       const date = new Date(year, month, d);
       const phase = getMoonPhase(date);
+      let specialLabel = "";
+if (isLunarNewYear(date)) {
+  specialLabel = "🌑 Lunar New Year · Womb Moon Begins";
+} else if (isSpringEquinox(date)) {
+  specialLabel = "⚖ Spring Equinox";
+}
+
       const lunar = getLunarData(date);
 
       const cell = document.createElement("div");
@@ -229,7 +236,8 @@ document.addEventListener("DOMContentLoaded", () => {
         <div class="moon-day">${phase}</div>
         ${fullMoonName ? `<div class="moon-name">🌕 ${fullMoonName}</div>` : ""}
         <div class="moon-name">${lunar.archetype} · Day ${lunar.moonDay}</div>
-      `;
+        ${specialLabel ? `<div class="moon-name">${specialLabel}</div>` : ""}
+        `;
 
       cell.onclick = () => {
         dayText.innerText =
@@ -247,6 +255,28 @@ Moon Day: ${lunar.moonDay}`;
       calendar.appendChild(cell);
     }
   }
+  
+function isSpringEquinox(date) {
+  return date.getMonth() === 2 && date.getDate() >= 19 && date.getDate() <= 21;
+}
+
+function isLunarNewYear(date) {
+  if (getMoonPhase(date) !== "New Moon") return false;
+  const equinox = new Date(date.getFullYear(), 2, 20);
+  return date >= equinox;
+}
+
+function isDayOutOfTime(date) {
+  const nextDay = new Date(date);
+  nextDay.setDate(date.getDate() + 1);
+  return isLunarNewYear(nextDay);
+}
+  if (isDayOutOfTime(date)) {
+  specialLabel = "🧭 Day Out of Time · Between Worlds";
+}
+  if (phase === "Full Moon") {
+  cell.style.boxShadow = "0 0 18px rgba(255,220,180,0.35)";
+}
 
   const now = new Date();
   renderMonth(now.getFullYear(), now.getMonth());
