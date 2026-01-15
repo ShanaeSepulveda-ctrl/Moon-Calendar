@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Eternal Mother Moon</title>
+  <title>Sacred Mother Oracle</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Charm:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root { --gold: #d4af37; --obsidian: #050308; --amethyst: #2a1b4d; --blood: #8b2635; --emerald: #2d5a27; }
@@ -13,7 +13,7 @@
       color: #fdfbfb; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center;
     }
     #lunarCard {
-      width: 90%; max-width: 420px; background: rgba(15, 8, 25, 0.95);
+      width: 95%; max-width: 420px; background: rgba(15, 8, 25, 0.98);
       border: 2px solid var(--gold); border-radius: 30px; padding: 25px; margin: 20px 0;
       box-shadow: 0 0 40px rgba(123, 67, 151, 0.5); text-align: center;
     }
@@ -71,7 +71,7 @@
     { n: "Hunter's Moon", s: "Hawk 🦅" }, { n: "Beaver Moon", s: "Beaver 🦫" }, { n: "Cold Moon", s: "Bear 🐻" }
   ];
 
-  let logs = JSON.parse(localStorage.getItem('sacred_v15')) || {};
+  let logs = JSON.parse(localStorage.getItem('sacred_v16')) || {};
 
   function getSacredMoon(date) {
     const lp = 2551443; 
@@ -80,11 +80,9 @@
     const phaseRaw = ((now.getTime() - new_moon.getTime()) / 1000) % lp;
     const res = Math.floor((phaseRaw / lp) * 28) + 1;
     
-    // Polarity-Corrected Zodiac Logic for 2026
+    // Polarity Calibration for 2026: Jan 14 is Wolf Moon in Cancer
     const startOf2026 = new Date(2026, 0, 1).getTime();
     const daysSinceStart = (date.getTime() - startOf2026) / (1000 * 60 * 60 * 24);
-    
-    // Calibrated to ensure Jan 15 is Sag, Jan 16 is Cap, and Jan 14 (Full Moon) is Cancer
     const zodiacIndex = Math.floor((daysSinceStart * 13.176 + 54) % 360 / 30);
     
     let icon = "🌑", name = "New Moon";
@@ -120,10 +118,10 @@
     document.getElementById("cardZodiac").innerText = `MOON IN ${m.zodiac.toUpperCase()}`;
     
     const day = date.getDate();
-    const spirits = ["You are the anchor in the storm.", "The moon reflects your inner depth.", "Trust the ancient wisdom in your bones.", "Your magic is a gift to the world.", "Stillness is where your power resides."];
+    const spirits = ["You are the wisdom you seek.", "Flow with the changing tides.", "Honor your own inner seasons.", "You are connected to all things.", "Light and shadow are both sacred."];
     document.getElementById("cardSpirit").innerText = spirits[day % 5];
-    document.getElementById("cardAncestral").innerText = `The Wolf Moon in Cancer asks us to protect our emotional home. Your guide is the ${base.s}.`;
-    document.getElementById("cardRitual").innerText = "Honor the " + m.zodiac.split(' ')[0] + " energy with a gentle breath meditation.";
+    document.getElementById("cardAncestral").innerText = `The Turtle shell teaches us that time is a circle. Your guide today is the ${base.s}.`;
+    document.getElementById("cardRitual").innerText = "Take 3 deep breaths, sensing the " + m.zodiac.split(' ')[0] + " energy within your heart.";
     document.getElementById("periodBtn").className = logs[date.toDateString()] ? "period-btn active" : "period-btn";
   }
 
@@ -136,14 +134,15 @@
       const h = document.createElement("div"); h.className = "day-label"; h.innerText = d; grid.appendChild(h);
     });
 
-    const first = new Date(activeD.getFullYear(), activeD.getMonth(), 1);
-    const last = new Date(activeD.getFullYear(), activeD.getMonth() + 1, 0).getDate();
+    const year = activeD.getFullYear(), month = activeD.getMonth();
+    const first = new Date(year, month, 1);
+    const last = new Date(year, month + 1, 0).getDate();
     let offset = first.getDay() === 0 ? 6 : first.getDay() - 1;
 
     for (let i = 0; i < offset; i++) grid.appendChild(document.createElement("div"));
 
     for (let i = 1; i <= last; i++) {
-      const d = new Date(activeD.getFullYear(), activeD.getMonth(), i);
+      const d = new Date(year, month, i);
       const moon = getSacredMoon(d);
       const cell = document.createElement("div");
       cell.className = "day";
@@ -168,7 +167,7 @@
 
   function togglePeriod() {
     const k = activeD.toDateString(); logs[k] = !logs[k];
-    localStorage.setItem('sacred_v15', JSON.stringify(logs));
+    localStorage.setItem('sacred_v16', JSON.stringify(logs));
     render(); updateCard(activeD);
   }
 
@@ -179,3 +178,4 @@
 </script>
 </body>
 </html>
+
