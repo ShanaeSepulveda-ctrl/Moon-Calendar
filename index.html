@@ -5,10 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>13 Moon Calendar</title>
 
-  <!-- SunCalc for real lunar astronomy -->
   <script src="https://unpkg.com/suncalc@1.9.0/suncalc.js"></script>
-
-  <link rel="manifest" href="manifest.json">
 
   <style>
     body {
@@ -25,7 +22,7 @@
 
     #calendar {
       display: grid;
-      grid-template-columns: repeat(7, 1fr);
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
       gap: 8px;
       margin-top: 12px;
     }
@@ -37,97 +34,63 @@
       min-height: 90px;
       cursor: pointer;
       transition: background 0.2s;
+      font-size: 0.8rem;
     }
 
     .day:hover {
       background: #1f2550;
     }
 
-    .day.today {
-      border: 1px solid rgba(180,200,255,0.6);
-      box-shadow: 0 0 12px rgba(180,200,255,0.6);
-    }
-
     .gregorian {
       font-size: 0.7rem;
       opacity: 0.7;
+      margin-bottom: 4px;
     }
 
     .moon-name {
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       opacity: 0.85;
       margin-top: 4px;
+      line-height: 1.2;
     }
 
-    #dayInfo {
-      margin-top: 20px;
-      padding: 16px;
-      background: #15192d;
-      border-radius: 12px;
+    #lunarCard {
+      background: linear-gradient(180deg, #1b1f3b, #0b0d17);
+      border-radius: 18px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 20px rgba(180,200,255,0.15);
+      border: 1px solid rgba(255,255,255,0.08);
     }
 
-#lunarCard {
-  background: linear-gradient(180deg, #1b1f3b, #0b0d17);
-  border-radius: 18px;
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 0 20px rgba(180,200,255,0.15);
-  border: 1px solid rgba(255,255,255,0.08);
-}
-
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.9rem;
-  opacity: 0.85;
-}
-
-#cardTitle {
-  text-align: center;
-  margin: 12px 0;
-  font-size: 1.3rem;
-  letter-spacing: 0.5px;
-}
-
-.card-section {
-  margin-top: 10px;
-  line-height: 1.4;
-}
-
-    #toggleGuidance {
-      margin-top: 8px;
-      background: none;
-      border: 1px solid #888;
-      color: #eee;
-      padding: 6px 10px;
-      border-radius: 8px;
-      cursor: pointer;
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      opacity: 0.85;
     }
-    
+
+    #cardTitle {
+      text-align: center;
+      margin: 12px 0;
+      font-size: 1.3rem;
+      letter-spacing: 0.5px;
+    }
+
+    .card-section {
+      margin-top: 10px;
+      line-height: 1.4;
+    }
+
     /* 🌟 Sacred Highlights */
-.day.today {
-  border: 1px solid rgba(180,200,255,0.9);
-  box-shadow:
-    0 0 12px rgba(180,200,255,0.8),
-    inset 0 0 12px rgba(180,200,255,0.2);
-}
+    .day.today {
+      border: 1px solid rgba(180,200,255,0.9);
+      box-shadow: 0 0 12px rgba(180,200,255,0.8), inset 0 0 12px rgba(180,200,255,0.2);
+    }
 
-.day.full-moon {
-  box-shadow:
-    0 0 22px rgba(255,220,180,0.9),
-    inset 0 0 14px rgba(255,240,220,0.25);
-}
-
-.day.new-moon {
-  box-shadow:
-    0 0 20px rgba(120,140,255,0.85),
-    inset 0 0 14px rgba(120,140,255,0.25);
-}
-
-.day.sacred {
-  border: 1px dashed rgba(255,255,255,0.35);
-}
-
+    .day.full-moon { box-shadow: 0 0 15px rgba(255,220,180,0.5); }
+    .day.new-moon { box-shadow: 0 0 15px rgba(120,140,255,0.4); }
+    .day.sacred { border: 1px dashed rgba(255,255,255,0.5); }
   </style>
 </head>
 
@@ -161,29 +124,12 @@
 
 <div id="calendar"></div>
 
-<div id="dayInfo">
-  <h2>Selected Day</h2>
-  <p id="dayText">Tap a day to receive its guidance.</p>
-</div>
-
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-
-  /* =====================
-     🌍 LOCATION (SAFE)
-  ===================== */
   let userLat = 0;
   let userLon = 0;
 
-  /* =====================
-     🔗 DOM REFERENCES
-  ===================== */
   const calendar = document.getElementById("calendar");
-  const dayText = document.getElementById("dayText");
-
-  /* =====================
-     ⏳ CONSTANTS
-  ===================== */
   const MS_PER_DAY = 86400000;
   const LUNAR_MONTH = 28;
   const LUNAR_ANCHOR = new Date(2024, 0, 11);
@@ -194,50 +140,21 @@ document.addEventListener("DOMContentLoaded", () => {
     "Fruiting","Harvest","Composting","Stillness"
   ];
 
-  const FULL_MOON_NAMES = [
-    { name: "Wolf Moon", emoji: "🐺🌕" },
-    { name: "Snow Moon", emoji: "❄️🌕" },
-    { name: "Worm Moon", emoji: "🪱🌕" },
-    { name: "Pink Moon", emoji: "🌸🌕" },
-    { name: "Flower Moon", emoji: "🌼🌕" },
-    { name: "Strawberry Moon", emoji: "🍓🌕" },
-    { name: "Buck Moon", emoji: "🦌🌕" },
-    { name: "Sturgeon Moon", emoji: "🐟🌕" },
-    { name: "Harvest Moon", emoji: "🌾🌕" },
-    { name: "Hunter’s Moon", emoji: "🏹🌕" },
-    { name: "Beaver Moon", emoji: "🦫🌕" },
-    { name: "Cold Moon", emoji: "🥶🌕" }
-  ];
-
   const PHASE_EMOJI = {
-    "New Moon": "🌑",
-    "Waxing Crescent": "🌒",
-    "First Quarter": "🌓",
-    "Waxing Gibbous": "🌔",
-    "Full Moon": "🌕",
-    "Waning Gibbous": "🌖",
-    "Last Quarter": "🌗",
-    "Waning Crescent": "🌘"
+    "New Moon": "🌑", "Waxing Crescent": "🌒", "First Quarter": "🌓",
+    "Waxing Gibbous": "🌔", "Full Moon": "🌕", "Waning Gibbous": "🌖",
+    "Last Quarter": "🌗", "Waning Crescent": "🌘"
   };
 
   const LUNAR_ZODIAC = [
-    { sign: "Aries", start: 0 },
-    { sign: "Taurus", start: 30 },
-    { sign: "Gemini", start: 60 },
-    { sign: "Cancer", start: 90 },
-    { sign: "Leo", start: 120 },
-    { sign: "Virgo", start: 150 },
-    { sign: "Libra", start: 180 },
-    { sign: "Scorpio", start: 210 },
-    { sign: "Sagittarius", start: 240 },
-    { sign: "Capricorn", start: 270 },
-    { sign: "Aquarius", start: 300 },
-    { sign: "Pisces", start: 330 }
+    { sign: "Aries", start: 0 }, { sign: "Taurus", start: 30 },
+    { sign: "Gemini", start: 60 }, { sign: "Cancer", start: 90 },
+    { sign: "Leo", start: 120 }, { sign: "Virgo", start: 150 },
+    { sign: "Libra", start: 180 }, { sign: "Scorpio", start: 210 },
+    { sign: "Sagittarius", start: 240 }, { sign: "Capricorn", start: 270 },
+    { sign: "Aquarius", start: 300 }, { sign: "Pisces", start: 330 }
   ];
 
-  /* =====================
-     🌙 ASTRONOMY
-  ===================== */
   function getMoonPhase(date) {
     const p = SunCalc.getMoonIllumination(date).phase;
     if (p < 0.03 || p > 0.97) return "New Moon";
@@ -252,10 +169,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function getLunarZodiac(date, lat, lon) {
     const pos = SunCalc.getMoonPosition(date, lat, lon);
-    const deg = (pos.lon * 180 / Math.PI + 360) % 360;
+    const deg = (pos.lng * 180 / Math.PI + 360) % 360; // Corrected to .lng
     for (let i = LUNAR_ZODIAC.length - 1; i >= 0; i--) {
       if (deg >= LUNAR_ZODIAC[i].start) return LUNAR_ZODIAC[i].sign;
     }
+    return "Aries";
+  } // Added missing closing brace
 
   function getLunarData(date) {
     const days = Math.floor((date - LUNAR_ANCHOR) / MS_PER_DAY);
@@ -264,101 +183,64 @@ document.addEventListener("DOMContentLoaded", () => {
     return { moonDay, archetype: MOON_ARCHETYPES[moonIndex] };
   }
 
-  function getMoonDayGuidance() {
-    return {
-      a: "I move in rhythm with the living cosmos.",
-      r: "Light a candle and breathe with the Moon.",
-      j: "What part of me is asking for gentleness?"
-    };
+  function updateTodayCard(date) {
+    const lunar = getLunarData(date);
+    const phase = getMoonPhase(date);
+    
+    document.getElementById("cardTitle").innerText = `${lunar.archetype} — Day ${lunar.moonDay}`;
+    document.getElementById("cardPhase").innerText = `${PHASE_EMOJI[phase]} ${phase}`;
+    document.getElementById("cardAffirmation").innerText = "I move in rhythm with the living cosmos.";
+    document.getElementById("cardRitual").innerText = "Light a candle and breathe with the Moon.";
+    document.getElementById("cardJournal").innerText = "What part of me is asking for gentleness?";
   }
 
-  function isEquinoxOrSolstice(date) {
-    const m = date.getMonth(), d = date.getDate();
-    if (m === 2 && d >= 19 && d <= 21) return "⚖ Spring Equinox";
-    if (m === 5 && d >= 20 && d <= 22) return "☀️ Summer Solstice";
-    if (m === 8 && d >= 21 && d <= 23) return "🍂 Autumn Equinox";
-    if (m === 11 && d >= 20 && d <= 22) return "❄️ Winter Solstice";
-    return "";
-  }
-
-  /* =====================
-     📅 RENDER CALENDAR
-  ===================== */
   function renderMonth(year, month) {
     calendar.innerHTML = "";
-
     const today = new Date();
-    const firstDay = new Date(year, month, 1);
     const daysInMonth = new Date(year, month + 1, 0).getDate();
-    const offset = (firstDay.getDay() + 6) % 7;
-
-    for (let i = 0; i < offset; i++) {
-      calendar.appendChild(document.createElement("div"));
-    }
 
     for (let d = 1; d <= daysInMonth; d++) {
       const date = new Date(year, month, d);
       const phase = getMoonPhase(date);
       const lunar = getLunarData(date);
       const zodiac = getLunarZodiac(date, userLat, userLon);
-      const fullMoon = phase === "Full Moon" ? FULL_MOON_NAMES[month % 12] : null;
-      const sacred = isEquinoxOrSolstice(date);
 
       const cell = document.createElement("div");
       cell.classList.add("day");
-
       if (date.toDateString() === today.toDateString()) cell.classList.add("today");
-      if (phase === "Full Moon") cell.classList.add("full-moon");
-      if (phase === "New Moon") cell.classList.add("new-moon");
-      if (sacred) cell.classList.add("sacred");
 
       cell.innerHTML = `
-        <div class="gregorian">${date.toDateString()}</div>
-        <div>${PHASE_EMOJI[phase]} ${phase}</div>
-        ${fullMoon ? `<div class="moon-name">${fullMoon.emoji} ${fullMoon.name}</div>` : ""}
-        <div class="moon-name">🌌 Moon in ${zodiac}</div>
-        <div class="moon-name">${lunar.archetype} · Day ${lunar.moonDay}</div>
-        ${sacred ? `<div class="moon-name">${sacred}</div>` : ""}
+        <div class="gregorian">${date.getDate()} ${date.toLocaleString('default', { month: 'short' })}</div>
+        <div>${PHASE_EMOJI[phase]}</div>
+        <div class="moon-name">In ${zodiac}</div>
+        <div class="moon-name">${lunar.archetype}</div>
       `;
-
       calendar.appendChild(cell);
     }
   }
 
-  /* =====================
-     🌕 TODAY CARD
-  ===================== */
-  const today = new Date();
-  const lunar = getLunarData(today);
-  const phase = getMoonPhase(today);
-  const guidance = getMoonDayGuidance();
+  /* INIT */
+  const now = new Date();
+  updateTodayCard(now);
 
-  document.getElementById("cardTitle").innerText =
-    `${lunar.archetype} — ${phase}`;
-  document.getElementById("cardPhase").innerText =
-    `${PHASE_EMOJI[phase]} ${phase}`;
-
-  /* =====================
-     🌍 INIT (LOCATION → RENDER)
-  ===================== */
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
       pos => {
         userLat = pos.coords.latitude;
         userLon = pos.coords.longitude;
-        document.getElementById("cardZodiac").innerText =
-          `🌌 Moon in ${getLunarZodiac(today, userLat, userLon)}`;
-        renderMonth(today.getFullYear(), today.getMonth());
+        document.getElementById("cardZodiac").innerText = `🌌 Moon in ${getLunarZodiac(now, userLat, userLon)}`;
+        renderMonth(now.getFullYear(), now.getMonth());
       },
       () => {
-        document.getElementById("cardZodiac").innerText = "🌌 Moon (Earth-centered)";
-        renderMonth(today.getFullYear(), today.getMonth());
+        document.getElementById("cardZodiac").innerText = "🌌 Moon (Standard)";
+        renderMonth(now.getFullYear(), now.getMonth());
       }
     );
   } else {
-    renderMonth(today.getFullYear(), today.getMonth());
+    renderMonth(now.getFullYear(), now.getMonth());
   }
+});
 </script>
-
 </body>
 </html>
+
