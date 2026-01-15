@@ -80,6 +80,11 @@
   justify-content: space-between;
   font-size: 0.9rem;
   opacity: 0.85;
+  
+    const todayZodiac = getLunarZodiac(today, userLat, userLon);
+
+document.getElementById("cardZodiac").innerText =
+  `🌌 Moon in ${todayZodiac}`;
 }
 
 #cardTitle {
@@ -103,6 +108,31 @@
       border-radius: 8px;
       cursor: pointer;
     }
+    
+    /* 🌟 Sacred Highlights */
+.day.today {
+  border: 1px solid rgba(180,200,255,0.9);
+  box-shadow:
+    0 0 12px rgba(180,200,255,0.8),
+    inset 0 0 12px rgba(180,200,255,0.2);
+}
+
+.day.full-moon {
+  box-shadow:
+    0 0 22px rgba(255,220,180,0.9),
+    inset 0 0 14px rgba(255,240,220,0.25);
+}
+
+.day.new-moon {
+  box-shadow:
+    0 0 20px rgba(120,140,255,0.85),
+    inset 0 0 14px rgba(120,140,255,0.25);
+}
+
+.day.sacred {
+  border: 1px dashed rgba(255,255,255,0.35);
+}
+
   </style>
 </head>
 
@@ -143,6 +173,23 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
+let userLat = 0;
+let userLon = 0;
+
+if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      userLat = pos.coords.latitude;
+      userLon = pos.coords.longitude;
+      renderMonth(new Date().getFullYear(), new Date().getMonth());
+    },
+    () => {
+      // graceful fallback: Earth center reference
+      userLat = 0;
+      userLon = 0;
+    }
+  );
+}
 
   const calendar = document.getElementById("calendar");
   const dayText = document.getElementById("dayText");
@@ -182,6 +229,35 @@ document.addEventListener("DOMContentLoaded", () => {
     "Last Quarter": "🌗",
     "Waning Crescent": "🌘"
   };
+
+  const LUNAR_ZODIAC = [
+  { sign: "Aries", start: 0 },
+  { sign: "Taurus", start: 30 },
+  { sign: "Gemini", start: 60 },
+  { sign: "Cancer", start: 90 },
+  { sign: "Leo", start: 120 },
+  { sign: "Virgo", start: 150 },
+  { sign: "Libra", start: 180 },
+  { sign: "Scorpio", start: 210 },
+  { sign: "Sagittarius", start: 240 },
+  { sign: "Capricorn", start: 270 },
+  { sign: "Aquarius", start: 300 },
+  { sign: "Pisces", start: 330 }
+];
+
+  function getLunarZodiac(date, lat, lon) {
+  const pos = SunCalc.getMoonPosition(date, lat, lon);
+
+  // Convert radians → degrees
+  let eclipticLongitude = (pos.lon * 180 / Math.PI + 360) % 360;
+
+  for (let i = LUNAR_ZODIAC.length - 1; i >= 0; i--) {
+    if (eclipticLongitude >= LUNAR_ZODIAC[i].start) {
+      return LUNAR_ZODIAC[i].sign;
+    }
+  }
+  return "Pisces";
+}
 
   function getMoonPhase(date) {
     const p = SunCalc.getMoonIllumination(date).phase;
@@ -237,16 +313,34 @@ document.addEventListener("DOMContentLoaded", () => {
       const fullMoon = phase === "Full Moon" ? FULL_MOON_NAMES[month % 12] : null;
       const sacred = isEquinoxOrSolstice(date);
 
-      const cell = document.createElement("div");
-      cell.className = "day";
+     const zodiac = getLunarZodiac(date, userLat, userLon);
 
-      cell.innerHTML = `
-        <div class="gregorian">${date.toDateString()}</div>
-        <div class="moon-day">${phaseEmoji} ${phase}</div>
-        ${fullMoon ? `<div class="moon-name">${fullMoon.emoji} ${fullMoon.name}</div>` : ""}
-        <div class="moon-name">${lunar.archetype} · Day ${lunar.moonDay}</div>
-        ${sacred ? `<div class="moon-name">${sacred}</div>` : ""}
-      `;
+cell.classList.add("day");
+
+if (date.toDateString() === today.toDateString()) {
+  cell.classList.add("today");
+}
+
+if (phase === "Full Moon") {
+  cell.classList.add("full-moon");
+}
+
+if (phase === "New Moon") {
+  cell.classList.add("new-moon");
+}
+
+if (sacred) {
+  cell.classList.add("sacred");
+}
+
+cell.innerHTML = `
+  <div class="gregorian">${date.toDateString()}</div>
+  <div class="moon-day">${phaseEmoji} ${phase}</div>
+  ${fullMoon ? `<div class="moon-name">${fullMoon.emoji} ${fullMoon.name}</div>` : ""}
+  <div class="moon-name">🌌 Moon in ${zodiac}</div>
+  <div class="moon-name">${lunar.archetype} · Day ${lunar.moonDay}</div>
+  ${sacred ? `<div class="moon-name">${sacred}</div>` : ""}
+`;
 
       cell.onclick = () => {
         dayText.innerText =
