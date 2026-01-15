@@ -52,424 +52,183 @@
   </div>
 
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-  var calendar = document.getElementById("calendar");
-  var dayText = document.getElementById("dayText");
-  var todayDate = new Date();
+document.addEventListener("DOMContentLoaded", () => {
+  const calendar = document.getElementById("calendar");
+  const dayText = document.getElementById("dayText");
 
+  if (!calendar) {
+    console.error("Calendar element missing");
+    return;
+  }
+
+  // =========================
+  // 🌑 LUNAR YEAR ANCHOR
+  // =========================
+  // New Moon on Jan 11, 2024 (verified astronomical new moon)
+  const LUNAR_YEAR_ANCHOR = new Date(2024, 0, 11);
+
+  const MS_PER_DAY = 86400000;
+  const LUNAR_MONTH_LENGTH = 28;
+
+  // =========================
+  // 🌙 MOON ARCHETYPES (13)
+  // =========================
+  const MOON_ARCHETYPES = [
+    "Initiation",
+    "Stability",
+    "Growth",
+    "Harmony",
+    "Blooming",
+    "Nurturing",
+    "Illumination",
+    "Transformation",
+    "Harvest",
+    "Mysticism",
+    "Vision",
+    "Purification",
+    "Restoration"
+  ];
+
+  // =========================
+  // 🌕 SEASONAL MOON NAMES
+  // =========================
+  const SEASONAL_MOONS = [
+    "Wolf Moon",
+    "Snow Moon",
+    "Worm Moon",
+    "Pink Moon",
+    "Flower Moon",
+    "Strawberry Moon",
+    "Buck Moon",
+    "Sturgeon Moon",
+    "Harvest Moon",
+    "Hunter’s Moon",
+    "Beaver Moon",
+    "Cold Moon"
+  ];
+
+  // =========================
+  // 🔮 ZODIAC
+  // =========================
+  function getZodiac(date) {
+    const d = date.getDate(), m = date.getMonth() + 1;
+    if ((m==3&&d>=21)||(m==4&&d<=19)) return "Aries";
+    if ((m==4&&d>=20)||(m==5&&d<=20)) return "Taurus";
+    if ((m==5&&d>=21)||(m==6&&d<=20)) return "Gemini";
+    if ((m==6&&d>=21)||(m==7&&d<=22)) return "Cancer";
+    if ((m==7&&d>=23)||(m==8&&d<=22)) return "Leo";
+    if ((m==8&&d>=23)||(m==9&&d<=22)) return "Virgo";
+    if ((m==9&&d>=23)||(m==10&&d<=22)) return "Libra";
+    if ((m==10&&d>=23)||(m==11&&d<=21)) return "Scorpio";
+    if ((m==11&&d>=22)||(m==12&&d<=21)) return "Sagittarius";
+    if ((m==12&&d>=22)||(m==1&&d<=19)) return "Capricorn";
+    if ((m==1&&d>=20)||(m==2&&d<=18)) return "Aquarius";
+    return "Pisces";
+  }
+
+  // =========================
+  // 🌑 MOON PHASE
+  // =========================
   function getMoonPhase(date) {
-    if (typeof SunCalc === "undefined") return "🌙 Moon";
-    var phase = SunCalc.getMoonIllumination(date).phase;
-    if (phase < 0.03 || phase > 0.97) return "🌑 New Moon";
-    if (phase < 0.22) return "🌒 Waxing Crescent";
-    if (phase < 0.28) return "🌓 First Quarter";
-    if (phase < 0.47) return "🌔 Waxing Gibbous";
-    if (phase < 0.53) return "🌕 Full Moon";
-    if (phase < 0.72) return "🌖 Waning Gibbous";
-    if (phase < 0.78) return "🌗 Last Quarter";
+    if (!window.SunCalc) return "🌙";
+
+    const p = SunCalc.getMoonIllumination(date).phase;
+    if (p < 0.03 || p > 0.97) return "🌑 New Moon";
+    if (p < 0.22) return "🌒 Waxing Crescent";
+    if (p < 0.28) return "🌓 First Quarter";
+    if (p < 0.47) return "🌔 Waxing Gibbous";
+    if (p < 0.53) return "🌕 Full Moon";
+    if (p < 0.72) return "🌖 Waning Gibbous";
+    if (p < 0.78) return "🌗 Last Quarter";
     return "🌘 Waning Crescent";
   }
 
-  // fallback lunar function (kept available)
-  function getLunarPositionOriginal(date) {
-    var year = date.getUTCFullYear();
-    function getSpringEquinox(y) {
-      if (typeof SunCalc === "undefined") return null;
-      var start = Date.UTC(y,2,18,0,0,0), end = Date.UTC(y,2,22,0,0,0), stepMs = 60*60*1000;
-      var prevAlt = null, prevTime = start;
-      for (var t = start; t <= end; t += stepMs) {
-        var sample = new Date(t);
-        var pos = SunCalc.getPosition(sample, 0, 0);
-        var alt = pos && typeof pos.altitude === 'number' ? pos.altitude : null;
-        if (prevAlt !== null && alt !== null) {
-          if (prevAlt < 0 && alt >= 0) {
-            var ratio = Math.abs(prevAlt) / (Math.abs(prevAlt) + Math.abs(alt));
-            var estMs = prevTime + Math.round((t - prevTime) * ratio);
-            return new Date(estMs);
-          }
-        }
-        prevAlt = alt;
-        prevTime = t;
-      }
-      return null;
-    }
+  // =========================
+  // 🌙 LUNISOLAR CALC
+  // =========================
+  function getLunarData(date) {
+    const daysSinceAnchor =
+      Math.floor((date - LUNAR_YEAR_ANCHOR) / MS_PER_DAY);
 
-    function getFirstNewMoonOfYearUTC(y) {
-      if (typeof SunCalc === "undefined" || typeof SunCalc.getMoonIllumination !== 'function') return null;
-      for (var m = 0; m < 12; m++) {
-        for (var d = 1; d <= 31; d++) {
-          var dt = new Date(Date.UTC(y, m, d));
-          if (dt.getUTCMonth() !== m) continue;
-          var illum = SunCalc.getMoonIllumination(dt);
-          if (!illum || typeof illum.phase === 'undefined') continue;
-          var phase = illum.phase;
-          if (phase < 0.03 || phase > 0.97) {
-            return dt;
-          }
-        }
-      }
-      return null;
-    }
+    const moonDay =
+      ((daysSinceAnchor % LUNAR_MONTH_LENGTH) + LUNAR_MONTH_LENGTH) %
+        LUNAR_MONTH_LENGTH + 1;
 
-    var lunarYearStart = getSpringEquinox(year);
-    if (!lunarYearStart) lunarYearStart = getFirstNewMoonOfYearUTC(year);
-    if (!lunarYearStart) lunarYearStart = new Date(Date.UTC(year,0,1));
-    if (date < lunarYearStart) {
-      var prev = getSpringEquinox(year-1) || getFirstNewMoonOfYearUTC(year-1);
-      if (prev) lunarYearStart = prev;
-    }
-
-    var msPerDay = 1000*60*60*24;
-    var daysSinceStart = Math.floor((Date.UTC(date.getUTCFullYear(),date.getUTCMonth(),date.getUTCDate()) - Date.UTC(lunarYearStart.getUTCFullYear(),lunarYearStart.getUTCMonth(),lunarYearStart.getUTCDate()))/msPerDay);
-    var moonNumber = Math.floor(daysSinceStart / 28) + 1;
-    var moonDay = ((daysSinceStart % 28) + 28) % 28 + 1;
+    const moonIndex =
+      Math.floor(daysSinceAnchor / LUNAR_MONTH_LENGTH) % 13;
 
     return {
-      moonNumber: moonNumber <= 13 ? moonNumber : null,
-      moonDay: moonDay,
-      lunarYearStart: new Date(lunarYearStart.getTime())
+      moonDay,
+      moonIndex,
+      archetype: MOON_ARCHETYPES[moonIndex]
     };
   }
 
-  window.getLunarPositionOriginal = getLunarPositionOriginal;
-
-  // wrapper that modules can override by setting window.getLunarPosition
-  window.getLunarPositionWrapper = function(date) {
-    if (typeof window.getLunarPosition === 'function' && window.getLunarPosition !== window.getLunarPositionOriginal) {
-      try {
-        return window.getLunarPosition(date);
-      } catch (e) {
-        console.warn('Override lunar function failed; falling back.', e);
-        return window.getLunarPositionOriginal(date);
-      }
-    }
-    return window.getLunarPositionOriginal(date);
-  };
-
-  // determine solar events and include special hard-coded lunar-new-year date(s)
-  function findAnnualSolarEvents(year) {
-    var events = {};
-    if (typeof SunCalc === 'undefined' || typeof SunCalc.getPosition !== 'function') return events;
-
-    function findCrossing(startDateMS, endDateMS, stepMs, comparator) {
-      var best = null;
-      var prevVal = null, prevT = startDateMS;
-      for (var t = startDateMS; t <= endDateMS; t += stepMs) {
-        var dt = new Date(t);
-        var pos = SunCalc.getPosition(dt, 0, 0);
-        var val = pos && typeof pos.altitude === 'number' ? pos.altitude : null;
-        if (val === null) { prevVal = null; prevT = t; continue; }
-        if (prevVal !== null) {
-          if (comparator === 'crossZero') {
-            if (prevVal < 0 && val >= 0) {
-              var ratio = Math.abs(prevVal) / (Math.abs(prevVal) + Math.abs(val));
-              var estMs = prevT + Math.round((t - prevT) * ratio);
-              return new Date(estMs);
-            }
-          } else if (comparator === 'extremum') {
-            if (!best || Math.abs(val) > Math.abs(best.val)) {
-              best = { t: t, val: val };
-            }
-          }
-        } else {
-          if (!best && comparator === 'extremum' && Math.abs(val) > 0) best = { t: t, val: val };
-        }
-        prevVal = val;
-        prevT = t;
-      }
-      return best ? new Date(best.t) : null;
-    }
-
-    var approx = [
-      { name: 'spring-equinox', mid: Date.UTC(year,2,20) , cmp:'crossZero',   window:-3 },
-      { name: 'summer-solstice', mid: Date.UTC(year,5,21), cmp:'extremum',    window:7 },
-      { name: 'autumn-equinox', mid: Date.UTC(year,8,22), cmp:'crossZero',   window:-3 },
-      { name: 'winter-solstice', mid: Date.UTC(year,11,21), cmp:'extremum',   window:7 }
-    ];
-
-    approx.forEach(a => {
-      var start = a.mid + (a.window - 5) * 24*60*60*1000;
-      var end = a.mid + (a.window + 5) * 24*60*60*1000;
-      var found = findCrossing(start, end, 60*60*1000, a.cmp);
-      if (found) {
-        events[new Date(Date.UTC(found.getUTCFullYear(), found.getUTCMonth(), found.getUTCDate())).toISOString().slice(0,10)] = a.name;
-      }
-    });
-
-    // Hard-coded special lunar new year dates (so 2026-02-17 appears as Lunar New Year)
-    var hardSpecials = {
-      '2026-02-17': { type: 'lunar-new-year', label: '🏮 Lunar New Year 2026 — Year of the Horse' }
-    };
-    Object.keys(hardSpecials).forEach(k => events[k] = hardSpecials[k]);
-
-    return events;
-  }
-
-  var _solarEventCache = {};
-  function getSolarEventsForYear(year) {
-    if (_solarEventCache[year]) return _solarEventCache[year];
-    _solarEventCache[year] = findAnnualSolarEvents(year);
-    return _solarEventCache[year];
-  }
- 
-// Seasonal full-moon names (common names; adjust as you like)
-function getSeasonalFullMoonName(date) {
-  // use month index of the Gregorian calendar
-  const m = date.getUTCMonth();
-  // Common US/English names (example mapping)
-  const names = {
-    0: 'Wolf Moon',      // January
-    1: 'Snow Moon',      // February
-    2: 'Worm Moon',      // March
-    3: 'Pink Moon',      // April
-    4: 'Flower Moon',    // May
-    5: 'Strawberry Moon',// June
-    6: 'Buck Moon',      // July
-    7: 'Sturgeon Moon',  // August
-    8: 'Harvest Moon',   // September (sometimes October)
-    9: 'Hunter\'s Moon', // October
-    10: 'Beaver Moon',   // November
-    11: 'Cold Moon'      // December
-  };
-  return names[m] || '';
-}
-
-  function getMoonArchetype(date) {
-  // Based on seasonal progression, not fixed math
-  const archetypes = [
-    { name: "The Initiator", theme: "Beginnings, vision, awakening" },
-    { name: "The Stabilizer", theme: "Grounding, patience, rooting" },
-    { name: "The Builder", theme: "Growth, effort, momentum" },
-    { name: "The Harmonizer", theme: "Balance, relationship, care" },
-    { name: "The Blossomer", theme: "Creativity, beauty, expansion" },
-    { name: "The Nurturer", theme: "Emotional depth, protection" },
-    { name: "The Illuminator", theme: "Insight, truth, revelation" },
-    { name: "The Transformer", theme: "Release, power, rebirth" },
-    { name: "The Harvester", theme: "Gratitude, integration" },
-    { name: "The Mystic", theme: "Inner worlds, intuition" },
-    { name: "The Visionary", theme: "Future sight, dreaming" },
-    { name: "The Purifier", theme: "Clearing, simplification" },
-    { name: "The Restorer", theme: "Rest, closure, renewal" }
-  ];
-
-  const monthIndex = date.getMonth();
-  return archetypes[monthIndex % 13];
-}
-  
-  // 🌕 Seasonal Full Moon name (only near Full Moon)
-if (isNearFullMoon(date, 1.5)) {
-  const fm = document.createElement("div");
-  fm.className = "moon-name";
-  fm.innerText = "🌕 " + getSeasonalFullMoonName(date);
-  cell.appendChild(fm);
-}
-
- function approximateMoonZodiacByMonth(date) {
-  // rough association — this is NOT precise per-day astrology
-  const month = date.getUTCMonth();
-  const map = {
-    0: 'Cancer',    // Jan example
-    1: 'Leo',       // Feb (your example)
-    2: 'Virgo',     // Mar
-    3: 'Libra',     // Apr
-    4: 'Scorpio',   // May
-    5: 'Sagittarius',// Jun
-    6: 'Capricorn', // Jul
-    7: 'Aquarius',  // Aug
-    8: 'Pisces',    // Sep
-    9: 'Aries',     // Oct
-    10: 'Taurus',   // Nov
-    11: 'Gemini'    // Dec
-  };
-  return map[month] || '';
-}
-
-// Very simple "is this day near a full moon?" check
-function isNearFullMoon(date, toleranceDays = 1) {
-  if (typeof SunCalc === 'undefined' || typeof SunCalc.getMoonIllumination !== 'function') return false;
-  const illum = SunCalc.getMoonIllumination(date);
-  if (!illum || typeof illum.phase !== 'number') return false;
-  // phase ~ 0.5 is full moon. allow a tolerance window
-  const phase = illum.phase;
-  return Math.abs(phase - 0.5) <= (toleranceDays / 15); // approx mapping
-}
- 
-  // render month Monday..Sunday, highlight equinox as "True Rebirth" and hard-coded lunar new year(s)
+  // =========================
+  // 🗓️ RENDER MONTH
+  // =========================
   function renderMonth(year, month) {
     calendar.innerHTML = "";
 
-    var labels = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-    labels.forEach(function(l){ var el = document.createElement('div'); el.className='label-weekday'; el.innerText = l; calendar.appendChild(el); });
+    const firstDay = new Date(year, month, 1);
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-    var firstDay = new Date(year, month, 1);
-    var firstWeekdayShift = (firstDay.getDay() + 6) % 7;
-
-    for (var i = 0; i < firstWeekdayShift; i++) {
-      var blank = document.createElement('div');
-      blank.className = 'day';
-      calendar.appendChild(blank);
+    for (let i = 0; i < firstDay.getDay(); i++) {
+      calendar.appendChild(document.createElement("div"));
     }
 
-    var daysInMonth = new Date(year, month + 1, 0).getDate();
-    var solarEvents = getSolarEventsForYear(year);
+    const today = new Date();
 
-    for (var day = 1; day <= daysInMonth; day++) {
-      (function(day){
-        var date = new Date(year, month, day);
-        var isToday = date.getDate() === todayDate.getDate() && date.getMonth() === todayDate.getMonth() && date.getFullYear() === todayDate.getFullYear();
+    for (let day = 1; day <= daysInMonth; day++) {
+      const date = new Date(year, month, day);
+      const lunar = getLunarData(date);
+      const zodiac = getZodiac(date);
+      const phase = getMoonPhase(date);
 
-        var lunar = window.getLunarPositionWrapper(date);
-        var moonDay = lunar.moonDay;
-        var moonNumber = lunar.moonNumber;
-        var moonPhase = getMoonPhase(date);
+      const cell = document.createElement("div");
+      cell.className = "day";
 
-        var cell = document.createElement("div");
-        cell.className = "day";
-        if (isToday) cell.classList.add("today");
-
-        var iso = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())).toISOString().slice(0,10);
-
-        // special solar events (equinox/solstice) use enhanced labels
-        if (solarEvents[iso]) {
-          var ev = solarEvents[iso];
-          if (typeof ev === 'string') {
-            if (ev.indexOf('equinox') !== -1) {
-              cell.classList.add('equinox');
-              var badge = document.createElement('span');
-              badge.className = 'special-badge';
-              badge.innerText = '⚖ True Rebirth — Happy New Year';
-              cell.appendChild(badge);
-            }
-            if (ev.indexOf('solstice') !== -1) {
-              cell.classList.add('solstice');
-              var b2 = document.createElement('span');
-              b2.className = 'special-badge';
-              b2.innerText = '☀ Solstice';
-              cell.appendChild(b2);
-            }
-          } else if (typeof ev === 'object' && ev.type === 'lunar-new-year') {
-            cell.classList.add('lunar-new-year');
-            var b3 = document.createElement('span');
-            b3.className = 'special-badge';
-            b3.innerText = ev.label;
-            cell.appendChild(b3);
-          }
-        }
-
-        const zodiac = getZodiacSign(date);
-        const archetype = getMoonArchetype(date);
-
-        cell.innerHTML =
-        `<div class="gregorian">${date.toDateString()}</div>
-         <div class="moon-day">${moonPhase}</div>
-         <div class="moon-name">${zodiac} · ${archetype.name}</div>`;
-
-        cell.onclick = function () {
-  const zodiac = getZodiacSign(date);
-  const archetype = getMoonArchetype(date);
-  const seasonal = isNearFullMoon(date,1.5) ? getSeasonalFullMoonName(date) : "";
-
-  dayText.innerText =
-    `${date.toDateString()}
-${moonPhase}
-${seasonal ? "🌕 " + seasonal : ""}
-Zodiac: ${zodiac}
-Moon Theme: ${archetype.name}
-
-${archetype.theme}
-
-Affirmation:
-${guidance.affirmation}
-
-Suggested Ritual:
-${guidance.ritual}`;
-};
-
-dayText.innerText =
-  date.toDateString() +
-  (seasonalMoon ? "\n🌕 " + seasonalMoon : "") +
-  "\n" + moonPhase +
-  "\nMoon " + moonNumber + " · Day " + moonDay +
-  "\nZodiac Tone: " + zodiac +
-  "\n\n" + dayMeaning +
-  "\n\n" + guidance.message +
-  "\n\nAffirmation:\n" + guidance.affirmation +
-  "\n\nSuggested Ritual:\n" + guidance.ritual;
-
-        calendar.appendChild(cell);
-      })(day);
-    }
-
-    var totalCells = calendar.children.length;
-    var remainder = totalCells % 7;
-    if (remainder !== 0) {
-      var toAdd = 7 - remainder;
-      for (var j = 0; j < toAdd; j++) {
-        var blank2 = document.createElement('div');
-        blank2.className = 'day';
-        calendar.appendChild(blank2);
+      if (
+        date.toDateString() === today.toDateString()
+      ) {
+        cell.classList.add("today");
       }
+
+      cell.innerHTML = `
+        <div class="gregorian">${date.toDateString()}</div>
+        <div class="moon-day">${phase}</div>
+        <div class="moon-name">
+          ${lunar.archetype} · Day ${lunar.moonDay} · ${zodiac}
+        </div>
+      `;
+
+      cell.onclick = () => {
+        dayText.innerText = `
+${date.toDateString()}
+
+${phase}
+Moon Archetype: ${lunar.archetype}
+Moon Day: ${lunar.moonDay}
+Zodiac: ${zodiac}
+
+Guidance:
+Move with awareness. Align action with intuition.
+        `;
+      };
+
+      calendar.appendChild(cell);
     }
   }
 
-  window.renderMonth = renderMonth;
-  var now = new Date();
+  // =========================
+  // 🚀 START
+  // =========================
+  const now = new Date();
   renderMonth(now.getFullYear(), now.getMonth());
 
-  var todayPhase = getMoonPhase(todayDate);
-  var guidance = getLunarGuidance(todayPhase);
-  document.getElementById("lunarPhase").innerText = todayPhase;
-  document.getElementById("affirmation").innerText = guidance.affirmation;
-  document.getElementById("ritual").innerText = guidance.ritual;
-
-  function getLunarGuidance(phase) {
-    var guidance = {
-      "🌑 New Moon": { affirmation: "I welcome new beginnings with clarity and trust.", ritual: "Set intentions in a journal or sit quietly with what is ready to be born.", message: "This is a sacred pause. Listen inward and allow new seeds to form." },
-      "🌒 Waxing Crescent": { affirmation: "I gently nurture what is growing within me.", ritual: "Take one small aligned action toward a goal or dream.", message: "Growth is subtle today. Honor small steps and quiet momentum." },
-      "🌓 First Quarter": { affirmation: "I move forward with courage and commitment.", ritual: "Clear obstacles or make a decision you’ve been postponing.", message: "Tension invites clarity. Choose forward motion with intention." },
-      "🌔 Waxing Gibbous": { affirmation: "I refine my path with patience and awareness.", ritual: "Adjust plans and release perfectionism.", message: "Refinement brings wisdom. Let your vision evolve." },
-      "🌕 Full Moon": { affirmation: "I honor my growth and release what no longer serves me.", ritual: "Practice a release ritual or celebrate how far you’ve come.", message: "Illumination is strong. Feel fully, release gently, celebrate truth." },
-      "🌖 Waning Gibbous": { affirmation: "I integrate wisdom gained through experience.", ritual: "Share gratitude or reflect on recent insights.", message: "Meaning settles in now. Let lessons land softly." },
-      "🌗 Last Quarter": { affirmation: "I release with compassion and intention.", ritual: "Let go of habits, commitments, or thoughts that drain you.", message: "Clearing creates space. Choose what truly supports you." },
-      "🌘 Waning Crescent": { affirmation: "I rest, restore, and prepare for renewal.", ritual: "Slow down, rest deeply, or spend time in quiet reflection.", message: "This is a time of rest and surrender. Restoration is sacred." }
-    };
-    return guidance[phase] || { affirmation: "I flow with the natural rhythms of life.", ritual: "Pause and take a mindful breath.", message: "Move gently and listen to what your body and spirit need." };
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("service-worker.js");
   }
- 
-  function getMoonDayMeaning(moonDay) {
-    var meanings = {
-      1: "Initiation — a spark of beginning energy is present.",
-      2: "Polarity — notice balance, contrast, and relationship.",
-      3: "Activation — movement begins; ideas want expression.",
-      4: "Form — structure and boundaries support growth.",
-      5: "Empowerment — confidence and personal power rise.",
-      6: "Balance — harmony, care, and adjustment are needed.",
-      7: "Reflection — pause, observe, and realign.",
-      8: "Integration — lessons begin to settle into the body.",
-      9: "Intention — refocus on what truly matters.",
-      10: "Manifestation — effort meets visible outcome.",
-      11: "Release — clear tension, emotion, or resistance.",
-      12: "Understanding — insight and perspective deepen.",
-      13: "Transformation — something shifts at the core.",
-      14: "Illumination — truth is revealed; clarity peaks.",
-      15: "Expression — share, communicate, or celebrate.",
-      16: "Adjustment — course-correct with compassion.",
-      17: "Trust — surrender control and allow flow.",
-      18: "Healing — tend to emotional or physical needs.",
-      19: "Completion — acknowledge what has been fulfilled.",
-      20: "Devotion — recommit to what nourishes you.",
-      21: "Expansion — openness and possibility widen.",
-      22: "Mastery — skills and wisdom stabilize.",
-      23: "Flow — allow ease and natural movement.",
-      24: "Gratitude — appreciation softens and opens the heart.",
-      25: "Surrender — release expectations and outcomes.",
-      26: "Clearing — simplify, declutter, cleanse.",
-      27: "Stillness — quiet awareness prepares renewal.",
-      28: "Renewal — rest, reset, and prepare to begin again."
-    };
-    return meanings[moonDay] || "";
-  }
-
 });
 </script>
 
