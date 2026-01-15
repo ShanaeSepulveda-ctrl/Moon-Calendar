@@ -212,7 +212,39 @@ document.addEventListener("DOMContentLoaded", function () {
     _solarEventCache[year] = findAnnualSolarEvents(year);
     return _solarEventCache[year];
   }
+ 
+// Seasonal full-moon names (common names; adjust as you like)
+function getSeasonalFullMoonName(date) {
+  // use month index of the Gregorian calendar
+  const m = date.getUTCMonth();
+  // Common US/English names (example mapping)
+  const names = {
+    0: 'Wolf Moon',      // January
+    1: 'Snow Moon',      // February
+    2: 'Worm Moon',      // March
+    3: 'Pink Moon',      // April
+    4: 'Flower Moon',    // May
+    5: 'Strawberry Moon',// June
+    6: 'Buck Moon',      // July
+    7: 'Sturgeon Moon',  // August
+    8: 'Harvest Moon',   // September (sometimes October)
+    9: 'Hunter\'s Moon', // October
+    10: 'Beaver Moon',   // November
+    11: 'Cold Moon'      // December
+  };
+  return names[m] || '';
+}
 
+// Very simple "is this day near a full moon?" check
+function isNearFullMoon(date, toleranceDays = 1) {
+  if (typeof SunCalc === 'undefined' || typeof SunCalc.getMoonIllumination !== 'function') return false;
+  const illum = SunCalc.getMoonIllumination(date);
+  if (!illum || typeof illum.phase !== 'number') return false;
+  // phase ~ 0.5 is full moon. allow a tolerance window
+  const phase = illum.phase;
+  return Math.abs(phase - 0.5) <= (toleranceDays / 15); // approx mapping
+}
+ 
   // render month Monday..Sunday, highlight equinox as "True Rebirth" and hard-coded lunar new year(s)
   function renderMonth(year, month) {
     calendar.innerHTML = "";
