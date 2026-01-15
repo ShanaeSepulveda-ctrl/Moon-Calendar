@@ -256,8 +256,6 @@ document.addEventListener("DOMContentLoaded", () => {
     for (let i = LUNAR_ZODIAC.length - 1; i >= 0; i--) {
       if (deg >= LUNAR_ZODIAC[i].start) return LUNAR_ZODIAC[i].sign;
     }
-    return "Pisces";
-  }
 
   function getLunarData(date) {
     const days = Math.floor((date - LUNAR_ANCHOR) / MS_PER_DAY);
