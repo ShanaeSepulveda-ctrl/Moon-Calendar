@@ -31,12 +31,16 @@
 <body>
   <h1>13 Moon Calendar</h1>
 
-  <div id="lunarGuidance">
-    <h2>🌙 Today’s Lunar Guidance</h2>
+<div id="lunarGuidance" class="guidance-card">
+  <h2>🌙 Today’s Lunar Guidance</h2>
+  <button id="toggleGuidance">Open</button>
+  <div id="guidanceContent" hidden>
     <p id="lunarPhase"></p>
-    <p><strong>Affirmation:</strong> <span id="affirmation"></span></p>
-    <p><strong>Suggested Ritual:</strong> <span id="ritual"></span></p>
+    <p><strong>Affirmation</strong><br><span id="affirmation"></span></p>
+    <p><strong>Suggested Ritual</strong><br><span id="ritual"></span></p>
+    <p><strong>Journal Prompt</strong><br><span id="journal"></span></p>
   </div>
+</div>
 
   <div class="legend">
     <div><span style="background:rgba(255,200,100,0.12); padding:4px 8px; border-radius:6px; color:#ffdca0;">☀ Solstice</span></div>
@@ -128,11 +132,32 @@ function getMoonDayGuidance(day) {
   };
   return guidance[day];
 }
+  
+function getLunarZodiac(date) {
+  const moonPos = SunCalc.getMoonPosition(date, 0, 0);
+  const lon = (moonPos.ra * 180 / Math.PI + 360) % 360;
+
+  const signs = [
+    "Aries","Taurus","Gemini","Cancer","Leo","Virgo",
+    "Libra","Scorpio","Sagittarius","Capricorn","Aquarius","Pisces"
+  ];
+
+  return signs[Math.floor(lon / 30)];
+}
 
 function renderMonth(year, month) {
   calendar.innerHTML = "";
+const firstDay = new Date(year, month, 1);
 
-  const firstDay = new Date(year, month, 1);
+// Monday-based offset (ISO standard)
+const mondayOffset = (firstDay.getDay() + 6) % 7;
+
+for (let i = 0; i < mondayOffset; i++) {
+  calendar.appendChild(document.createElement("div"));
+}
+
+  const lunarZodiac = getLunarZodiac(date);
+
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const today = new Date();
 
@@ -151,6 +176,21 @@ function renderMonth(year, month) {
       document.getElementById("affirmation").innerText = guidance.a;
       document.getElementById("ritual").innerText = guidance.r;
     }
+document.getElementById("toggleGuidance").onclick = () => {
+  const c = document.getElementById("guidanceContent");
+  c.hidden = !c.hidden;
+};
+document.getElementById("journal").innerText = guidance.j;
+
+     if (Notification.permission !== "granted") {
+  Notification.requestPermission();
+}
+    
+    if (phase === "🌕 Full Moon" && Notification.permission === "granted") {
+  new Notification("🌕 Full Moon Tonight", {
+    body: "A time to release, reflect, and honor what is complete.",
+  });
+}
 
     const fullMoonName =
       phase === "🌕 Full Moon" ? FULL_MOON_NAMES[month] : "";
@@ -161,8 +201,10 @@ function renderMonth(year, month) {
       ${fullMoonName ? `<div class="moon-name">🌕 ${fullMoonName}</div>` : ""}
       <div class="moon-name">
         ${lunar.archetype} · Moon Day ${lunar.moonDay}
+      <div class="moon-name">
+        ${lunar.archetype} · Moon Day ${lunar.moonDay} · 🌠 ${lunarZodiac}
       </div>
-    `;
+           `;
 
     cell.onclick = () => {
       dayText.innerText =
