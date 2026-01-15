@@ -343,16 +343,20 @@ function isNearFullMoon(date, toleranceDays = 1) {
 
         cell.onclick = function () {
           var guidance = getLunarGuidance(moonPhase);
-          var dayMeaning = getMoonDayMeaning(moonDay);
-          dayText.innerText =
-            date.toDateString() +
-            "\n" + moonPhase +
-            "\nMoon Day " + moonDay +
-            "\n\n" + dayMeaning +
-            "\n\n" + guidance.message +
-            "\n\nAffirmation:\n" + guidance.affirmation +
-            "\n\nSuggested Ritual:\n" + guidance.ritual;
-        };
+         var dayMeaning = getMoonDayMeaning(moonDay);
+var zodiac = approximateMoonZodiacByMonth(date);
+var seasonalMoon = isNearFullMoon(date, 1.5) ? getSeasonalFullMoonName(date) : null;
+
+dayText.innerText =
+  date.toDateString() +
+  (seasonalMoon ? "\n🌕 " + seasonalMoon : "") +
+  "\n" + moonPhase +
+  "\nMoon " + moonNumber + " · Day " + moonDay +
+  "\nZodiac Tone: " + zodiac +
+  "\n\n" + dayMeaning +
+  "\n\n" + guidance.message +
+  "\n\nAffirmation:\n" + guidance.affirmation +
+  "\n\nSuggested Ritual:\n" + guidance.ritual;
 
         calendar.appendChild(cell);
       })(day);
