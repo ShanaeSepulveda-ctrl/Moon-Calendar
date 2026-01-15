@@ -167,14 +167,23 @@
 </div>
 
 <script>
+document.addEventListener("DOMContentLoaded", () => {
 
+  /* =====================
+     🌍 LOCATION (SAFE)
+  ===================== */
+  let userLat = 0;
+  let userLon = 0;
+
+  /* =====================
+     🔗 DOM REFERENCES
+  ===================== */
   const calendar = document.getElementById("calendar");
   const dayText = document.getElementById("dayText");
-  const todayZodiac = getLunarZodiac(today, userLat, userLon);
 
-document.getElementById("cardZodiac").innerText =
-  `🌌 Moon in ${todayZodiac}`;
-  
+  /* =====================
+     ⏳ CONSTANTS
+  ===================== */
   const MS_PER_DAY = 86400000;
   const LUNAR_MONTH = 28;
   const LUNAR_ANCHOR = new Date(2024, 0, 11);
@@ -212,34 +221,23 @@ document.getElementById("cardZodiac").innerText =
   };
 
   const LUNAR_ZODIAC = [
-  { sign: "Aries", start: 0 },
-  { sign: "Taurus", start: 30 },
-  { sign: "Gemini", start: 60 },
-  { sign: "Cancer", start: 90 },
-  { sign: "Leo", start: 120 },
-  { sign: "Virgo", start: 150 },
-  { sign: "Libra", start: 180 },
-  { sign: "Scorpio", start: 210 },
-  { sign: "Sagittarius", start: 240 },
-  { sign: "Capricorn", start: 270 },
-  { sign: "Aquarius", start: 300 },
-  { sign: "Pisces", start: 330 }
-];
+    { sign: "Aries", start: 0 },
+    { sign: "Taurus", start: 30 },
+    { sign: "Gemini", start: 60 },
+    { sign: "Cancer", start: 90 },
+    { sign: "Leo", start: 120 },
+    { sign: "Virgo", start: 150 },
+    { sign: "Libra", start: 180 },
+    { sign: "Scorpio", start: 210 },
+    { sign: "Sagittarius", start: 240 },
+    { sign: "Capricorn", start: 270 },
+    { sign: "Aquarius", start: 300 },
+    { sign: "Pisces", start: 330 }
+  ];
 
-  function getLunarZodiac(date, lat, lon) {
-  const pos = SunCalc.getMoonPosition(date, lat, lon);
-
-  // Convert radians → degrees
-  let eclipticLongitude = (pos.lon * 180 / Math.PI + 360) % 360;
-
-  for (let i = LUNAR_ZODIAC.length - 1; i >= 0; i--) {
-    if (eclipticLongitude >= LUNAR_ZODIAC[i].start) {
-      return LUNAR_ZODIAC[i].sign;
-    }
-  }
-  return "Pisces";
-}
-
+  /* =====================
+     🌙 ASTRONOMY
+  ===================== */
   function getMoonPhase(date) {
     const p = SunCalc.getMoonIllumination(date).phase;
     if (p < 0.03 || p > 0.97) return "New Moon";
@@ -252,6 +250,15 @@ document.getElementById("cardZodiac").innerText =
     return "Waning Crescent";
   }
 
+  function getLunarZodiac(date, lat, lon) {
+    const pos = SunCalc.getMoonPosition(date, lat, lon);
+    const deg = (pos.lon * 180 / Math.PI + 360) % 360;
+    for (let i = LUNAR_ZODIAC.length - 1; i >= 0; i--) {
+      if (deg >= LUNAR_ZODIAC[i].start) return LUNAR_ZODIAC[i].sign;
+    }
+    return "Pisces";
+  }
+
   function getLunarData(date) {
     const days = Math.floor((date - LUNAR_ANCHOR) / MS_PER_DAY);
     const moonDay = ((days % LUNAR_MONTH) + LUNAR_MONTH) % LUNAR_MONTH + 1;
@@ -259,11 +266,11 @@ document.getElementById("cardZodiac").innerText =
     return { moonDay, archetype: MOON_ARCHETYPES[moonIndex] };
   }
 
-  function getMoonDayGuidance(day) {
+  function getMoonDayGuidance() {
     return {
       a: "I move in rhythm with the living cosmos.",
-      r: "Light a candle and sit beneath the sky for three breaths.",
-      j: "Where am I being asked to soften today?"
+      r: "Light a candle and breathe with the Moon.",
+      j: "What part of me is asking for gentleness?"
     };
   }
 
@@ -276,8 +283,13 @@ document.getElementById("cardZodiac").innerText =
     return "";
   }
 
+  /* =====================
+     📅 RENDER CALENDAR
+  ===================== */
   function renderMonth(year, month) {
     calendar.innerHTML = "";
+
+    const today = new Date();
     const firstDay = new Date(year, month, 1);
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const offset = (firstDay.getDay() + 6) % 7;
@@ -290,87 +302,65 @@ document.getElementById("cardZodiac").innerText =
       const date = new Date(year, month, d);
       const phase = getMoonPhase(date);
       const lunar = getLunarData(date);
-      const phaseEmoji = PHASE_EMOJI[phase];
+      const zodiac = getLunarZodiac(date, userLat, userLon);
       const fullMoon = phase === "Full Moon" ? FULL_MOON_NAMES[month % 12] : null;
       const sacred = isEquinoxOrSolstice(date);
 
-     const zodiac = getLunarZodiac(date, userLat, userLon);
+      const cell = document.createElement("div");
+      cell.classList.add("day");
 
-cell.classList.add("day");
+      if (date.toDateString() === today.toDateString()) cell.classList.add("today");
+      if (phase === "Full Moon") cell.classList.add("full-moon");
+      if (phase === "New Moon") cell.classList.add("new-moon");
+      if (sacred) cell.classList.add("sacred");
 
-if (date.toDateString() === today.toDateString()) {
-  cell.classList.add("today");
-}
-
-if (phase === "Full Moon") {
-  cell.classList.add("full-moon");
-}
-
-if (phase === "New Moon") {
-  cell.classList.add("new-moon");
-}
-
-if (sacred) {
-  cell.classList.add("sacred");
-}
-
-cell.innerHTML = `
-  <div class="gregorian">${date.toDateString()}</div>
-  <div class="moon-day">${phaseEmoji} ${phase}</div>
-  ${fullMoon ? `<div class="moon-name">${fullMoon.emoji} ${fullMoon.name}</div>` : ""}
-  <div class="moon-name">🌌 Moon in ${zodiac}</div>
-  <div class="moon-name">${lunar.archetype} · Day ${lunar.moonDay}</div>
-  ${sacred ? `<div class="moon-name">${sacred}</div>` : ""}
-`;
-
-      cell.onclick = () => {
-        dayText.innerText =
-`${date.toDateString()}
-${phaseEmoji} ${phase}
-${fullMoon ? fullMoon.name : ""}
-${lunar.archetype} · Moon Day ${lunar.moonDay}`;
-      };
+      cell.innerHTML = `
+        <div class="gregorian">${date.toDateString()}</div>
+        <div>${PHASE_EMOJI[phase]} ${phase}</div>
+        ${fullMoon ? `<div class="moon-name">${fullMoon.emoji} ${fullMoon.name}</div>` : ""}
+        <div class="moon-name">🌌 Moon in ${zodiac}</div>
+        <div class="moon-name">${lunar.archetype} · Day ${lunar.moonDay}</div>
+        ${sacred ? `<div class="moon-name">${sacred}</div>` : ""}
+      `;
 
       calendar.appendChild(cell);
     }
   }
 
+  /* =====================
+     🌕 TODAY CARD
+  ===================== */
   const today = new Date();
   const lunar = getLunarData(today);
   const phase = getMoonPhase(today);
-  const guidance = getMoonDayGuidance(lunar.moonDay);
+  const guidance = getMoonDayGuidance();
 
   document.getElementById("cardTitle").innerText =
     `${lunar.archetype} — ${phase}`;
   document.getElementById("cardPhase").innerText =
     `${PHASE_EMOJI[phase]} ${phase}`;
-  document.getElementById("cardZodiac").innerText =
-    `Moon Day ${lunar.moonDay}`;
 
-  document.getElementById("cardAffirmation").innerText = guidance.a;
-  document.getElementById("cardRitual").innerText = guidance.r;
-  document.getElementById("cardJournal").innerText = guidance.j;
+  /* =====================
+     🌍 INIT (LOCATION → RENDER)
+  ===================== */
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        userLat = pos.coords.latitude;
+        userLon = pos.coords.longitude;
+        document.getElementById("cardZodiac").innerText =
+          `🌌 Moon in ${getLunarZodiac(today, userLat, userLon)}`;
+        renderMonth(today.getFullYear(), today.getMonth());
+      },
+      () => {
+        document.getElementById("cardZodiac").innerText = "🌌 Moon (Earth-centered)";
+        renderMonth(today.getFullYear(), today.getMonth());
+      }
+    );
+  } else {
+    renderMonth(today.getFullYear(), today.getMonth());
+  }
 
-  document.addEventListener("DOMContentLoaded", () => {
-let userLat = 0;
-let userLon = 0;
-
-if (navigator.geolocation) {
-  navigator.geolocation.getCurrentPosition(
-    pos => {
-      userLat = pos.coords.latitude;
-      userLon = pos.coords.longitude;
-      renderMonth(new Date().getFullYear(), new Date().getMonth());
-    },
-    () => {
-      // graceful fallback: Earth center reference
-      userLat = 0;
-      userLon = 0;
-    }
-  );
-}
-    
-  renderMonth(today.getFullYear(), today.getMonth());
 });
 </script>
 
