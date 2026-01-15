@@ -196,51 +196,58 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
 
-  function renderMonth(year, month) {
-    calendar.innerHTML = "";
+function renderMonth(year, month) {
+  calendar.innerHTML = "";
 
-    const firstDay = new Date(year, month, 1);
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
-    const today = new Date();
+  const firstDay = new Date(year, month, 1);
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const today = new Date();
 
-    // Monday-based week start
-    const mondayOffset = (firstDay.getDay() + 6) % 7;
-    for (let i = 0; i < mondayOffset; i++) {
-      calendar.appendChild(document.createElement("div"));
+  // Monday-based week start
+  const mondayOffset = (firstDay.getDay() + 6) % 7;
+  for (let i = 0; i < mondayOffset; i++) {
+    calendar.appendChild(document.createElement("div"));
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const date = new Date(year, month, d);
+    const phase = getMoonPhase(date);
+    const lunar = getLunarData(date);
+
+    let specialLabel = "";
+
+    if (isDayOutOfTime(date)) {
+      specialLabel = "🧭 Day Out of Time · Between Worlds";
+    } else if (isLunarNewYear(date)) {
+      specialLabel = "🌑 Lunar New Year · Womb Moon Begins";
+    } else if (isSpringEquinox(date)) {
+      specialLabel = "⚖ Spring Equinox";
     }
 
-    for (let d = 1; d <= daysInMonth; d++) {
-      const date = new Date(year, month, d);
-      const phase = getMoonPhase(date);
-      let specialLabel = "";
-if (isLunarNewYear(date)) {
-  specialLabel = "🌑 Lunar New Year · Womb Moon Begins";
-} else if (isSpringEquinox(date)) {
-  specialLabel = "⚖ Spring Equinox";
-}
+    const cell = document.createElement("div");
+    cell.className = "day";
 
-      const lunar = getLunarData(date);
+    if (date.toDateString() === today.toDateString()) {
+      cell.classList.add("today");
+    }
 
-      const cell = document.createElement("div");
-      cell.className = "day";
+    if (phase === "Full Moon") {
+      cell.style.boxShadow = "0 0 18px rgba(255,220,180,0.35)";
+    }
 
-      if (date.toDateString() === today.toDateString()) {
-        cell.classList.add("today");
-      }
+    const fullMoonName =
+      phase === "Full Moon" ? FULL_MOON_NAMES[month % 12] : "";
 
-      const isFullMoon = phase === "Full Moon";
-      const fullMoonName = isFullMoon ? FULL_MOON_NAMES[month % 12] : "";
+    cell.innerHTML = `
+      <div class="gregorian">${date.toDateString()}</div>
+      <div class="moon-day">${phase}</div>
+      ${fullMoonName ? `<div class="moon-name">🌕 ${fullMoonName}</div>` : ""}
+      <div class="moon-name">${lunar.archetype} · Day ${lunar.moonDay}</div>
+      ${specialLabel ? `<div class="moon-name">${specialLabel}</div>` : ""}
+    `;
 
-      cell.innerHTML = `
-        <div class="gregorian">${date.toDateString()}</div>
-        <div class="moon-day">${phase}</div>
-        ${fullMoonName ? `<div class="moon-name">🌕 ${fullMoonName}</div>` : ""}
-        <div class="moon-name">${lunar.archetype} · Day ${lunar.moonDay}</div>
-        ${specialLabel ? `<div class="moon-name">${specialLabel}</div>` : ""}
-        `;
-
-      cell.onclick = () => {
-        dayText.innerText =
+    cell.onclick = () => {
+      dayText.innerText =
 `${date.toDateString()}
 
 Moon Phase: ${phase}
@@ -250,11 +257,11 @@ Moon Archetype:
 ${lunar.archetype}
 
 Moon Day: ${lunar.moonDay}`;
-      };
+    };
 
-      calendar.appendChild(cell);
-    }
+    calendar.appendChild(cell);
   }
+}
   
 function isSpringEquinox(date) {
   return date.getMonth() === 2 && date.getDate() >= 19 && date.getDate() <= 21;
