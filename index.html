@@ -172,24 +172,6 @@ document.getElementById("cardZodiac").innerText =
 </div>
 
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-let userLat = 0;
-let userLon = 0;
-
-if (navigator.geolocation) {
-  navigator.geolocation.getCurrentPosition(
-    pos => {
-      userLat = pos.coords.latitude;
-      userLon = pos.coords.longitude;
-      renderMonth(new Date().getFullYear(), new Date().getMonth());
-    },
-    () => {
-      // graceful fallback: Earth center reference
-      userLat = 0;
-      userLon = 0;
-    }
-  );
-}
 
   const calendar = document.getElementById("calendar");
   const dayText = document.getElementById("dayText");
@@ -370,6 +352,25 @@ ${lunar.archetype} · Moon Day ${lunar.moonDay}`;
   document.getElementById("cardRitual").innerText = guidance.r;
   document.getElementById("cardJournal").innerText = guidance.j;
 
+  document.addEventListener("DOMContentLoaded", () => {
+let userLat = 0;
+let userLon = 0;
+
+if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      userLat = pos.coords.latitude;
+      userLon = pos.coords.longitude;
+      renderMonth(new Date().getFullYear(), new Date().getMonth());
+    },
+    () => {
+      // graceful fallback: Earth center reference
+      userLat = 0;
+      userLon = 0;
+    }
+  );
+}
+    
   renderMonth(today.getFullYear(), today.getMonth());
 });
 </script>
