@@ -167,7 +167,15 @@ document.addEventListener("DOMContentLoaded", () => {
   //MOON DAY GUIDANCE//
 //=================
 function getMoonDayGuidance(moonDay) {
-  const guidance = {
+  const guidance = getMoonDayGuidance(moonDay);
+
+dayText.innerText =
+  date.toDateString() +
+  "\n" + phase +
+  "\nMoon Day " + moonDay +
+  "\n\n" + guidance.message +
+  "\n\nAffirmation:\n" + guidance.affirmation +
+  "\n\nSuggested Ritual:\n" + guidance.ritual;
     1: {
       affirmation: "I open myself to new beginnings and sacred potential.",
       ritual: "Set intentions. Light a candle and name what you are calling in.",
