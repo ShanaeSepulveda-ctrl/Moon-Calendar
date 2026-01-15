@@ -215,7 +215,6 @@ function renderMonth(year, month) {
     const lunar = getLunarData(date);
 
     let specialLabel = "";
-
     if (isDayOutOfTime(date)) {
       specialLabel = "🧭 Day Out of Time · Between Worlds";
     } else if (isLunarNewYear(date)) {
@@ -277,12 +276,6 @@ function isDayOutOfTime(date) {
   const nextDay = new Date(date);
   nextDay.setDate(date.getDate() + 1);
   return isLunarNewYear(nextDay);
-}
-  if (isDayOutOfTime(date)) {
-  specialLabel = "🧭 Day Out of Time · Between Worlds";
-}
-  if (phase === "Full Moon") {
-  cell.style.boxShadow = "0 0 18px rgba(255,220,180,0.35)";
 }
 
   const now = new Date();
