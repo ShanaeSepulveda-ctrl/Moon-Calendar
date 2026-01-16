@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>The Ancestral Moon Map | V43 Celestial Alignment</title>
+  <title>The Ancestral Moon Map | V44 13-Moon Nature Themes</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Charm:wght@400;700&family=Quicksand:wght@300;500&display=swap" rel="stylesheet">
   <style>
     :root { 
@@ -30,15 +30,12 @@
 
     #calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; width: 100%; max-width: 450px; margin-bottom: 10px; }
     .day-label { font-size: 0.55rem; color: var(--gold); font-family: 'Cinzel'; opacity: 0.6; }
-    
     .day { background: rgba(255,255,255,0.02); border-radius: 10px; aspect-ratio: 1/1.2; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; border: 1.5px solid transparent; cursor: pointer; transition: 0.3s; }
     
-    /* SPECIAL HIGHLIGHTS */
-    .day.today { border: 2.5px solid var(--gold); box-shadow: 0 0 15px var(--gold); z-index: 2; }
+    .day.today { border: 2px solid var(--gold); box-shadow: 0 0 15px var(--gold); z-index: 2; }
     .day.full-moon-day { background: radial-gradient(circle, var(--full) 0%, transparent 70%); }
     .day.new-moon-day { background: radial-gradient(circle, var(--new) 0%, transparent 70%); }
     .day.celestial-pivot { border: 1.5px dashed var(--gold); background: rgba(230, 204, 255, 0.05); }
-    
     .day.selected { border: 1px solid #fff; background: rgba(255, 255, 255, 0.1); }
     .day.period { border-bottom: 3px solid var(--blood) !important; }
 
@@ -50,13 +47,12 @@
     .nav-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--gold); color: var(--gold); border-radius: 15px; padding: 8px 12px; font-family: 'Cinzel'; font-size: 0.6rem; margin: 5px; }
     .cycle-btn { border: 1.5px solid var(--blood); color: var(--blood); background: transparent; padding: 14px; border-radius: 30px; cursor: pointer; font-family: 'Cinzel'; font-size: 0.8rem; width: 100%; margin-top: 15px; }
     .cycle-btn.active { background: var(--blood); color: white; box-shadow: 0 0 15px var(--blood); }
-    
-    .sister-btn { background: var(--aura); color: white; border: none; padding: 14px; border-radius: 30px; cursor: pointer; font-family: 'Cinzel'; font-size: 0.75rem; width: 100%; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+    .sister-btn { background: var(--aura); color: white; border: none; padding: 14px; border-radius: 30px; cursor: pointer; font-family: 'Cinzel'; font-size: 0.75rem; width: 100%; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; }
 
     .wisdom-card { text-align: left; background: rgba(0,0,0,0.4); padding: 20px; border-radius: 25px; border-left: 3px solid var(--aura); margin-bottom: 15px; }
     .wisdom-label { font-family: 'Cinzel'; font-size: 0.6rem; color: var(--gold); letter-spacing: 2px; display: block; margin-bottom: 8px; }
     .wisdom-text { font-family: 'Charm'; font-size: 1.25rem; line-height: 1.5; color: #eee; }
-    #journalInput { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 15px; color: #fff; font-family: 'Charm'; font-size: 1.2rem; min-height: 100px; box-sizing: border-box; outline: none; }
+    .nature-theme { font-family: 'Cinzel'; font-size: 0.55rem; letter-spacing: 3px; color: var(--gold); margin-top: 10px; font-weight: bold; }
   </style>
 </head>
 <body>
@@ -78,9 +74,8 @@
 
 <div id="oracleDash">
   <div id="eventDisplay"></div>
-  <div id="elementTag" style="font-size: 0.5rem; letter-spacing: 1.5px; color: var(--aura); font-weight: bold; margin-bottom: 5px;"></div>
-  <span id="detailedPhase" style="font-family: 'Cinzel'; font-size: 0.6rem; color: var(--gold); opacity: 0.7; letter-spacing: 2px;"></span>
-  <h2 id="dashTitle" style="font-family:'Cinzel'; margin: 5px 0; color:var(--gold); letter-spacing: 3px; font-size: 1.3rem;"></h2>
+  <div class="nature-theme" id="natureThemeDisplay"></div>
+  <h2 id="moonNameDisplay" style="font-family:'Cinzel'; margin: 5px 0; color:var(--gold); letter-spacing: 2px; font-size: 1.4rem;"></h2>
   <div id="dashSub" style="font-size: 0.6rem; letter-spacing: 2px; margin-bottom: 20px; opacity: 0.8; font-family: 'Cinzel';"></div>
   
   <div class="wisdom-card">
@@ -88,12 +83,7 @@
     <div class="wisdom-text" id="guidanceText"></div>
   </div>
 
-  <div class="wisdom-card">
-    <span class="wisdom-label">SACRED RITUAL</span>
-    <div class="wisdom-text" id="ritualText"></div>
-  </div>
-
-  <textarea id="journalInput" placeholder="Scribe your soul's journey..." oninput="saveData()"></textarea>
+  <textarea id="journalInput" placeholder="Scribe your soul's journey..." oninput="saveData()" style="width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 15px; color: #fff; font-family: 'Charm'; font-size: 1.2rem; min-height: 100px; box-sizing: border-box; outline: none;"></textarea>
   
   <div style="display: flex; flex-direction: column; gap: 5px;">
     <button id="flowBtn" class="cycle-btn" onclick="toggleFlow()">MARK MOON FLOW</button>
@@ -106,7 +96,7 @@
 <div id="grimoireView">
   <span style="float:right; cursor:pointer;" onclick="showView('dash')">✕</span>
   <h2 style="font-family:'Cinzel';">THE GRIMOIRE</h2>
-  <div id="grimoireContent" style="max-height: 450px; overflow-y: auto;"></div>
+  <div id="grimoireContent"></div>
 </div>
 
 <div id="yearlyView">
@@ -118,13 +108,28 @@
 <script>
   let activeD = new Date(2026, 0, 16); 
   let selectedDate = new Date().toDateString();
-  let db = JSON.parse(localStorage.getItem('ancestral_moon_map')) || { logs: {}, journals: {}, zodCache: {} };
+  let db = JSON.parse(localStorage.getItem('ancestral_moon_map_v44')) || { logs: {}, journals: {}, zodCache: {} };
 
   const ELEMENTS = { "FIRE": "#ff4d4d", "EARTH": "#2ecc71", "AIR": "#3498db", "WATER": "#df80ff" };
   const ZOD_ELEMENTS = { "Aries ♈":"FIRE", "Leo ♌":"FIRE", "Sagittarius ♐":"FIRE", "Taurus ♉":"EARTH", "Virgo ♍":"EARTH", "Capricorn ♑":"EARTH", "Gemini ♊":"AIR", "Libra ♎":"AIR", "Aquarius ♒":"AIR", "Cancer ♋":"WATER", "Scorpio ♏":"WATER", "Pisces ♓":"WATER" };
   
-  const FULL_MOONS = [{d: "Jan 3", z: "Cancer"}, {d: "Feb 1", z: "Leo"}, {d: "Mar 3", z: "Virgo"}, {d: "Apr 2", z: "Libra"}, {d: "May 1", z: "Scorpio"}, {d: "May 31", z: "Sagittarius"}, {d: "Jun 29", z: "Capricorn"}, {d: "Jul 29", z: "Aquarius"}, {d: "Aug 28", z: "Pisces"}, {d: "Sep 26", z: "Aries"}, {d: "Oct 25", z: "Taurus"}, {d: "Nov 24", z: "Gemini"}, {d: "Dec 24", z: "Cancer"}];
-  const NEW_MOONS = ["Jan 18", "Feb 17", "Mar 18", "Apr 17", "May 16", "Jun 15", "Jul 14", "Aug 12", "Sep 11", "Oct 10", "Nov 9", "Dec 8"];
+  const MOONS = [
+    {n: "Wolf Moon", t: "Endurance", d: "Jan 3", z: "Cancer"},
+    {n: "Snow Moon", t: "Purity", d: "Feb 1", z: "Leo"},
+    {n: "Worm Moon", t: "Inner Movement", d: "Mar 3", z: "Virgo"},
+    {n: "Quickening Moon", t: "Emergence", d: "Apr 2", z: "Libra"},
+    {n: "Seed Moon", t: "Potential", d: "May 1", z: "Scorpio"},
+    {n: "Bloom Moon", t: "Vitality", d: "May 31", z: "Sagittarius"},
+    {n: "Honey Moon", t: "Abundance", d: "Jun 29", z: "Capricorn"},
+    {n: "Storm Moon", t: "Power", d: "Jul 29", z: "Aquarius"},
+    {n: "Harvest Moon", t: "Gratitude", d: "Aug 28", z: "Pisces"},
+    {n: "Falling Leaf Moon", t: "Release", d: "Sep 26", z: "Aries"},
+    {n: "Ancestor Moon", t: "Memory", d: "Oct 25", z: "Taurus"},
+    {n: "Frost Moon", t: "Stillness", d: "Nov 24", z: "Gemini"},
+    {n: "Long Night Moon", t: "Dreaming", d: "Dec 24", z: "Cancer"},
+    {n: "Threshold Moon", t: "Wisdom", d: "Jan 22, 2027", z: "Leo"}
+  ];
+
   const PIVOTS = {"Mar 20": "Spring Equinox", "Jun 21": "Summer Solstice", "Sep 22": "Autumn Equinox", "Dec 21": "Winter Solstice"};
 
   function getCelestialData(date) {
@@ -133,29 +138,22 @@
     const T = (jd - 2451545.0) / 36525;
     let moonLong = (218.316 + 481267.881 * T + 6.289 * Math.sin((135.27 + 477198.87 * T) * Math.PI / 180));
     moonLong = (moonLong + 5.0) % 360; 
-    const signs = ["Aries ♈","Taurus ♉","Gemini ♊","Cancer ♋","Leo ♌","Virgo ♍","Libra ♎","Scorpio ♏","Sagittarius ♐","Capricorn ♑","Aquarius ♒","Pisces ♓"];
-    const zod = signs[Math.floor(moonLong / 30)];
+    const zod = ["Aries ♈","Taurus ♉","Gemini ♊","Cancer ♋","Leo ♌","Virgo ♍","Libra ♎","Scorpio ♏","Sagittarius ♐","Capricorn ♑","Aquarius ♒","Pisces ♓"][Math.floor(moonLong / 30)];
     const el = ZOD_ELEMENTS[zod];
-    let sunLong = (280.466 + 36000.770 * T) % 360;
-    let angle = (moonLong - sunLong + 360) % 360;
+    let angle = (moonLong - ((280.466 + 36000.770 * T) % 360) + 360) % 360;
     
-    let isFull = FULL_MOONS.some(m => m.d === dStr);
-    let isNew = NEW_MOONS.includes(dStr);
-    let isPivot = PIVOTS[dStr];
-
-    let phase = "Waning Crescent", ico = "🌘";
-    if (isFull) { phase = "Full Moon"; ico = "🌕"; }
-    else if (isNew) { phase = "New Moon"; ico = "🌑"; }
-    else if (angle < 90) { phase = "Waxing Crescent"; ico = "🌒"; }
-    else if (angle < 100) { phase = "First Quarter"; ico = "🌓"; }
-    else if (angle < 180) { phase = "Waxing Gibbous"; ico = "🌔"; }
-    else if (angle < 260) { phase = "Waning Gibbous"; ico = "🌖"; }
-    else if (angle < 280) { phase = "Last Quarter"; ico = "🌗"; }
-
+    let moonData = MOONS.find(m => m.d === dStr) || {n: "Waxing Moon", t: "Alignment"};
+    if (angle > 185) moonData.n = "Waning Moon";
+    
+    let isFull = MOONS.some(m => m.d === dStr);
+    let isNew = ["Jan 18", "Feb 17", "Mar 18", "Apr 17", "May 16", "Jun 15", "Jul 14", "Aug 12", "Sep 11", "Oct 10", "Nov 9", "Dec 8"].includes(dStr);
+    
     const equinox = new Date(2026, 2, 20).getTime();
     const diff = Math.floor((date.getTime() - equinox) / 86400000);
     let tDay = (diff % 28) + 1; if (tDay <= 0) tDay += 28;
-    return { phase, ico, zod, tDay, el, elColor: ELEMENTS[el], dStr, isFull, isNew, isPivot };
+    let mCycle = Math.floor(diff / 28) + 1;
+
+    return { zod, tDay, el, elColor: ELEMENTS[el], dStr, isFull, isNew, isPivot: PIVOTS[dStr], moonName: moonData.n, theme: moonData.t };
   }
 
   function render() {
@@ -167,23 +165,12 @@
     let offset = (first.getDay() === 0) ? 6 : first.getDay() - 1;
     for(let i=0; i<offset; i++) grid.innerHTML += `<div></div>`;
     
-    const todayStr = new Date().toDateString();
-
     for(let i=1; i<=last; i++) {
       const d = new Date(activeD.getFullYear(), activeD.getMonth(), i);
       const data = getCelestialData(d);
       const cell = document.createElement("div");
-      
-      let classes = ['day'];
-      if(d.toDateString() === selectedDate) classes.push('selected');
-      if(d.toDateString() === todayStr) classes.push('today');
-      if(data.isFull) classes.push('full-moon-day');
-      if(data.isNew) classes.push('new-moon-day');
-      if(data.isPivot) classes.push('celestial-pivot');
-      if(db.logs[d.toDateString()]) classes.push('period');
-      
-      cell.className = classes.join(' ');
-      cell.innerHTML = `<span class="d-num">${i}</span><span class="t-num">${data.tDay}</span><span class="m-ico" style="filter: drop-shadow(0 0 5px ${data.elColor})">${data.ico}</span><span class="z-ico">${data.zod.split(' ')[0]}</span>`;
+      cell.className = `day ${d.toDateString() === selectedDate?'selected':''} ${d.toDateString() === new Date().toDateString()?'today':''} ${data.isFull?'full-moon-day':''} ${data.isNew?'new-moon-day':''} ${data.isPivot?'celestial-pivot':''} ${db.logs[d.toDateString()]?'period':''}`;
+      cell.innerHTML = `<span class="d-num">${i}</span><span class="t-num">${data.tDay}</span><span class="m-ico" style="filter: drop-shadow(0 0 5px ${data.elColor})">${data.isFull?'🌕':data.isNew?'🌑':'☾'}</span><span class="z-ico">${data.zod.split(' ')[0]}</span>`;
       cell.onclick = () => { selectedDate = d.toDateString(); updateDash(d); render(); };
       grid.appendChild(cell);
     }
@@ -192,33 +179,23 @@
   function updateDash(date) {
     const data = getCelestialData(date);
     document.documentElement.style.setProperty('--aura', data.elColor);
-    document.getElementById("dashTitle").innerText = `${data.ico} ${data.zod.split(' ')[0].toUpperCase()}`;
-    document.getElementById("detailedPhase").innerText = data.phase.toUpperCase();
-    document.getElementById("dashSub").innerText = `CYCLE DAY ${data.tDay} • ${data.dStr}`;
-    document.getElementById("elementTag").innerText = `✧ ${data.el} ENERGY ✧`;
+    document.getElementById("moonNameDisplay").innerText = data.moonName.toUpperCase();
+    document.getElementById("natureThemeDisplay").innerText = `THEME: ${data.theme.toUpperCase()}`;
+    document.getElementById("dashSub").innerText = `${data.zod.toUpperCase()} • DAY ${data.tDay}`;
     document.getElementById("journalInput").value = db.journals[date.toDateString()] || "";
-    document.getElementById("flowBtn").className = db.logs[date.toDateString()] ? "cycle-btn active" : "cycle-btn";
     
-    document.getElementById("eventDisplay").innerHTML = data.isPivot ? `<div style="background:var(--gold); color:var(--space); font-family:'Cinzel'; font-size:0.6rem; padding:4px 12px; border-radius:20px; display:inline-block; margin-bottom:10px;">✨ ${data.isPivot.toUpperCase()}</div>` : "";
-
-    const whisper = (data.phase === "New Moon") ? `The dark moon in ${data.zod.split(' ')[0]} is a time for quiet planting. The most powerful seeds grow in the dark. What are you cultivating?` : `The ${data.el.toLowerCase()} energy of ${data.zod.split(' ')[0]} flows through you. Your ancestors observed these same skies to find their way. You are never lost.`;
+    const whisper = `The energy of ${data.theme.toLowerCase()} is moving through the ${data.el.toLowerCase()} of ${data.zod.split(' ')[0]}. Reflect on how your roots are holding you today.`;
     document.getElementById("guidanceText").innerText = whisper;
-    document.getElementById("ritualText").innerText = `Breathe in the current celestial energy. Exhale any noise that is not yours.`;
     
     db.zodCache[date.toDateString()] = data.zod;
-    localStorage.setItem('ancestral_moon_map', JSON.stringify(db));
+    localStorage.setItem('ancestral_moon_map_v44', JSON.stringify(db));
   }
 
   function copySisterReport() {
     const d = new Date(selectedDate);
     const data = getCelestialData(d);
-    const report = `☾ Ancestral Moon Report: ${data.dStr}, 2026 ☽\n\nPhase: ${data.phase}\nSign: ${data.zod}\nElement: ${data.el}\n\nWhisper: ${document.getElementById("guidanceText").innerText}\n\nSynced via The Ancestral Moon Map ✨`;
-    navigator.clipboard.writeText(report).then(() => {
-      const btn = document.querySelector(".sister-btn");
-      const oldText = btn.innerHTML;
-      btn.innerHTML = "✅ REPORT COPIED!";
-      setTimeout(() => btn.innerHTML = oldText, 2000);
-    });
+    const report = `☾ Ancestral Moon Report ☽\nMoon: ${data.moonName}\nTheme: ${data.theme}\nSign: ${data.zod}\n\nWhisper: ${document.getElementById("guidanceText").innerText}`;
+    navigator.clipboard.writeText(report).then(() => alert("Copied to clipboard!"));
   }
 
   function showView(view) {
@@ -226,35 +203,11 @@
     document.getElementById('grimoireView').style.display = 'none';
     document.getElementById('yearlyView').style.display = 'none';
     if(view === 'dash') document.getElementById('oracleDash').style.display = 'block';
-    if(view === 'grimoire') {
-      const g = document.getElementById('grimoireView'); g.style.display = 'block';
-      const cont = document.getElementById('grimoireContent'); cont.innerHTML = "";
-      Object.keys(db.journals).sort().reverse().forEach(d => {
-        cont.innerHTML += `<div style="background:rgba(255,255,255,0.03); padding:15px; border-radius:15px; margin-bottom:10px; text-align:left; border-left:3px solid var(--aura);">
-          <div style="font-size:0.6rem; color:var(--gold); display:flex; justify-content:space-between;"><span>${d}</span> <span>${db.zodCache[d] || ''} ${db.logs[d] ? '🩸' : ''}</span></div>
-          <div style="font-family:'Charm'; font-size:1.1rem; margin-top:5px;">${db.journals[d] || "Silent meditation."}</div>
-        </div>`;
-      });
-    }
     if(view === 'yearly') {
-      document.getElementById('yearlyView').style.display = 'block';
       const yc = document.getElementById('yearlyContent'); yc.innerHTML = "";
-      yc.innerHTML += `<h4 style="color:var(--gold); font-family:'Cinzel';">CELESTIAL PIVOTS</h4>`;
-      for(let p in PIVOTS) yc.innerHTML += `<div style="display:flex; justify-content:space-between; font-size:0.7rem; border-bottom:1px solid rgba(255,255,255,0.05); padding:5px 0;"><span>✨ ${p}</span> <span>${PIVOTS[p]}</span></div>`;
-      yc.innerHTML += `<h4 style="color:var(--gold); font-family:'Cinzel'; margin-top:20px;">FULL MOONS</h4>`;
-      FULL_MOONS.forEach(m => yc.innerHTML += `<div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.05); padding:5px 0;"><span>🌕 ${m.d}</span> <span>${m.z}</span></div>`);
+      MOONS.forEach(m => yc.innerHTML += `<div style="display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px solid rgba(255,255,255,0.05);"><span>${m.n}</span> <span style="color:var(--gold);">${m.d}</span></div>`);
+      document.getElementById('yearlyView').style.display = 'block';
     }
-  }
-
-  function saveData() { db.journals[selectedDate] = document.getElementById("journalInput").value; localStorage.setItem('ancestral_moon_map', JSON.stringify(db)); }
-  function toggleFlow() { db.logs[selectedDate] = !db.logs[selectedDate]; localStorage.setItem('ancestral_moon_map', JSON.stringify(db)); render(); updateDash(new Date(selectedDate)); }
-  function changeMonth(n) { activeD.setMonth(activeD.getMonth() + n); render(); }
-
-  const sField = document.getElementById('starField');
-  for(let i=0; i<80; i++) {
-    const s = document.createElement('div'); s.className = 'star';
-    s.style.left = Math.random()*100+'%'; s.style.top = Math.random()*100+'%';
-    s.style.width = Math.random()*2+'px'; s.style.setProperty('--d', (Math.random()*4+2)+'s'); sField.appendChild(s);
   }
 
   render(); updateDash(new Date());
