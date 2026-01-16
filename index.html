@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Sacred Turtle Ephemeris V33</title>
+  <title>The Sacred Turtle Ephemeris | Final Edition</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Charm:wght@400;700&family=Quicksand:wght@300;500&display=swap" rel="stylesheet">
   <style>
     :root {
       --space: #05030a;
       --nebula: #1a0b2e;
       --gold: #d1b3ff;
-      --glass: rgba(15, 5, 30, 0.85);
+      --glass: rgba(15, 5, 30, 0.9);
       --blood: #ff4d94;
     }
 
@@ -28,58 +28,56 @@
 
     #oracleDash {
       width: 95%; max-width: 500px; background: var(--glass);
-      backdrop-filter: blur(15px); border: 1px solid rgba(209, 179, 255, 0.2);
+      backdrop-filter: blur(15px); border: 1.5px solid rgba(209, 179, 255, 0.2);
       border-radius: 30px; padding: 25px; margin: 15px 0;
-      box-shadow: 0 10px 50px rgba(0,0,0,0.8); text-align: center;
+      box-shadow: 0 10px 50px rgba(0,0,0,0.9); text-align: center;
     }
 
     #dashTitle { font-family: 'Cinzel'; color: var(--gold); font-size: 1.6rem; letter-spacing: 4px; margin-bottom: 5px; }
-    #dashSub { font-size: 0.75rem; letter-spacing: 2px; opacity: 0.8; margin-bottom: 20px; text-transform: uppercase; color: #fff; }
+    #dashSub { font-size: 0.7rem; letter-spacing: 2px; opacity: 0.9; margin-bottom: 20px; color: #fff; border-bottom: 1px solid var(--gold); padding-bottom: 10px; }
 
-    .wisdom-card { text-align: left; background: rgba(0,0,0,0.3); padding: 18px; border-radius: 15px; border-left: 3px solid var(--gold); margin-bottom: 12px; }
-    .wisdom-label { font-family: 'Cinzel'; font-size: 0.65rem; color: var(--gold); letter-spacing: 2px; display: block; margin-bottom: 8px; }
-    .wisdom-text { font-family: 'Charm'; font-size: 1.25rem; line-height: 1.4; color: #fff; }
+    .wisdom-card { text-align: left; background: rgba(0,0,0,0.4); padding: 22px; border-radius: 18px; border-left: 4px solid var(--gold); margin-bottom: 15px; }
+    .wisdom-label { font-family: 'Cinzel'; font-size: 0.7rem; color: var(--gold); letter-spacing: 2px; display: block; margin-bottom: 10px; opacity: 0.8; }
+    .wisdom-text { font-family: 'Charm'; font-size: 1.35rem; line-height: 1.6; color: #fff; text-shadow: 1px 1px 2px black; }
 
     #journalInput {
-      width: 100%; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 15px; padding: 15px; color: #fff; font-family: 'Charm'; font-size: 1.1rem;
-      height: 70px; resize: none; margin-bottom: 10px; box-sizing: border-box;
+      width: 100%; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 15px; padding: 15px; color: #fff; font-family: 'Charm'; font-size: 1.2rem;
+      height: 90px; resize: none; margin-bottom: 10px; box-sizing: border-box;
     }
 
     .action-bar { display: flex; justify-content: space-between; align-items: center; }
     .cycle-btn {
       background: transparent; border: 1px solid var(--blood); color: var(--blood);
-      padding: 8px 18px; border-radius: 30px; font-family: 'Cinzel'; font-size: 0.7rem; cursor: pointer;
+      padding: 10px 22px; border-radius: 30px; font-family: 'Cinzel'; font-size: 0.75rem; cursor: pointer; transition: 0.3s;
     }
-    .cycle-btn.active { background: var(--blood); color: #fff; box-shadow: 0 0 15px var(--blood); }
+    .cycle-btn.active { background: var(--blood); color: #fff; box-shadow: 0 0 20px var(--blood); }
 
     .controls { display: flex; justify-content: space-between; width: 100%; max-width: 500px; margin: 10px 0; font-family: 'Cinzel'; color: var(--gold); }
-    .nav-arrow { cursor: pointer; font-size: 2rem; }
+    .nav-arrow { cursor: pointer; font-size: 2.2rem; }
 
     #calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; width: 100%; max-width: 500px; padding-bottom: 40px; }
-    .day-label { font-size: 0.6rem; color: var(--gold); text-align: center; font-family: 'Cinzel'; opacity: 0.6; }
+    .day-label { font-size: 0.65rem; color: var(--gold); text-align: center; font-family: 'Cinzel'; opacity: 0.7; }
 
     .day {
-      background: rgba(255,255,255,0.03); border-radius: 10px; aspect-ratio: 1/1.3;
+      background: rgba(255,255,255,0.03); border-radius: 12px; aspect-ratio: 1/1.3;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       position: relative; border: 1.5px solid transparent; cursor: pointer; transition: 0.3s;
     }
     
-    /* Highlighting States */
-    .day.selected { border: 1.5px solid var(--gold); box-shadow: inset 0 0 10px rgba(209,179,255,0.3); }
-    .day.full { border: 1px solid #fff; box-shadow: 0 0 15px rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); }
+    .day.selected { border: 2px solid var(--gold); background: rgba(209,179,255,0.15); z-index: 2; transform: scale(1.05); }
+    .day.full { border: 1px solid #fff; box-shadow: 0 0 15px rgba(255,255,255,0.3); }
     .day.new { border: 1px solid #666; background: rgba(0,0,0,0.7); }
-    .day.today { background: rgba(209,179,255,0.1); }
+    .day.today { text-decoration: underline var(--gold); }
     
-    /* Cycle Marking Visual Correction */
-    .day.period { border: 1.5px solid var(--blood) !important; box-shadow: 0 0 8px var(--blood); }
-    .period-drop { position: absolute; top: 15px; font-size: 0.5rem; color: var(--blood); filter: drop-shadow(0 0 2px var(--blood)); }
+    .day.period { border: 1.5px solid var(--blood) !important; box-shadow: 0 0 10px var(--blood); }
+    .period-drop { position: absolute; top: 18px; font-size: 0.5rem; color: var(--blood); }
 
-    .d-num { position: absolute; top: 4px; left: 6px; font-size: 0.6rem; opacity: 0.4; }
-    .t-num { position: absolute; top: 4px; right: 6px; font-size: 0.6rem; color: var(--gold); font-weight: bold; }
-    .m-ico { font-size: 1.1rem; margin-top: 4px; }
-    .z-ico { font-size: 0.5rem; color: var(--gold); margin-top: 2px; }
-    .moon-tracker { position: absolute; bottom: 3px; font-size: 0.5rem; opacity: 0.7; letter-spacing: 1px; }
+    .d-num { position: absolute; top: 5px; left: 7px; font-size: 0.65rem; opacity: 0.5; }
+    .t-num { position: absolute; top: 5px; right: 7px; font-size: 0.65rem; color: var(--gold); font-weight: bold; }
+    .m-ico { font-size: 1.2rem; margin-top: 5px; }
+    .z-ico { font-size: 0.55rem; color: var(--gold); margin-top: 3px; }
+    .moon-tracker { position: absolute; bottom: 4px; font-size: 0.5rem; opacity: 0.7; letter-spacing: 1px; }
   </style>
 </head>
 <body>
@@ -88,7 +86,7 @@
 
 <div class="controls">
   <span class="nav-arrow" onclick="changeMonth(-1)">☾</span>
-  <span id="monthLabel" style="letter-spacing: 4px;"></span>
+  <span id="monthLabel" style="letter-spacing: 5px;"></span>
   <span class="nav-arrow" onclick="changeMonth(1)">☽</span>
 </div>
 
@@ -102,20 +100,20 @@
     <div class="wisdom-text" id="guidanceText"></div>
   </div>
   <div class="wisdom-card">
-    <span class="wisdom-label">MOON RITUAL</span>
+    <span class="wisdom-label">SACRED RITUAL</span>
     <div class="wisdom-text" id="ritualText"></div>
   </div>
-  <textarea id="journalInput" placeholder="Record your cosmic journey..." oninput="saveJournal()"></textarea>
+  <textarea id="journalInput" placeholder="Note the movements of your soul..." oninput="saveJournal()"></textarea>
   <div class="action-bar">
-    <div id="dateFooter" style="font-size: 0.7rem; opacity: 0.5;"></div>
-    <button id="cycleBtn" class="cycle-btn" onclick="togglePeriod()">MARK MOON CYCLE</button>
+    <div id="dateFooter" style="font-size: 0.75rem; opacity: 0.6;"></div>
+    <button id="cycleBtn" class="cycle-btn" onclick="togglePeriod()">MARK MOON FLOW</button>
   </div>
 </div>
 
 <script>
   // ✨ STARS
   const field = document.getElementById('starField');
-  for(let i=0; i<60; i++) {
+  for(let i=0; i<65; i++) {
     const s = document.createElement('div'); s.className = 'star';
     s.style.left = Math.random()*100+'%'; s.style.top = Math.random()*100+'%';
     const sz = Math.random()*2+'px'; s.style.width = sz; s.style.height = sz;
@@ -124,25 +122,20 @@
 
   let activeD = new Date(2026, 0, 15);
   let selectedDate = new Date().toDateString();
-  let db = JSON.parse(localStorage.getItem('turtle_almanac_v33')) || { logs: {}, journals: {} };
+  let db = JSON.parse(localStorage.getItem('turtle_almanac_pub')) || { logs: {}, journals: {} };
 
   function getCelestialData(date) {
     const m = date.getMonth(), d = date.getDate();
-    
-    // 🐢 Turtle Sync: Anchor March 20 Equinox
     const equinox = new Date(2026, 2, 20).getTime();
     const diff = Math.floor((date.getTime() - equinox) / 86400000);
     
-    // Moon number (1-13)
     let moonNum = Math.floor(diff / 28) + 1;
     if (diff < 0) moonNum = 13 + Math.floor(diff / 28);
-    
-    // Day in cycle (1-28)
     let tDay = (diff % 28) + 1; if (tDay <= 0) tDay += 28;
 
     let res = { ico: "🌙", phase: "Waning", zod: "...", title: "Moon", moonNum: moonNum };
 
-    // 🌑 MANUAL DAY-BY-DAY TRUTH MAP
+    // 🌑 THE TRUTH MAP (Hard-coded for absolute accuracy)
     if (m === 0) { // JAN
         if (d < 3) { res.ico = "🌔"; res.phase = "Waxing Gibbous"; }
         else if (d === 3) { res.ico = "🌕"; res.phase = "Full Moon"; res.title = "Wolf Moon"; res.zod = "Cancer ♋"; }
@@ -164,9 +157,10 @@
         else if (d === 24) { res.ico = "🌓"; res.phase = "First Quarter"; }
         else { res.ico = "🌔"; res.phase = "Waxing Gibbous"; }
     }
-    else { // MARCH+
-      if (d === 3 && m === 2) { res.ico = "🌕"; res.phase = "Full Moon"; res.title = "Worm Moon"; res.zod = "Virgo ♍"; }
-      else if (d === 18 && m === 2) { res.ico = "🌑"; res.phase = "New Moon"; res.title = "Sap Moon"; res.zod = "Pisces ♓"; }
+    else if (m === 2) { // MAR
+        if (d < 3) { res.ico = "🌔"; res.phase = "Waxing Gibbous"; }
+        else if (d === 3) { res.ico = "🌕"; res.phase = "Full Moon"; res.title = "Worm Moon"; res.zod = "Virgo ♍"; }
+        else if (d === 18) { res.ico = "🌑"; res.phase = "New Moon"; res.title = "Sap Moon"; res.zod = "Pisces ♓"; }
     }
 
     if (res.zod === "...") {
@@ -183,7 +177,6 @@
   function render() {
     const grid = document.getElementById("calendar"); grid.innerHTML = "";
     document.getElementById("monthLabel").innerText = activeD.toLocaleString('default', { month: 'long', year: 'numeric' }).toUpperCase();
-    
     ["MON","TUE","WED","THU","FRI","SAT","SUN"].forEach(l => {
       const h = document.createElement("div"); h.className = "day-label"; h.innerText = l; grid.appendChild(h);
     });
@@ -192,7 +185,6 @@
     const first = new Date(yr, mo, 1);
     const last = new Date(yr, mo + 1, 0).getDate();
     let start = first.getDay(); let offset = (start === 0) ? 6 : start - 1;
-
     for(let i=0; i<offset; i++) grid.appendChild(document.createElement("div"));
 
     for(let i=1; i<=last; i++) {
@@ -200,7 +192,6 @@
       const data = getCelestialData(d);
       const cell = document.createElement("div");
       cell.className = "day";
-      
       if (d.toDateString() === new Date().toDateString()) cell.classList.add("today");
       if (d.toDateString() === selectedDate) cell.classList.add("selected");
       if (data.phase === "Full Moon") cell.classList.add("full");
@@ -209,46 +200,59 @@
         cell.classList.add("period");
         cell.innerHTML += `<span class="period-drop">🩸</span>`;
       }
-
       cell.innerHTML += `<span class="d-num">${i}</span><span class="t-num">${data.tDay}</span>
                         <span class="m-ico">${data.ico}</span><span class="z-ico">${data.zod.split(' ')[0]}</span>
                         <span class="moon-tracker">${data.moonNum}/13</span>`;
-      
-      cell.onclick = () => {
-        selectedDate = d.toDateString();
-        updateDash(d);
-        render();
-      };
+      cell.onclick = () => { selectedDate = d.toDateString(); updateDash(d); render(); };
       grid.appendChild(cell);
     }
   }
 
   function updateDash(date) {
     activeD = new Date(date); const data = getCelestialData(date);
+    const zod = data.zod.split(' ')[0];
+    
+    // Moon Cycle Themes (13 Moons)
+    const themes = {
+      11: "The Season of Deep Roots & Quiet Dreams",
+      12: "The Season of the Quickening Spirit",
+      13: "The Season of the Ancestral Gate",
+      1: "The Season of the Rising Sap (New Year)"
+    };
+    
     document.getElementById("dashTitle").innerText = data.title.toUpperCase();
-    document.getElementById("dashSub").innerText = `${data.phase} • MOON ${data.moonNum}/13 • DAY ${data.tDay} OF CYCLE`;
+    document.getElementById("dashSub").innerText = `${themes[data.moonNum] || "Sacred Cycle"} • ${data.phase} IN ${data.zod.toUpperCase()}`;
     document.getElementById("dateFooter").innerText = date.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
 
-    const guidance = {
-      "Full Moon": "The ancestors can see you clearly tonight. The harvest is ready—release what has ripened.",
-      "New Moon": "The Great Silence. Plant your seeds in the darkness; they don't need to be seen to be real.",
-      "Waxing Gibbous": "The moon is pregnant with light. You are so close to the finish line—nurture your momentum.",
-      "Waning Gibbous": "The light is beginning to exhale. Begin the process of integration and rest.",
-      "Waxing Crescent": "A delicate beginning. Nurture your new ideas like a fragile flame.",
-      "Waning Crescent": "The Balsamic release. Let go of the old skin so the new one can form.",
-      "Last Quarter": "The pivot point. Clear the clutter of the mind to make room for the void.",
-      "First Quarter": "The point of action. A challenge may arise to test your commitment."
+    // 🏺 DEEP POWER MESSAGING SYSTEM
+    const whispers = {
+      "Cancer": "The shell you carry is not a cage, but a temple. Within your waters, the collective memory of every woman in your lineage flows. Listen to the pull of your own tide.",
+      "Leo": "The Sun lives in your spine. Your joy is a radical act of rebellion against the darkness. To shine is to fulfill your ancestral contract.",
+      "Capricorn": "You are the architect of time. The mountain you climb was mapped by those who came before; your footsteps are the prayer that keeps the peak from crumbling.",
+      "Aquarius": "You are the thunder that breaks the drought. Your unique vision is the lightning rod for the new world. Do not fear the isolation of the truth-teller.",
+      "Pisces": "You walk the mist between worlds. Your dreams are not shadows, but whispers from the cosmic ocean. To feel everything is to hold the map of the Universe.",
+      "Aries": "You are the first spark in the dry wood. Your impulse is the soul’s way of saying: 'I am here.' Burn bright, for your heat wakes the others."
+    };
+
+    const phaseWisdom = {
+      "Full Moon": "The peak of the breath. Your power is visible, your field is magnetic. Do not waste this light on trivialities—aim your heart at your highest desire.",
+      "New Moon": "The sacred void. In this darkness, you are unformed and infinite. Do not rush to be 'something' yet; simply be the soil.",
+      "Waxing Gibbous": "The final push before the bloom. The tension you feel is the seed-coat cracking. Stay disciplined; the Universe is watching your commitment.",
+      "Waning Gibbous": "The wisdom of the harvest. Begin to strip away the excess. What was useful in the light may become a burden in the dark. Gratitude is your medicine.",
+      "First Quarter": "The crossroad of action. A choice is required of you today. Will you return to the safety of the old, or step into the fire of the new?",
+      "Last Quarter": "The spiritual audit. Inventory your spirit. Forgive yourself for the ripening that didn't happen, and prepare for the release."
     };
 
     const rituals = {
-      "Cancer": "Bless a bowl of water with salt. Wash your hands to let go of old family stories.",
-      "Leo": "Light a gold candle. Speak your name three times with power.",
-      "Capricorn": "Hold a stone. Tell it your burdens and leave it in the earth.",
-      "Aquarius": "Burn sage or cedar. Acknowledge your place in the collective web."
+      "Cancer": "Wash your face with moonwater. Visualize the water washing away 'inherited' sorrows, leaving only your own clear light.",
+      "Leo": "Place a gold coin or jewelry in a window. Stand tall and recite: 'I am the sovereign of my own heart.'",
+      "Capricorn": "Find a heavy stone. Whisper one fear into it and place it at the base of a tree, returning it to the Earth's gravity.",
+      "Aquarius": "Light an incense stick and watch the smoke. As it dissolves, imagine your limiting beliefs dissolving into the air.",
+      "Pisces": "Sleep with a piece of amethyst or a simple sprig of lavender. Ask the ancestors for a clear symbol in your dreams tonight."
     };
 
-    document.getElementById("guidanceText").innerText = guidance[data.phase] || "Listen to the rhythm of your own heart.";
-    document.getElementById("ritualText").innerText = rituals[data.zod.split(' ')[0]] || "Sit in 5 minutes of mindful breath, connecting to the Earth.";
+    document.getElementById("guidanceText").innerText = `${phaseWisdom[data.phase] || "The cycle turns."} ${whispers[zod] || whispers["Pisces"]}`;
+    document.getElementById("ritualText").innerText = rituals[zod] || "Sit in 7 minutes of silence, focusing on the space between your breaths.";
     document.getElementById("journalInput").value = db.journals[date.toDateString()] || "";
     document.getElementById("cycleBtn").className = db.logs[date.toDateString()] ? "cycle-btn active" : "cycle-btn";
   }
@@ -256,13 +260,13 @@
   function togglePeriod() {
     const k = new Date(selectedDate).toDateString();
     db.logs[k] = !db.logs[k];
-    localStorage.setItem('turtle_almanac_v33', JSON.stringify(db));
+    localStorage.setItem('turtle_almanac_pub', JSON.stringify(db));
     render(); updateDash(new Date(selectedDate));
   }
 
   function saveJournal() {
     db.journals[new Date(selectedDate).toDateString()] = document.getElementById("journalInput").value;
-    localStorage.setItem('turtle_almanac_v33', JSON.stringify(db));
+    localStorage.setItem('turtle_almanac_pub', JSON.stringify(db));
   }
 
   function changeMonth(n) { activeD.setMonth(activeD.getMonth() + n); render(); }
