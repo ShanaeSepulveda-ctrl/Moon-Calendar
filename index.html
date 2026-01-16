@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>The Ancestral Moon Map | V48 Universal Rituals</title>
+  <title>The Ancestral Moon Map | V47 Star Sister Rituals</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Charm:wght@400;700&family=Quicksand:wght@300;500&display=swap" rel="stylesheet">
   <style>
     :root { 
@@ -82,6 +82,16 @@
   <button id="flowBtn" class="cycle-btn" onclick="toggleFlow()">MARK MOON FLOW</button>
   <button class="sister-btn" onclick="copySisterReport()">✨ SISTER CONNECTION REPORT ✨</button>
 </div>
+<div id="grimoireView">
+  <span style="float:right; cursor:pointer;" onclick="showView('dash')">✕</span>
+  <h2 style="font-family:'Cinzel';">THE GRIMOIRE</h2>
+  <div id="grimoireContent" style="max-height: 450px; overflow-y: auto;"></div>
+</div>
+<div id="yearlyView">
+  <span style="float:right; cursor:pointer;" onclick="showView('dash')">✕</span>
+  <h2 style="font-family:'Cinzel'; font-size: 1rem;">2026 ANCESTRAL MOON MAP</h2>
+  <div id="yearlyContent" style="text-align: left; padding: 10px; font-size: 0.75rem;"></div>
+</div>
 
 <script>
   let activeD = new Date(2026, 0, 16); 
@@ -92,20 +102,20 @@
   const ZOD_ELEMENTS = { "Aries ♈":"FIRE", "Leo ♌":"FIRE", "Sagittarius ♐":"FIRE", "Taurus ♉":"EARTH", "Virgo ♍":"EARTH", "Capricorn ♑":"EARTH", "Gemini ♊":"AIR", "Libra ♎":"AIR", "Aquarius ♒":"AIR", "Cancer ♋":"WATER", "Scorpio ♏":"WATER", "Pisces ♓":"WATER" };
   
   const MOON_DEEP = {
-    "Wolf Moon": {r: "Light a single white candle. Scribe your deepest truth onto a leaf and release it to the wind.", w: "The pack provides protection, but the soul must lead. Listen to the inner pulse that knows the way through the cold."},
-    "Snow Moon": {r: "Write down a burden on paper and place it under a bowl of salt or earth, symbolizing its burial and renewal.", w: "In the stillness of the frost, all is quiet. Use this silence to hear the heartbeat of the ancestors beneath the ground."},
-    "Worm Moon": {r: "Press your hands against the earth or a stone. Feel the slow awakening of the life force returning to the world.", w: "The soil is softening and the first stirrings of change are near. Your potential is ready to breach the surface."},
-    "Pink Moon": {r: "Anoint your pulse points with water or oil. Visualize your intentions blossoming like wild flowers in a field.", w: "Purity is not the absence of life, but the clarity of it. Bloom with the same relentless grace as the spring."},
-    "Flower Moon": {r: "Gather natural elements to create a small offering of beauty. Leave it where the moon's light will touch it.", w: "Life is a generous host. Abundance flows toward those who recognize the inherent beauty in all stages of growth."},
-    "Strawberry Moon": {r: "Savor a single seed or fruit mindfully, giving thanks for the nourishment that sustains your physical vessel.", w: "The sweetness of the journey is found in the presence. Recognize the ripening of the seeds you planted cycles ago."},
-    "Buck Moon": {r: "Stand with feet rooted and arms reaching high. Imagine your spirit expanding to touch the boundaries of the cosmos.", w: "Strength is born from endurance. Assert your sovereignty and protect the sacred space you have cultivated."},
-    "Sturgeon Moon": {r: "Submerge your hands in cool water. Ask the ancient waters to wash away what no longer serves your resilience.", w: "Wisdom resides in the depths. Trust the unseen currents of your intuition to guide you through the darkest waters."},
-    "Harvest Moon": {r: "Place three stones in a bowl. For each stone, name a lesson you have harvested during this turn of the sun.", w: "Gratitude is the bridge between effort and reward. Honor the cycle of labor and the rest that follows the reap."},
-    "Hunter's Moon": {r: "Build a small fire or gaze into a flame. Focus your intent on a single goal you wish to achieve before winter.", w: "Vision requires a steady heart. Aim your energy with precision at that which truly feeds your soul's purpose."},
-    "Beaver Moon": {r: "Tidy a corner of your living space. Organize one physical thing to reflect the organization of your inner sanctuary.", w: "Preparation is an act of self-love. Tend to the foundation of your life before the cycle turns inward for the deep rest."},
-    "Cold Moon": {r: "Sit in total darkness for three minutes. Acknowledge the light that exists only in your mind's eye.", w: "The dark is the womb of all creation. Trust the gestation of your dreams while the world sleeps under the frost."},
-    "Long Night Moon": {r: "Scribe a dream on a piece of paper and tuck it beneath your pillow. Invite ancestral guidance into your sleep.", w: "The longest night is the turning point. In the deepest shadow, the promise of the returning sun is already felt."},
-    "Threshold Moon": {r: "Stand at a threshold. Step forward with intention, leaving behind one habit that belongs to the past.", w: "You are the bridge between the old and the new. Walk with the wisdom of all the moons that have come before."}
+    "Wolf Moon": {r: "Light a single white candle. Howl or hum your deepest truth into the flame, then release it to the wind.", w: "The pack protects the individual. Listen to the inner howl that leads you home."},
+    "Snow Moon": {r: "Write down a burden on a piece of ice or paper and let it melt away, purifying your spirit.", w: "Silence is a fertile ground. Under the frost, your power is gathering its strength."},
+    "Worm Moon": {r: "Walk barefoot on the earth for 5 minutes. Feel the vibration of the life waking up beneath you.", w: "The soil is softening. What was dormant is now ready to push through the surface."},
+    "Pink Moon": {r: "Bathe your face in moon water infused with rose petals to awaken your divine heart.", w: "Softness is your greatest strength. Bloom without apology in the sign of the goddess."},
+    "Flower Moon": {r: "Create a flower mandala on the earth. Leave it as a gift for the spirits of the land.", w: "Abundance is your birthright. Let your beauty be a service to the world."},
+    "Strawberry Moon": {r: "Eat a piece of fruit mindfully, tasting the sweetness of your own successful manifestations.", w: "The sweetness of life is found in the present. Savor the nectar of your journey."},
+    "Buck Moon": {r: "Stand tall like a tree. Imagine antlers growing from your crown, reaching for cosmic wisdom.", w: "Assert your boundaries. Your sovereignty is sacred and must be protected."},
+    "Sturgeon Moon": {r: "Submerge your hands in natural water. Ask the ancient fish for the gift of resilience.", w: "You are deeper than the surface reveals. Trust the currents of your intuition."},
+    "Harvest Moon": {r: "Gather seeds or grains. Place them in a bowl and name three things you are reaping now.", w: "Gratitude is the ultimate multiplier. Honor the labor of your soul's season."},
+    "Hunter's Moon": {r: "Build a small fire or use a red candle. Focus on the 'prey'—the goals you are pursuing.", w: "Focus is a form of love. Aim your heart at what truly feeds your spirit."},
+    "Beaver Moon": {r: "Clear one physical space in your home to make room for winter dreaming.", w: "Prepare the sanctuary. The inner temple needs tending before the deep cold sets in."},
+    "Cold Moon": {r: "Wrap yourself in a heavy blanket. Sit in total darkness and listen to your heartbeat.", w: "The light is birthed in the dark. Trust the gestation of your highest dreams."},
+    "Long Night Moon": {r: "Draw a circle of salt around your bed. Dream with the intention of ancestral healing.", w: "The longest night holds the deepest secrets. Listen to the whispers of the grandmothers."},
+    "Threshold Moon": {r: "Stand in a doorway. Step through with your right foot to symbolize entering a new life.", w: "You are the bridge between what was and what will be. Walk with wisdom."}
   };
 
   const FULL_MOONS = [
@@ -166,7 +176,7 @@
     document.getElementById("dashSub").innerText = `DAY ${data.tDay} • ${data.zod} • ${data.dStr}`;
     document.getElementById("elementTag").innerText = `✧ ${data.el} ENERGY ✧`;
     
-    const meta = MOON_DEEP[data.moonName] || {r: "Scribe your intentions in your journal and sit in meditation for 5 minutes.", w: "The ancestors observed these same skies to find their way. You are never lost; you are simply in a different phase of the cycle."};
+    const meta = MOON_DEEP[data.moonName] || {r: "Sit in quiet meditation for 5 minutes.", w: "The moon reminds us that we are always whole, even when we are in shadow."};
     document.getElementById("guidanceText").innerText = meta.w;
     document.getElementById("ritualText").innerText = meta.r;
     document.getElementById("journalInput").value = db.journals[date.toDateString()] || "";
@@ -175,22 +185,14 @@
   function copySisterReport() {
     const d = new Date(selectedDate);
     const data = getCelestialData(d);
-    const meta = MOON_DEEP[data.moonName] || {r: "Meditate.", w: "Stay grounded."};
-    const report = `☾ Ancestral Moon Report: ${data.dStr} ☽\nMoon: ${data.moonName}\nSign: ${data.zod}\nElement: ${data.el}\n\nWhisper: ${meta.w}\n\nShared Ritual: ${meta.r}\n\nSynced via The Ancestral Moon Map ✨`;
-    navigator.clipboard.writeText(report).then(() => {
-        const btn = document.querySelector(".sister-btn");
-        btn.innerText = "✅ REPORT COPIED!";
-        setTimeout(() => btn.innerText = "✨ SISTER CONNECTION REPORT ✨", 2000);
-    });
+    const meta = MOON_DEEP[data.moonName] || {r: "Meditate."};
+    const report = `☾ Sister Moon Report ☽\nMoon: ${data.moonName}\nSign: ${data.zod}\n\nWhisper: ${meta.w}\n\nShared Ritual: ${meta.r}\n\nPracticing with you in spirit. ✨`;
+    navigator.clipboard.writeText(report).then(() => alert("Ritual Report Copied!"));
   }
 
   function toggleFlow() { db.logs[selectedDate] = !db.logs[selectedDate]; localStorage.setItem('ancestral_moon_map', JSON.stringify(db)); render(); }
   function changeMonth(n) { activeD.setMonth(activeD.getMonth() + n); render(); }
-  function showView(v) { 
-    document.getElementById('oracleDash').style.display='none'; 
-    document.getElementById('yearlyView').style.display='none'; 
-    document.getElementById(v==='dash'?'oracleDash':v+'View').style.display='block'; 
-  }
+  function showView(v) { document.getElementById('oracleDash').style.display='none'; document.getElementById('yearlyView').style.display='none'; document.getElementById(v==='dash'?'oracleDash':v+'View').style.display='block'; }
 
   const sField = document.getElementById('starField');
   for(let i=0; i<80; i++) {
