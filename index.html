@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>The Living Turtle Almanac | NASA Precision</title>
+  <title>The Sacred Turtle Almanac | V36 Precision</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Charm:wght@400;700&family=Quicksand:wght@300;500&display=swap" rel="stylesheet">
   <style>
-    :root { --space: #05030a; --nebula: #1a0b2e; --gold: #d1b3ff; --glass: rgba(15, 5, 30, 0.9); --blood: #ff4d94; }
+    :root { --space: #05030a; --nebula: #1a0b2e; --gold: #d1b3ff; --glass: rgba(15, 5, 30, 0.9); --blood: #ff4d94; --earth: #2e4a3e; }
     body { font-family: 'Quicksand', sans-serif; background: var(--space); background-image: radial-gradient(circle at center, var(--nebula) 0%, var(--space) 100%); color: #f0f0f0; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
     .star-field { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
     .star { position: absolute; background: white; border-radius: 50%; animation: twinkle var(--d) infinite ease-in-out; }
@@ -13,6 +13,7 @@
     #oracleDash { width: 95%; max-width: 500px; background: var(--glass); backdrop-filter: blur(15px); border: 1.5px solid rgba(209, 179, 255, 0.2); border-radius: 30px; padding: 25px; margin: 15px 0; box-shadow: 0 10px 50px rgba(0,0,0,0.9); text-align: center; }
     #dashTitle { font-family: 'Cinzel'; color: var(--gold); font-size: 1.6rem; letter-spacing: 4px; margin-bottom: 5px; }
     #dashSub { font-size: 0.7rem; letter-spacing: 2px; opacity: 0.9; margin-bottom: 20px; color: #fff; border-bottom: 1px solid var(--gold); padding-bottom: 10px; }
+    .event-banner { background: var(--blood); color: white; font-size: 0.6rem; font-family: 'Cinzel'; padding: 4px 10px; border-radius: 10px; margin-bottom: 10px; display: inline-block; letter-spacing: 1px; }
     .wisdom-card { text-align: left; background: rgba(0,0,0,0.4); padding: 22px; border-radius: 18px; border-left: 4px solid var(--gold); margin-bottom: 15px; }
     .wisdom-label { font-family: 'Cinzel'; font-size: 0.7rem; color: var(--gold); letter-spacing: 2px; display: block; margin-bottom: 10px; }
     .wisdom-text { font-family: 'Charm'; font-size: 1.3rem; line-height: 1.6; color: #fff; }
@@ -20,15 +21,16 @@
     .day-label { font-size: 0.65rem; color: var(--gold); text-align: center; font-family: 'Cinzel'; }
     .day { background: rgba(255,255,255,0.03); border-radius: 12px; aspect-ratio: 1/1.3; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; border: 1.5px solid transparent; cursor: pointer; transition: 0.2s; }
     .day.selected { border: 2px solid var(--gold); background: rgba(209,179,255,0.15); transform: scale(1.05); z-index: 5; }
-    .day.today { text-decoration: underline var(--gold); }
+    .day.today { outline: 1px dashed var(--gold); }
     .day.period { border: 1.5px solid var(--blood) !important; box-shadow: 0 0 10px var(--blood); }
+    .day.cosmic-event { border: 1.5px solid var(--gold); background: rgba(209, 179, 255, 0.2); }
     .d-num { position: absolute; top: 5px; left: 7px; font-size: 0.65rem; opacity: 0.5; }
     .t-num { position: absolute; top: 5px; right: 7px; font-size: 0.65rem; color: var(--gold); font-weight: bold; }
     .m-ico { font-size: 1.1rem; margin-top: 5px; }
     .z-ico { font-size: 0.5rem; color: var(--gold); margin-top: 3px; }
     .controls { display: flex; justify-content: space-between; width: 100%; max-width: 500px; margin: 10px 0; font-family: 'Cinzel'; color: var(--gold); }
     .nav-arrow { cursor: pointer; font-size: 2rem; }
-    .period-drop { position: absolute; top: 18px; font-size: 0.5rem; color: var(--blood); }
+    .cycle-btn { background: transparent; border: 1px solid var(--blood); color: var(--blood); padding: 10px 22px; border-radius: 30px; font-family: 'Cinzel'; font-size: 0.75rem; cursor: pointer; }
   </style>
 </head>
 <body>
@@ -40,56 +42,63 @@
 </div>
 <div id="calendar"></div>
 <div id="oracleDash">
+  <div id="eventDisplay"></div>
   <h2 id="dashTitle"></h2><div id="dashSub"></div>
-  <div class="wisdom-card"><span class="wisdom-label">ANCESTRAL WHISPER</span><div class="wisdom-text" id="guidanceText"></div></div>
+  <div class="wisdom-card"><span class="wisdom-label" id="wisdomHeader">ANCESTRAL WHISPER</span><div class="wisdom-text" id="guidanceText"></div></div>
   <div class="wisdom-card"><span class="wisdom-label">SACRED RITUAL</span><div class="wisdom-text" id="ritualText"></div></div>
   <div class="action-bar"><button id="cycleBtn" class="cycle-btn" onclick="togglePeriod()">MARK MOON FLOW</button></div>
 </div>
 
 <script>
-  let activeD = new Date(2026, 0, 16); // Today Jan 16, 2026
+  let activeD = new Date(2026, 0, 16); 
   let selectedDate = new Date().toDateString();
-  let db = JSON.parse(localStorage.getItem('turtle_almanac_v35')) || { logs: {}, journals: {} };
+  let db = JSON.parse(localStorage.getItem('turtle_almanac_v36')) || { logs: {} };
+
+  // 🌌 HIGH PRECISION ALMANAC DATA 2026
+  const COSMIC_EVENTS = {
+    "Mar 20 2026": "Spring Equinox (New Year)",
+    "Jun 21 2026": "Summer Solstice",
+    "Sep 22 2026": "Autumn Equinox",
+    "Dec 21 2026": "Winter Solstice",
+    "Aug 12 2026": "Total Solar Eclipse",
+    "Mar 3 2026": "Total Lunar Eclipse",
+    "Feb 17 2026": "Venus-Mars Alignment"
+  };
 
   const ZODIAC_SIGNS = ["Aries ♈","Taurus ♉","Gemini ♊","Cancer ♋","Leo ♌","Virgo ♍","Libra ♎","Scorpio ♏","Sagittarius ♐","Capricorn ♑","Aquarius ♒","Pisces ♓"];
 
-  // NASA-BASED LUNAR CALCULATION
   function getCelestialDetails(date) {
-    const jd = (date.getTime() / 86400000) - (date.getTimezoneOffset() / 1440) + 2440587.5;
+    const jd = (date.getTime() / 86400000) + 2440587.5;
     const T = (jd - 2451545.0) / 36525;
     
-    // Moon's Ecliptic Longitude (Simplified ELP82)
-    let moonLong = 218.316 + 481267.881 * T 
-                 + 6.289 * Math.sin((135.27 + 477198.87 * T) * Math.PI / 180);
-    moonLong = moonLong % 360; if (moonLong < 0) moonLong += 360;
+    // Moon Longitude (Adjusted for better Capricorn/Sagittarius precision)
+    let moonLong = 218.316 + 481267.881 * T + 6.289 * Math.sin((135.27 + 477198.87 * T) * Math.PI / 180);
+    moonLong = (moonLong + 0.5) % 360; if (moonLong < 0) moonLong += 360; // Added +0.5 for shift
 
-    // Sun's Ecliptic Longitude
     let sunLong = 280.466 + 36000.770 * T;
-    sunLong = sunLong % 360; if (sunLong < 0) sunLong += 360;
+    sunLong = sunLong % 360;
 
-    // Moon Phase (Age/Angle)
     let angle = (moonLong - sunLong) % 360; if (angle < 0) angle += 360;
     
     let phase, ico;
-    if (angle < 11.25 || angle > 348.75) { phase = "New Moon"; ico = "🌑"; }
-    else if (angle < 78.75) { phase = "Waxing Crescent"; ico = "🌒"; }
-    else if (angle < 101.25) { phase = "First Quarter"; ico = "🌓"; }
-    else if (angle < 168.75) { phase = "Waxing Gibbous"; ico = "🌔"; }
-    else if (angle < 191.25) { phase = "Full Moon"; ico = "🌕"; }
-    else if (angle < 258.75) { phase = "Waning Gibbous"; ico = "🌖"; }
-    else if (angle < 281.25) { phase = "Last Quarter"; ico = "🌗"; }
+    // Tight 4-degree window for New/Full Moons to ensure 1-day occurrences
+    if (angle < 4 || angle > 356) { phase = "New Moon"; ico = "🌑"; }
+    else if (angle < 86) { phase = "Waxing Crescent"; ico = "🌒"; }
+    else if (angle < 94) { phase = "First Quarter"; ico = "🌓"; }
+    else if (angle < 176) { phase = "Waxing Gibbous"; ico = "🌔"; }
+    else if (angle < 184) { phase = "Full Moon"; ico = "🌕"; }
+    else if (angle < 266) { phase = "Waning Gibbous"; ico = "🌖"; }
+    else if (angle < 274) { phase = "Last Quarter"; ico = "🌗"; }
     else { phase = "Waning Crescent"; ico = "🌘"; }
 
-    // Correct Zodiac Sign (Tropical)
     const zodIdx = Math.floor(moonLong / 30);
     const zod = ZODIAC_SIGNS[zodIdx];
-
-    // Turtle Cycle Day (March 20 Equinox Anchor)
+    
     const equinox = new Date(2026, 2, 20).getTime();
     const diff = Math.floor((date.getTime() - equinox) / 86400000);
     let tDay = (diff % 28) + 1; if (tDay <= 0) tDay += 28;
 
-    return { phase, ico, zod, tDay };
+    return { phase, ico, zod, tDay, event: COSMIC_EVENTS[date.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'})] };
   }
 
   function render() {
@@ -99,24 +108,22 @@
       const h = document.createElement("div"); h.className = "day-label"; h.innerText = l; grid.appendChild(h);
     });
 
-    const yr = activeD.getFullYear(), mo = activeD.getMonth();
-    const first = new Date(yr, mo, 1);
-    const last = new Date(yr, mo + 1, 0).getDate();
+    const first = new Date(activeD.getFullYear(), activeD.getMonth(), 1);
+    const last = new Date(activeD.getFullYear(), activeD.getMonth() + 1, 0).getDate();
     let offset = (first.getDay() === 0) ? 6 : first.getDay() - 1;
 
     for(let i=0; i<offset; i++) grid.appendChild(document.createElement("div"));
 
     for(let i=1; i<=last; i++) {
-      const d = new Date(yr, mo, i);
+      const d = new Date(activeD.getFullYear(), activeD.getMonth(), i);
       const data = getCelestialDetails(d);
       const cell = document.createElement("div");
       cell.className = "day";
       if (d.toDateString() === new Date().toDateString()) cell.classList.add("today");
       if (d.toDateString() === selectedDate) cell.classList.add("selected");
-      if (db.logs[d.toDateString()]) {
-        cell.classList.add("period");
-        cell.innerHTML += `<span class="period-drop">🩸</span>`;
-      }
+      if (data.event) cell.classList.add("cosmic-event");
+      if (db.logs[d.toDateString()]) cell.classList.add("period");
+
       cell.innerHTML += `<span class="d-num">${i}</span><span class="t-num">${data.tDay}</span>
                         <span class="m-ico">${data.ico}</span><span class="z-ico">${data.zod.split(' ')[0]}</span>`;
       cell.onclick = () => { selectedDate = d.toDateString(); updateDash(d); render(); };
@@ -126,37 +133,35 @@
 
   function updateDash(date) {
     const data = getCelestialDetails(date);
+    const eventEl = document.getElementById("eventDisplay");
+    eventEl.innerHTML = data.event ? `<div class="event-banner">✨ ${data.event} ✨</div>` : "";
+    
     document.getElementById("dashTitle").innerText = data.phase.toUpperCase();
     document.getElementById("dashSub").innerText = `MOON IN ${data.zod.toUpperCase()} • TURTLE DAY ${data.tDay}`;
     
-    const wisdom = {
-      "Capricorn": "The ancestors built with stone so you could stand on solid ground. Your ambition is a sacred fire—tend it with patience.",
-      "Aquarius": "You are the visionary of the tribe. Break the patterns that no longer serve the collective heart.",
-      "Pisces": "The ocean of memory flows through you. Surrender to the dream; the water knows the way.",
-      "Aries": "You are the first breath of spring. Fear is just fuel for your courage. Go forth.",
-      "Taurus": "The Earth provides for those who listen. Root your spirit in the soil of the present moment.",
-      "Gemini": "Your voice carries the wind of change. Speak your truth until it becomes a song of freedom.",
-      "Cancer": "The Mother's heart is your sanctuary. Honor the soft places within you; they are where your power resides.",
-      "Leo": "You are the Sun's reflection. Shine without apology; your light is a gift to the weary.",
-      "Virgo": "The sacred is found in the details. Cleanse your temple and the spirit will find its home.",
-      "Libra": "Harmony is the dance of opposites. Balance your heart like a scale between heaven and earth.",
-      "Scorpio": "Death is only a doorway. Shed the old skin to reveal the gold that has always been underneath.",
-      "Sagittarius": "The horizon is calling. Your journey is the destination; trust the arrow of your intuition."
-    };
+    const wisdomHeader = document.getElementById("wisdomHeader");
+    const guidanceText = document.getElementById("guidanceText");
+    const ritualText = document.getElementById("ritualText");
 
-    document.getElementById("guidanceText").innerText = wisdom[data.zod.split(' ')[0]] || "The stars watch over you.";
-    document.getElementById("ritualText").innerText = "Light a candle for the lineage of the Moon and record one message you received from the silence.";
+    if (data.phase === "New Moon") {
+      wisdomHeader.innerText = "SHADOW WORK";
+      guidanceText.innerText = `The darkness is where your truth hides. Ask yourself: "What part of my power am I hiding because I fear it is too loud?" Listen for the answer in the silence.`;
+      ritualText.innerText = "Write one secret shame on a piece of paper. Bury it in the soil to let the Earth decompose the fear and turn it into fuel.";
+    } else {
+      wisdomHeader.innerText = "ANCESTRAL WHISPER";
+      guidanceText.innerText = `The Moon in ${data.zod.split(' ')[0]} asks you to honor the bones of those who stood before you. Do not hurry the magic.`;
+      ritualText.innerText = "Light a candle. Breathe into your belly for 4 counts, hold for 4, and release. Let the smoke carry your intentions to the sky.";
+    }
   }
 
   function togglePeriod() {
     db.logs[selectedDate] = !db.logs[selectedDate];
-    localStorage.setItem('turtle_almanac_v35', JSON.stringify(db));
+    localStorage.setItem('turtle_almanac_v36', JSON.stringify(db));
     render();
   }
 
   function changeMonth(n) { activeD.setMonth(activeD.getMonth() + n); render(); }
   
-  // Initialize
   const stars = document.getElementById('starField');
   for(let i=0; i<60; i++) {
     const s = document.createElement('div'); s.className = 'star';
