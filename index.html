@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Living Turtle Almanac</title>
+  <title>The Sacred Turtle Ephemeris</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Charm:wght@400;700&family=Quicksand:wght@300;500&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -34,7 +34,7 @@
     }
 
     #dashTitle { font-family: 'Cinzel'; color: var(--gold); font-size: 1.6rem; letter-spacing: 4px; margin-bottom: 5px; }
-    #dashSub { font-size: 0.75rem; letter-spacing: 2px; opacity: 0.8; margin-bottom: 20px; text-transform: uppercase; }
+    #dashSub { font-size: 0.75rem; letter-spacing: 2px; opacity: 0.8; margin-bottom: 20px; text-transform: uppercase; color: #fff; }
 
     .wisdom-card { text-align: left; background: rgba(0,0,0,0.3); padding: 18px; border-radius: 15px; border-left: 3px solid var(--gold); margin-bottom: 12px; }
     .wisdom-label { font-family: 'Cinzel'; font-size: 0.65rem; color: var(--gold); letter-spacing: 2px; display: block; margin-bottom: 8px; }
@@ -116,45 +116,45 @@
   }
 
   let activeD = new Date(2026, 0, 15);
-  let db = JSON.parse(localStorage.getItem('turtle_almanac_final')) || { logs: {}, journals: {} };
+  let db = JSON.parse(localStorage.getItem('turtle_almanac_v32')) || { logs: {}, journals: {} };
 
-  // 🌑 THE TRUTH MAP: MANUAL CELESTIAL ALIGNMENT FOR 2026
-  function getLunarMap(date) {
+  // 🌑 THE EPHEMERIS (MANUAL DAY-BY-DAY TRUTH)
+  function getCelestialData(date) {
     const m = date.getMonth(), d = date.getDate();
-    
-    // Spring Equinox Anchor for Turtle Cycle
     const equinox = new Date(2026, 2, 20).getTime();
     const diff = Math.floor((date.getTime() - equinox) / 86400000);
     let tDay = (diff % 28) + 1; if (tDay <= 0) tDay += 28;
 
-    let res = { ico: "🌙", phase: "Waning", zod: "...", title: "Waning Moon" };
+    let res = { ico: "🌙", phase: "Waning", zod: "...", title: "Moon" };
 
-    // JANUARY 2026 MANUAL OVERRIDE
-    if (m === 0) {
-      if (d < 3) { res.ico = "🌔"; res.phase = "Waxing Gibbous"; }
-      else if (d === 3) { res.ico = "🌕"; res.phase = "Full Moon"; res.title = "Wolf Moon"; res.zod = "Cancer ♋"; }
-      else if (d < 10) { res.ico = "🌖"; res.phase = "Waning Gibbous"; }
-      else if (d === 10) { res.ico = "🌗"; res.phase = "Last Quarter"; }
-      else if (d < 18) { res.ico = "🌘"; res.phase = "Waning Crescent"; }
-      else if (d === 18) { res.ico = "🌑"; res.phase = "New Moon"; res.title = "Seed Moon"; res.zod = "Capricorn ♑"; }
-      else { res.ico = "🌒"; res.phase = "Waxing Crescent"; }
+    if (m === 0) { // JANUARY 2026
+        if (d < 3) { res.ico = "🌔"; res.phase = "Waxing Gibbous"; }
+        else if (d === 3) { res.ico = "🌕"; res.phase = "Full Moon"; res.title = "Wolf Moon"; res.zod = "Cancer ♋"; }
+        else if (d <= 9) { res.ico = "🌖"; res.phase = "Waning Gibbous"; }
+        else if (d === 10) { res.ico = "🌗"; res.phase = "Last Quarter"; }
+        else if (d < 18) { res.ico = "🌘"; res.phase = "Waning Crescent"; }
+        else if (d === 18) { res.ico = "🌑"; res.phase = "New Moon"; res.title = "Seed Moon"; res.zod = "Capricorn ♑"; }
+        else if (d <= 25) { res.ico = "🌒"; res.phase = "Waxing Crescent"; }
+        else if (d === 26) { res.ico = "🌓"; res.phase = "First Quarter"; }
+        else { res.ico = "🌔"; res.phase = "Waxing Gibbous"; }
+    } 
+    else if (m === 1) { // FEBRUARY 2026
+        if (d === 1) { res.ico = "🌕"; res.phase = "Full Moon"; res.title = "Snow Moon"; res.zod = "Leo ♌"; }
+        else if (d <= 8) { res.ico = "🌖"; res.phase = "Waning Gibbous"; }
+        else if (d === 9) { res.ico = "🌗"; res.phase = "Last Quarter"; }
+        else if (d < 17) { res.ico = "🌘"; res.phase = "Waning Crescent"; }
+        else if (d === 17) { res.ico = "🌑"; res.phase = "New Moon"; res.title = "Vision Moon"; res.zod = "Aquarius ♒"; }
+        else if (d <= 23) { res.ico = "🌒"; res.phase = "Waxing Crescent"; }
+        else if (d === 24) { res.ico = "🌓"; res.phase = "First Quarter"; }
+        else { res.ico = "🌔"; res.phase = "Waxing Gibbous"; }
     }
-    // FEBRUARY 2026 MANUAL OVERRIDE
-    else if (m === 1) {
-      if (d === 1) { res.ico = "🌕"; res.phase = "Full Moon"; res.title = "Snow Moon"; res.zod = "Leo ♌"; }
-      else if (d < 9) { res.ico = "🌖"; res.phase = "Waning Gibbous"; }
-      else if (d === 9) { res.ico = "🌗"; res.phase = "Last Quarter"; }
-      else if (d < 17) { res.ico = "🌘"; res.phase = "Waning Crescent"; }
-      else if (d === 17) { res.ico = "🌑"; res.phase = "New Moon"; res.title = "Vision Moon"; res.zod = "Aquarius ♒"; }
-      else { res.ico = "🌒"; res.phase = "Waxing Crescent"; }
-    }
-    // MARCH 2026 MANUAL OVERRIDE
-    else if (m === 2) {
-      if (d === 3) { res.ico = "🌕"; res.phase = "Full Moon"; res.title = "Worm Moon"; res.zod = "Virgo ♍"; }
-      else if (d === 18) { res.ico = "🌑"; res.phase = "New Moon"; res.title = "Sap Moon"; res.zod = "Pisces ♓"; }
+    else if (m === 2) { // MARCH 2026
+        if (d < 3) { res.ico = "🌔"; res.phase = "Waxing Gibbous"; }
+        else if (d === 3) { res.ico = "🌕"; res.phase = "Full Moon"; res.title = "Worm Moon"; res.zod = "Virgo ♍"; }
+        else if (d === 18) { res.ico = "🌑"; res.phase = "New Moon"; res.title = "Sap Moon"; res.zod = "Pisces ♓"; }
+        else { res.ico = "🌙"; res.phase = "Transition"; }
     }
 
-    // Dynamic Zodiac Fallback
     if (res.zod === "...") {
         const jan3 = new Date(2026, 0, 3).getTime();
         const zOff = Math.floor((date.getTime() - jan3)/86400000);
@@ -163,14 +163,12 @@
         if (zIdx < 0) zIdx += 12;
         res.zod = zArr[zIdx];
     }
-    
     return { ...res, tDay };
   }
 
   function render() {
     const grid = document.getElementById("calendar"); grid.innerHTML = "";
     document.getElementById("monthLabel").innerText = activeD.toLocaleString('default', { month: 'long', year: 'numeric' }).toUpperCase();
-    
     ["MON","TUE","WED","THU","FRI","SAT","SUN"].forEach(l => {
       const h = document.createElement("div"); h.className = "day-label"; h.innerText = l; grid.appendChild(h);
     });
@@ -179,12 +177,11 @@
     const first = new Date(yr, mo, 1);
     const last = new Date(yr, mo + 1, 0).getDate();
     let start = first.getDay(); let offset = (start === 0) ? 6 : start - 1;
-
     for(let i=0; i<offset; i++) grid.appendChild(document.createElement("div"));
 
     for(let i=1; i<=last; i++) {
       const d = new Date(yr, mo, i);
-      const data = getLunarMap(d);
+      const data = getCelestialData(d);
       const cell = document.createElement("div");
       cell.className = "day";
       if (d.toDateString() === new Date().toDateString()) cell.classList.add("today");
@@ -200,18 +197,20 @@
   }
 
   function updateDash(date) {
-    activeD = new Date(date); const data = getLunarMap(date);
-    document.getElementById("dashTitle").innerText = data.title ? data.title.toUpperCase() : "MOON PHASE";
+    activeD = new Date(date); const data = getCelestialData(date);
+    document.getElementById("dashTitle").innerText = data.title.toUpperCase();
     document.getElementById("dashSub").innerText = `${data.phase} • IN ${data.zod.toUpperCase()} • TURTLE DAY ${data.tDay}`;
     document.getElementById("dateFooter").innerText = date.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
 
     const guidance = {
-      "Full Moon": "The ancestors can see you clearly tonight. The harvest is ready—release what has ripened and let the rest go.",
-      "New Moon": "The Great Silence. This is the fertile soil of the mind. Do not plant in fear; plant in curiosity.",
-      "Waxing Crescent": "The first sliver of light. A small intention, whispered now, grows into a forest later.",
-      "Waning Crescent": "Surrender. The moon is exhaling. It is time to clear the altar and rest the spirit.",
-      "Last Quarter": "A time of tension and adjustment. What habits are you finally ready to trade for wisdom?",
-      "First Quarter": "The moon is half-full and rising. Your willpower is tested now—stay the course of your vision."
+      "Full Moon": "The ancestors are watching as your intentions reach full bloom. It is time to harvest the wisdom of the last 28 days.",
+      "New Moon": "The cosmic womb is quiet. Plant your seeds in the darkness; they don't need to be seen to be real.",
+      "Waxing Gibbous": "The moon is pregnant with light. You are so close to the finish line—don't lose your momentum now.",
+      "Waning Gibbous": "The light is beginning to exhale. Begin the process of integration. What did you learn from the peak?",
+      "Waxing Crescent": "A delicate beginning. Nurture your new ideas like a fragile flame.",
+      "Waning Crescent": "The Balsamic release. Let go of the old skin so the new one can form beneath it.",
+      "Last Quarter": "The pivot point. Clear the clutter of the mind to make room for the coming void.",
+      "First Quarter": "The point of action. A challenge may arise to test your commitment to your path."
     };
 
     const rituals = {
@@ -229,13 +228,13 @@
 
   function togglePeriod() {
     const k = activeD.toDateString(); db.logs[k] = !db.logs[k];
-    localStorage.setItem('turtle_almanac_final', JSON.stringify(db));
+    localStorage.setItem('turtle_almanac_v32', JSON.stringify(db));
     render(); updateDash(activeD);
   }
 
   function saveJournal() {
     db.journals[activeD.toDateString()] = document.getElementById("journalInput").value;
-    localStorage.setItem('turtle_almanac_final', JSON.stringify(db));
+    localStorage.setItem('turtle_almanac_v32', JSON.stringify(db));
   }
 
   function changeMonth(n) { activeD.setMonth(activeD.getMonth() + n); render(); }
