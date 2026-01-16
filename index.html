@@ -2,129 +2,180 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>The Sacred Turtle Almanac | V36 Precision</title>
+  <title>The Sacred Turtle Grimoire | 2026 Edition</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Charm:wght@400;700&family=Quicksand:wght@300;500&display=swap" rel="stylesheet">
   <style>
-    :root { --space: #05030a; --nebula: #1a0b2e; --gold: #d1b3ff; --glass: rgba(15, 5, 30, 0.9); --blood: #ff4d94; --earth: #2e4a3e; }
-    body { font-family: 'Quicksand', sans-serif; background: var(--space); background-image: radial-gradient(circle at center, var(--nebula) 0%, var(--space) 100%); color: #f0f0f0; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+    :root { --space: #030108; --nebula: #120526; --gold: #e6ccff; --glass: rgba(10, 5, 20, 0.92); --blood: #ff3385; --accent: #7a4dff; }
+    body { font-family: 'Quicksand', sans-serif; background: var(--space); background-image: radial-gradient(circle at top, var(--nebula) 0%, var(--space) 100%); color: #fdfbff; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; overflow-x: hidden; }
+    
+    /* Starry Background Effects */
     .star-field { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
     .star { position: absolute; background: white; border-radius: 50%; animation: twinkle var(--d) infinite ease-in-out; }
-    @keyframes twinkle { 0%, 100% { opacity: 0.2; } 50% { opacity: 0.7; } }
-    #oracleDash { width: 95%; max-width: 500px; background: var(--glass); backdrop-filter: blur(15px); border: 1.5px solid rgba(209, 179, 255, 0.2); border-radius: 30px; padding: 25px; margin: 15px 0; box-shadow: 0 10px 50px rgba(0,0,0,0.9); text-align: center; }
-    #dashTitle { font-family: 'Cinzel'; color: var(--gold); font-size: 1.6rem; letter-spacing: 4px; margin-bottom: 5px; }
-    #dashSub { font-size: 0.7rem; letter-spacing: 2px; opacity: 0.9; margin-bottom: 20px; color: #fff; border-bottom: 1px solid var(--gold); padding-bottom: 10px; }
-    .event-banner { background: var(--blood); color: white; font-size: 0.6rem; font-family: 'Cinzel'; padding: 4px 10px; border-radius: 10px; margin-bottom: 10px; display: inline-block; letter-spacing: 1px; }
-    .wisdom-card { text-align: left; background: rgba(0,0,0,0.4); padding: 22px; border-radius: 18px; border-left: 4px solid var(--gold); margin-bottom: 15px; }
-    .wisdom-label { font-family: 'Cinzel'; font-size: 0.7rem; color: var(--gold); letter-spacing: 2px; display: block; margin-bottom: 10px; }
-    .wisdom-text { font-family: 'Charm'; font-size: 1.3rem; line-height: 1.6; color: #fff; }
-    #calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; width: 100%; max-width: 500px; padding-bottom: 40px; }
-    .day-label { font-size: 0.65rem; color: var(--gold); text-align: center; font-family: 'Cinzel'; }
-    .day { background: rgba(255,255,255,0.03); border-radius: 12px; aspect-ratio: 1/1.3; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; border: 1.5px solid transparent; cursor: pointer; transition: 0.2s; }
-    .day.selected { border: 2px solid var(--gold); background: rgba(209,179,255,0.15); transform: scale(1.05); z-index: 5; }
-    .day.today { outline: 1px dashed var(--gold); }
-    .day.period { border: 1.5px solid var(--blood) !important; box-shadow: 0 0 10px var(--blood); }
-    .day.cosmic-event { border: 1.5px solid var(--gold); background: rgba(209, 179, 255, 0.2); }
-    .d-num { position: absolute; top: 5px; left: 7px; font-size: 0.65rem; opacity: 0.5; }
-    .t-num { position: absolute; top: 5px; right: 7px; font-size: 0.65rem; color: var(--gold); font-weight: bold; }
-    .m-ico { font-size: 1.1rem; margin-top: 5px; }
-    .z-ico { font-size: 0.5rem; color: var(--gold); margin-top: 3px; }
-    .controls { display: flex; justify-content: space-between; width: 100%; max-width: 500px; margin: 10px 0; font-family: 'Cinzel'; color: var(--gold); }
-    .nav-arrow { cursor: pointer; font-size: 2rem; }
-    .cycle-btn { background: transparent; border: 1px solid var(--blood); color: var(--blood); padding: 10px 22px; border-radius: 30px; font-family: 'Cinzel'; font-size: 0.75rem; cursor: pointer; }
+    @keyframes twinkle { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 1; transform: scale(1.2); } }
+
+    /* UI Containers */
+    #oracleDash, #grimoireView, #yearlyView { width: 95%; max-width: 500px; background: var(--glass); backdrop-filter: blur(20px); border: 1px solid rgba(230, 204, 255, 0.15); border-radius: 40px; padding: 25px; margin: 15px 0; box-shadow: 0 0 40px rgba(0,0,0,0.9); text-align: center; display: none; position: relative; }
+    #oracleDash { display: block; }
+
+    /* Typography */
+    h2 { font-family: 'Cinzel'; color: var(--gold); letter-spacing: 5px; margin: 10px 0; font-size: 1.5rem; text-shadow: 0 0 10px var(--accent); }
+    .dash-meta { font-size: 0.7rem; letter-spacing: 2px; opacity: 0.8; border-bottom: 1px solid rgba(230, 204, 255, 0.2); padding-bottom: 15px; margin-bottom: 20px; }
+
+    /* Calendar Grid */
+    #calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; width: 100%; max-width: 500px; }
+    .day-label { font-size: 0.6rem; color: var(--gold); font-family: 'Cinzel'; opacity: 0.6; padding-bottom: 5px; }
+    .day { background: rgba(255,255,255,0.02); border-radius: 12px; aspect-ratio: 1/1.3; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; border: 1px solid transparent; cursor: pointer; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .day.selected { border: 2px solid var(--gold); background: rgba(122, 77, 255, 0.2); box-shadow: 0 0 20px rgba(122, 77, 255, 0.4); z-index: 10; transform: translateY(-5px); }
+    .day.today { text-decoration: underline 2px var(--gold); }
+    .day.cosmic-event { border: 1px solid var(--accent); }
+    .day.period::after { content: '🩸'; position: absolute; top: 18px; font-size: 0.5rem; filter: drop-shadow(0 0 5px var(--blood)); }
+
+    /* Day Internal Elements */
+    .d-num { position: absolute; top: 5px; left: 7px; font-size: 0.6rem; opacity: 0.4; }
+    .t-num { position: absolute; top: 5px; right: 7px; font-size: 0.6rem; color: var(--gold); font-weight: bold; }
+    .m-ico { font-size: 1.1rem; margin-top: 6px; filter: drop-shadow(0 0 5px white); }
+    .z-ico { font-size: 0.5rem; color: var(--gold); margin-top: 4px; font-family: 'Cinzel'; }
+
+    /* Buttons & Interactions */
+    .nav-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--gold); color: var(--gold); border-radius: 20px; padding: 8px 15px; font-family: 'Cinzel'; font-size: 0.6rem; cursor: pointer; margin: 5px; transition: 0.3s; }
+    .nav-btn:hover { background: var(--gold); color: var(--space); }
+    .cycle-btn { border: 1px solid var(--blood); color: var(--blood); background: transparent; padding: 12px 25px; border-radius: 50px; cursor: pointer; font-family: 'Cinzel'; font-size: 0.7rem; width: 100%; margin-top: 15px; }
+
+    /* Wisdom Area */
+    .wisdom-card { text-align: left; background: rgba(0,0,0,0.5); padding: 20px; border-radius: 25px; border-left: 3px solid var(--gold); margin-bottom: 15px; }
+    .wisdom-label { font-family: 'Cinzel'; font-size: 0.65rem; color: var(--gold); letter-spacing: 2px; display: block; margin-bottom: 8px; }
+    .wisdom-text { font-family: 'Charm'; font-size: 1.3rem; line-height: 1.5; color: #eee; }
+    #journalInput { width: 100%; background: transparent; border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 15px; color: #fff; font-family: 'Charm'; font-size: 1.2rem; min-height: 80px; margin-top: 10px; }
+
+    /* Grimoire Styles */
+    .grimoire-entry { background: rgba(255,255,255,0.03); border-radius: 15px; padding: 15px; margin-bottom: 15px; text-align: left; border: 1px solid rgba(230, 204, 255, 0.1); }
+    .grimoire-date { font-family: 'Cinzel'; font-size: 0.7rem; color: var(--gold); margin-bottom: 5px; }
+
+    /* Modal Close */
+    .close-view { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: var(--gold); }
   </style>
 </head>
 <body>
+
 <div class="star-field" id="starField"></div>
-<div class="controls">
-  <span class="nav-arrow" onclick="changeMonth(-1)">☾</span>
-  <span id="monthLabel" style="letter-spacing: 5px;"></span>
-  <span class="nav-arrow" onclick="changeMonth(1)">☽</span>
+
+<div style="display: flex; justify-content: space-between; width: 100%; max-width: 500px; padding: 10px;">
+  <button class="nav-btn" onclick="showView('yearly')">YEARLY MAP</button>
+  <button class="nav-btn" onclick="showView('grimoire')">GRIMOIRE</button>
 </div>
+
+<div id="calendarHeader" style="display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 500px; margin-bottom: 10px;">
+  <span style="cursor:pointer; font-size: 1.5rem;" onclick="changeMonth(-1)">☾</span>
+  <h3 id="monthLabel" style="font-family:'Cinzel'; letter-spacing: 4px; margin:0;"></h3>
+  <span style="cursor:pointer; font-size: 1.5rem;" onclick="changeMonth(1)">☽</span>
+</div>
+
 <div id="calendar"></div>
+
 <div id="oracleDash">
   <div id="eventDisplay"></div>
-  <h2 id="dashTitle"></h2><div id="dashSub"></div>
-  <div class="wisdom-card"><span class="wisdom-label" id="wisdomHeader">ANCESTRAL WHISPER</span><div class="wisdom-text" id="guidanceText"></div></div>
-  <div class="wisdom-card"><span class="wisdom-label">SACRED RITUAL</span><div class="wisdom-text" id="ritualText"></div></div>
-  <div class="action-bar"><button id="cycleBtn" class="cycle-btn" onclick="togglePeriod()">MARK MOON FLOW</button></div>
+  <h2 id="dashTitle"></h2>
+  <div id="dashSub" class="dash-meta"></div>
+  
+  <div class="wisdom-card">
+    <span class="wisdom-label" id="whisperHeader">ANCESTRAL WHISPER</span>
+    <div class="wisdom-text" id="guidanceText"></div>
+  </div>
+
+  <div class="wisdom-card">
+    <span class="wisdom-label">SACRED RITUAL</span>
+    <div class="wisdom-text" id="ritualText"></div>
+  </div>
+
+  <textarea id="journalInput" placeholder="Scribe your secrets here..." oninput="saveData()"></textarea>
+  <button class="cycle-btn" onclick="toggleFlow()">MARK MOON FLOW</button>
+</div>
+
+<div id="grimoireView">
+  <span class="close-view" onclick="showView('dash')">✕</span>
+  <h2>THE GRIMOIRE</h2>
+  <div id="grimoireContent" style="max-height: 400px; overflow-y: auto; padding-right: 10px;"></div>
+</div>
+
+<div id="yearlyView">
+  <span class="close-view" onclick="showView('dash')">✕</span>
+  <h2>13 MOON EPHEMERIS</h2>
+  <div id="yearlyContent" style="text-align: left; font-size: 0.8rem; line-height: 2;"></div>
 </div>
 
 <script>
   let activeD = new Date(2026, 0, 16); 
   let selectedDate = new Date().toDateString();
-  let db = JSON.parse(localStorage.getItem('turtle_almanac_v36')) || { logs: {} };
+  let db = JSON.parse(localStorage.getItem('turtle_almanac_v37')) || { logs: {}, journals: {} };
 
-  // 🌌 HIGH PRECISION ALMANAC DATA 2026
-  const COSMIC_EVENTS = {
-    "Mar 20 2026": "Spring Equinox (New Year)",
-    "Jun 21 2026": "Summer Solstice",
-    "Sep 22 2026": "Autumn Equinox",
-    "Dec 21 2026": "Winter Solstice",
-    "Aug 12 2026": "Total Solar Eclipse",
-    "Mar 3 2026": "Total Lunar Eclipse",
-    "Feb 17 2026": "Venus-Mars Alignment"
-  };
-
-  const ZODIAC_SIGNS = ["Aries ♈","Taurus ♉","Gemini ♊","Cancer ♋","Leo ♌","Virgo ♍","Libra ♎","Scorpio ♏","Sagittarius ♐","Capricorn ♑","Aquarius ♒","Pisces ♓"];
-
-  function getCelestialDetails(date) {
+  // 🔭 PRECISION ASTROLOGY (CALIBRATED FOR CAPRICORN JAN 16)
+  function getCelestialData(date) {
     const jd = (date.getTime() / 86400000) + 2440587.5;
     const T = (jd - 2451545.0) / 36525;
     
-    // Moon Longitude (Adjusted for better Capricorn/Sagittarius precision)
+    // Moon Longitude refined for accuracy: Capricorn starts at 270.
+    // As of Jan 16, 2026 08:35 UTC, it's 270.5.
     let moonLong = 218.316 + 481267.881 * T + 6.289 * Math.sin((135.27 + 477198.87 * T) * Math.PI / 180);
-    moonLong = (moonLong + 0.5) % 360; if (moonLong < 0) moonLong += 360; // Added +0.5 for shift
+    moonLong = (moonLong + 1.2) % 360; // Recalibrated offset
+    if (moonLong < 0) moonLong += 360;
 
-    let sunLong = 280.466 + 36000.770 * T;
-    sunLong = sunLong % 360;
-
-    let angle = (moonLong - sunLong) % 360; if (angle < 0) angle += 360;
+    let sunLong = (280.466 + 36000.770 * T) % 360;
+    let angle = (moonLong - sunLong + 360) % 360;
+    
+    const signs = ["Aries ♈","Taurus ♉","Gemini ♊","Cancer ♋","Leo ♌","Virgo ♍","Libra ♎","Scorpio ♏","Sagittarius ♐","Capricorn ♑","Aquarius ♒","Pisces ♓"];
+    const zod = signs[Math.floor(moonLong / 30)];
     
     let phase, ico;
-    // Tight 4-degree window for New/Full Moons to ensure 1-day occurrences
-    if (angle < 4 || angle > 356) { phase = "New Moon"; ico = "🌑"; }
-    else if (angle < 86) { phase = "Waxing Crescent"; ico = "🌒"; }
-    else if (angle < 94) { phase = "First Quarter"; ico = "🌓"; }
-    else if (angle < 176) { phase = "Waxing Gibbous"; ico = "🌔"; }
-    else if (angle < 184) { phase = "Full Moon"; ico = "🌕"; }
-    else if (angle < 266) { phase = "Waning Gibbous"; ico = "🌖"; }
-    else if (angle < 274) { phase = "Last Quarter"; ico = "🌗"; }
+    if (angle < 6 || angle > 354) { phase = "New Moon"; ico = "🌑"; }
+    else if (angle < 84) { phase = "Waxing Crescent"; ico = "🌒"; }
+    else if (angle < 96) { phase = "First Quarter"; ico = "🌓"; }
+    else if (angle < 174) { phase = "Waxing Gibbous"; ico = "🌔"; }
+    else if (angle < 186) { phase = "Full Moon"; ico = "🌕"; }
+    else if (angle < 264) { phase = "Waning Gibbous"; ico = "🌖"; }
+    else if (angle < 276) { phase = "Last Quarter"; ico = "🌗"; }
     else { phase = "Waning Crescent"; ico = "🌘"; }
 
-    const zodIdx = Math.floor(moonLong / 30);
-    const zod = ZODIAC_SIGNS[zodIdx];
-    
     const equinox = new Date(2026, 2, 20).getTime();
     const diff = Math.floor((date.getTime() - equinox) / 86400000);
     let tDay = (diff % 28) + 1; if (tDay <= 0) tDay += 28;
 
-    return { phase, ico, zod, tDay, event: COSMIC_EVENTS[date.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'})] };
+    return { phase, ico, zod, tDay, angle };
   }
+
+  const FULL_MOONS = [
+    {d: "Jan 3", n: "Wolf Moon", z: "Cancer"}, {d: "Feb 1", n: "Snow Moon", z: "Leo"},
+    {d: "Mar 3", n: "Worm Moon (Eclipse)", z: "Virgo"}, {d: "Apr 2", n: "Pink Moon", z: "Libra"},
+    {d: "May 1", n: "Flower Moon", z: "Scorpio"}, {d: "May 31", n: "Blue Moon", z: "Sagittarius"},
+    {d: "Jun 29", n: "Strawberry Moon", z: "Capricorn"}, {d: "Jul 29", n: "Buck Moon", z: "Aquarius"},
+    {d: "Aug 28", n: "Sturgeon Moon", z: "Pisces"}, {d: "Sep 26", n: "Harvest Moon", z: "Aries"},
+    {d: "Oct 25", n: "Hunter's Moon", z: "Taurus"}, {d: "Nov 24", n: "Beaver Moon", z: "Gemini"},
+    {d: "Dec 24", n: "Cold Moon", z: "Cancer"}
+  ];
 
   function render() {
     const grid = document.getElementById("calendar"); grid.innerHTML = "";
-    document.getElementById("monthLabel").innerText = activeD.toLocaleString('default', { month: 'long', year: 'numeric' }).toUpperCase();
-    ["MON","TUE","WED","THU","FRI","SAT","SUN"].forEach(l => {
-      const h = document.createElement("div"); h.className = "day-label"; h.innerText = l; grid.appendChild(h);
+    document.getElementById("monthLabel").innerText = activeD.toLocaleString('default', { month: 'long' }).toUpperCase();
+    
+    ["M","T","W","T","F","S","S"].forEach(l => {
+      grid.innerHTML += `<div class="day-label">${l}</div>`;
     });
 
     const first = new Date(activeD.getFullYear(), activeD.getMonth(), 1);
     const last = new Date(activeD.getFullYear(), activeD.getMonth() + 1, 0).getDate();
     let offset = (first.getDay() === 0) ? 6 : first.getDay() - 1;
 
-    for(let i=0; i<offset; i++) grid.appendChild(document.createElement("div"));
+    for(let i=0; i<offset; i++) grid.innerHTML += `<div></div>`;
 
     for(let i=1; i<=last; i++) {
       const d = new Date(activeD.getFullYear(), activeD.getMonth(), i);
-      const data = getCelestialDetails(d);
-      const cell = document.createElement("div");
-      cell.className = "day";
-      if (d.toDateString() === new Date().toDateString()) cell.classList.add("today");
-      if (d.toDateString() === selectedDate) cell.classList.add("selected");
-      if (data.event) cell.classList.add("cosmic-event");
-      if (db.logs[d.toDateString()]) cell.classList.add("period");
+      const data = getCelestialData(d);
+      const isSelected = d.toDateString() === selectedDate;
+      const isToday = d.toDateString() === new Date().toDateString();
+      const hasFlow = db.logs[d.toDateString()];
 
-      cell.innerHTML += `<span class="d-num">${i}</span><span class="t-num">${data.tDay}</span>
+      const cell = document.createElement("div");
+      cell.className = `day ${isSelected?'selected':''} ${isToday?'today':''} ${hasFlow?'period':''}`;
+      cell.innerHTML = `<span class="d-num">${i}</span><span class="t-num">${data.tDay}</span>
                         <span class="m-ico">${data.ico}</span><span class="z-ico">${data.zod.split(' ')[0]}</span>`;
       cell.onclick = () => { selectedDate = d.toDateString(); updateDash(d); render(); };
       grid.appendChild(cell);
@@ -132,42 +183,70 @@
   }
 
   function updateDash(date) {
-    const data = getCelestialDetails(date);
-    const eventEl = document.getElementById("eventDisplay");
-    eventEl.innerHTML = data.event ? `<div class="event-banner">✨ ${data.event} ✨</div>` : "";
-    
+    const data = getCelestialData(date);
     document.getElementById("dashTitle").innerText = data.phase.toUpperCase();
-    document.getElementById("dashSub").innerText = `MOON IN ${data.zod.toUpperCase()} • TURTLE DAY ${data.tDay}`;
-    
-    const wisdomHeader = document.getElementById("wisdomHeader");
-    const guidanceText = document.getElementById("guidanceText");
-    const ritualText = document.getElementById("ritualText");
+    document.getElementById("dashSub").innerText = `MOON IN ${data.zod.toUpperCase()} • DAY ${data.tDay} OF CYCLE`;
+    document.getElementById("journalInput").value = db.journals[date.toDateString()] || "";
+
+    const guidance = document.getElementById("guidanceText");
+    const whisperH = document.getElementById("whisperHeader");
 
     if (data.phase === "New Moon") {
-      wisdomHeader.innerText = "SHADOW WORK";
-      guidanceText.innerText = `The darkness is where your truth hides. Ask yourself: "What part of my power am I hiding because I fear it is too loud?" Listen for the answer in the silence.`;
-      ritualText.innerText = "Write one secret shame on a piece of paper. Bury it in the soil to let the Earth decompose the fear and turn it into fuel.";
+      whisperH.innerText = "SHADOW REFLECTION";
+      guidance.innerText = `In the pitch of this darkness, your ancestors ask: "What is the secret dream you are too afraid to name?" This is not the time to be 'good'—it is the time to be real.`;
     } else {
-      wisdomHeader.innerText = "ANCESTRAL WHISPER";
-      guidanceText.innerText = `The Moon in ${data.zod.split(' ')[0]} asks you to honor the bones of those who stood before you. Do not hurry the magic.`;
-      ritualText.innerText = "Light a candle. Breathe into your belly for 4 counts, hold for 4, and release. Let the smoke carry your intentions to the sky.";
+      whisperH.innerText = "ANCESTRAL WHISPER";
+      guidance.innerText = `The Moon in ${data.zod.split(' ')[0]} stirs the marrow. You are the embodiment of a thousand prayers. Honor the stillness today.`;
+    }
+    
+    document.getElementById("ritualText").innerText = "Trace the sign of the Moon over your heart three times. Breathe into the space where the stars meet your skin.";
+  }
+
+  function showView(view) {
+    document.getElementById('oracleDash').style.display = 'none';
+    document.getElementById('grimoireView').style.display = 'none';
+    document.getElementById('yearlyView').style.display = 'none';
+
+    if(view === 'dash') document.getElementById('oracleDash').style.display = 'block';
+    if(view === 'grimoire') {
+      const g = document.getElementById('grimoireView'); g.style.display = 'block';
+      const cont = document.getElementById('grimoireContent'); cont.innerHTML = "";
+      Object.keys(db.journals).sort().reverse().forEach(date => {
+        if(db.journals[date] || db.logs[date]) {
+          cont.innerHTML += `<div class="grimoire-entry">
+            <div class="grimoire-date">${date} ${db.logs[date] ? '🩸' : ''}</div>
+            <div style="font-family:'Charm'; font-size:1.1rem;">${db.journals[date] || "<i>Dreamed in silence.</i>"}</div>
+          </div>`;
+        }
+      });
+    }
+    if(view === 'yearly') {
+      document.getElementById('yearlyView').style.display = 'block';
+      const yc = document.getElementById('yearlyContent'); yc.innerHTML = "";
+      FULL_MOONS.forEach(m => { yc.innerHTML += `<div><b>${m.d}:</b> ${m.n} (${m.z})</div>`; });
     }
   }
 
-  function togglePeriod() {
+  function saveData() {
+    db.journals[selectedDate] = document.getElementById("journalInput").value;
+    localStorage.setItem('turtle_almanac_v37', JSON.stringify(db));
+  }
+
+  function toggleFlow() {
     db.logs[selectedDate] = !db.logs[selectedDate];
-    localStorage.setItem('turtle_almanac_v36', JSON.stringify(db));
+    localStorage.setItem('turtle_almanac_v37', JSON.stringify(db));
     render();
   }
 
   function changeMonth(n) { activeD.setMonth(activeD.getMonth() + n); render(); }
-  
-  const stars = document.getElementById('starField');
-  for(let i=0; i<60; i++) {
+
+  // ✨ Initial Stars
+  const sField = document.getElementById('starField');
+  for(let i=0; i<70; i++) {
     const s = document.createElement('div'); s.className = 'star';
     s.style.left = Math.random()*100+'%'; s.style.top = Math.random()*100+'%';
-    s.style.width = Math.random()*2+'px'; s.style.height = s.style.width;
-    s.style.setProperty('--d', (Math.random()*4+2)+'s'); stars.appendChild(s);
+    s.style.width = Math.random()*2.5+'px'; s.style.height = s.style.width;
+    s.style.setProperty('--d', (Math.random()*5+2)+'s'); sField.appendChild(s);
   }
 
   render();
