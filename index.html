@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>The Ancestral Moon Map | V47 Star Sister Rituals</title>
+  <title>The Ancestral Moon Map | V50 Ritual Expansion</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Charm:wght@400;700&family=Quicksand:wght@300;500&display=swap" rel="stylesheet">
   <style>
     :root { 
@@ -49,44 +49,60 @@
 
     .wisdom-card { text-align: left; background: rgba(0,0,0,0.4); padding: 20px; border-radius: 25px; border-left: 3px solid var(--aura); margin-bottom: 15px; }
     .wisdom-label { font-family: 'Cinzel'; font-size: 0.6rem; color: var(--gold); letter-spacing: 2px; display: block; margin-bottom: 8px; }
-    .wisdom-text { font-family: 'Charm'; font-size: 1.2rem; line-height: 1.4; color: #eee; }
+    .wisdom-text { font-family: 'Charm'; font-size: 1.25rem; line-height: 1.5; color: #eee; }
     #journalInput { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 15px; color: #fff; font-family: 'Charm'; font-size: 1.2rem; min-height: 100px; box-sizing: border-box; outline: none; }
   </style>
 </head>
 <body>
+
 <div class="star-field" id="starField"></div>
+
 <div style="display: flex; justify-content: space-between; width: 92%; max-width: 450px;">
   <button class="nav-btn" onclick="showView('yearly')">YEARLY MAP</button>
   <button class="nav-btn" onclick="showView('grimoire')">GRIMOIRE</button>
 </div>
+
 <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 450px; margin: 10px 0;">
   <span style="cursor:pointer; font-size: 2rem; color:var(--gold);" onclick="changeMonth(-1)">☾</span>
   <h3 id="monthLabel" style="font-family:'Cinzel'; letter-spacing: 4px; margin:0; font-size: 1.1rem;"></h3>
   <span style="cursor:pointer; font-size: 2rem; color:var(--gold);" onclick="changeMonth(1)">☽</span>
 </div>
+
 <div id="calendar"></div>
+
 <div id="oracleDash">
   <div id="eventDisplay"></div>
   <div id="elementTag" style="font-size: 0.5rem; letter-spacing: 1.5px; color: var(--aura); font-weight: bold; margin-bottom: 5px;"></div>
+  <span id="detailedPhase" style="font-family: 'Cinzel'; font-size: 0.6rem; color: var(--gold); opacity: 0.7; letter-spacing: 2px;"></span>
   <h2 id="dashTitle" style="font-family:'Cinzel'; margin: 5px 0; color:var(--gold); letter-spacing: 3px; font-size: 1.3rem;"></h2>
-  <div id="dashSub" style="font-size: 0.6rem; letter-spacing: 2px; margin-bottom: 15px; opacity: 0.8; font-family: 'Cinzel';"></div>
+  <div id="dashSub" style="font-size: 0.6rem; letter-spacing: 2px; margin-bottom: 20px; opacity: 0.8; font-family: 'Cinzel';"></div>
+  
   <div class="wisdom-card">
     <span class="wisdom-label">ANCESTRAL WHISPER</span>
     <div class="wisdom-text" id="guidanceText"></div>
   </div>
+
   <div class="wisdom-card">
     <span class="wisdom-label">SACRED RITUAL</span>
     <div class="wisdom-text" id="ritualText"></div>
   </div>
-  <textarea id="journalInput" placeholder="Scribe your journey..." oninput="saveData()"></textarea>
-  <button id="flowBtn" class="cycle-btn" onclick="toggleFlow()">MARK MOON FLOW</button>
-  <button class="sister-btn" onclick="copySisterReport()">✨ SISTER CONNECTION REPORT ✨</button>
+
+  <textarea id="journalInput" placeholder="Scribe your soul's journey..." oninput="saveData()"></textarea>
+  
+  <div style="display: flex; flex-direction: column; gap: 5px;">
+    <button id="flowBtn" class="cycle-btn" onclick="toggleFlow()">MARK MOON FLOW</button>
+    <button class="sister-btn" onclick="copySisterReport()">
+      <span>✨</span> SISTER CONNECTION REPORT <span>✨</span>
+    </button>
+  </div>
 </div>
+
 <div id="grimoireView">
   <span style="float:right; cursor:pointer;" onclick="showView('dash')">✕</span>
   <h2 style="font-family:'Cinzel';">THE GRIMOIRE</h2>
   <div id="grimoireContent" style="max-height: 450px; overflow-y: auto;"></div>
 </div>
+
 <div id="yearlyView">
   <span style="float:right; cursor:pointer;" onclick="showView('dash')">✕</span>
   <h2 style="font-family:'Cinzel'; font-size: 1rem;">2026 ANCESTRAL MOON MAP</h2>
@@ -101,32 +117,24 @@
   const ELEMENTS = { "FIRE": "#ff4d4d", "EARTH": "#2ecc71", "AIR": "#3498db", "WATER": "#df80ff" };
   const ZOD_ELEMENTS = { "Aries ♈":"FIRE", "Leo ♌":"FIRE", "Sagittarius ♐":"FIRE", "Taurus ♉":"EARTH", "Virgo ♍":"EARTH", "Capricorn ♑":"EARTH", "Gemini ♊":"AIR", "Libra ♎":"AIR", "Aquarius ♒":"AIR", "Cancer ♋":"WATER", "Scorpio ♏":"WATER", "Pisces ♓":"WATER" };
   
-  const MOON_DEEP = {
-    "Wolf Moon": {r: "Light a single white candle. Howl or hum your deepest truth into the flame, then release it to the wind.", w: "The pack protects the individual. Listen to the inner howl that leads you home."},
-    "Snow Moon": {r: "Write down a burden on a piece of ice or paper and let it melt away, purifying your spirit.", w: "Silence is a fertile ground. Under the frost, your power is gathering its strength."},
-    "Worm Moon": {r: "Walk barefoot on the earth for 5 minutes. Feel the vibration of the life waking up beneath you.", w: "The soil is softening. What was dormant is now ready to push through the surface."},
-    "Pink Moon": {r: "Bathe your face in moon water infused with rose petals to awaken your divine heart.", w: "Softness is your greatest strength. Bloom without apology in the sign of the goddess."},
-    "Flower Moon": {r: "Create a flower mandala on the earth. Leave it as a gift for the spirits of the land.", w: "Abundance is your birthright. Let your beauty be a service to the world."},
-    "Strawberry Moon": {r: "Eat a piece of fruit mindfully, tasting the sweetness of your own successful manifestations.", w: "The sweetness of life is found in the present. Savor the nectar of your journey."},
-    "Buck Moon": {r: "Stand tall like a tree. Imagine antlers growing from your crown, reaching for cosmic wisdom.", w: "Assert your boundaries. Your sovereignty is sacred and must be protected."},
-    "Sturgeon Moon": {r: "Submerge your hands in natural water. Ask the ancient fish for the gift of resilience.", w: "You are deeper than the surface reveals. Trust the currents of your intuition."},
-    "Harvest Moon": {r: "Gather seeds or grains. Place them in a bowl and name three things you are reaping now.", w: "Gratitude is the ultimate multiplier. Honor the labor of your soul's season."},
-    "Hunter's Moon": {r: "Build a small fire or use a red candle. Focus on the 'prey'—the goals you are pursuing.", w: "Focus is a form of love. Aim your heart at what truly feeds your spirit."},
-    "Beaver Moon": {r: "Clear one physical space in your home to make room for winter dreaming.", w: "Prepare the sanctuary. The inner temple needs tending before the deep cold sets in."},
-    "Cold Moon": {r: "Wrap yourself in a heavy blanket. Sit in total darkness and listen to your heartbeat.", w: "The light is birthed in the dark. Trust the gestation of your highest dreams."},
-    "Long Night Moon": {r: "Draw a circle of salt around your bed. Dream with the intention of ancestral healing.", w: "The longest night holds the deepest secrets. Listen to the whispers of the grandmothers."},
-    "Threshold Moon": {r: "Stand in a doorway. Step through with your right foot to symbolize entering a new life.", w: "You are the bridge between what was and what will be. Walk with wisdom."}
+  const FULL_MOON_DATA = {
+    "Jan 3": {n: "Wolf Moon", t: "Endurance", r: "Light a single white candle. Hum your deepest truth into the flame, then scribe one burden on a dry leaf and release it to the winter wind."},
+    "Feb 1": {n: "Snow Moon", t: "Purity", r: "Place a bowl of water outside to catch the starlight. At dawn, wash your hands in it to purify your creative vision for the coming thaw."},
+    "Mar 3": {n: "Worm Moon", t: "Awakening", r: "Press your palms to a stone or the bare soil. Breathe in the scent of damp earth and visualize the life force rising through your feet."},
+    "Apr 2": {n: "Pink Moon", t: "Emergence", r: "Anoint your pulse points with rose oil or fresh water. Stand in the moonlight and declare: 'I am blooming without apology.'"},
+    "May 1": {n: "Flower Moon", t: "Potential", r: "Create a flower mandala on the earth. Sit in the center and name three seeds of intention you are finally ready to nourish into form."},
+    "May 31": {n: "Strawberry Moon", t: "Vitality", r: "Savor a piece of fruit mindfully. Feel the nectar as the physical manifestation of your own hard-earned success and sweetness."},
+    "Jun 29": {n: "Buck Moon", t: "Abundance", r: "Stand tall like a tree, reaching your arms high. Imagine antlers of light connecting you to the cosmic wisdom as you claim your territory."},
+    "Jul 29": {n: "Sturgeon Moon", t: "Power", r: "Submerge your hands in natural water. Ask the ancient spirits of the water for the resilience to swim against the current of expectation."},
+    "Aug 28": {n: "Harvest Moon", t: "Gratitude", r: "Place three stones in a bowl. For each, whisper a lesson you harvested this cycle. Bury the stones as a gift of gratitude to the soil."},
+    "Sep 26": {n: "Hunter's Moon", t: "Release", r: "Focus on a flame or red candle. Identify one 'prey'—a goal or habit—and aim your entire heart toward achieving or releasing it tonight."},
+    "Oct 25": {n: "Beaver Moon", t: "Preparation", r: "Clear one physical corner of your sanctuary. Light incense and organize your space to reflect the internal structure you need for winter."},
+    "Nov 24": {n: "Cold Moon", t: "Stillness", r: "Sit in total darkness for five minutes. Listen to the silence of the frost and recognize the light that only glows when the world is quiet."},
+    "Dec 24": {n: "Long Night Moon", t: "Dreaming", r: "Draw a circle of salt around your bed. Scribe a dream on paper and sleep with it beneath your pillow to invite ancestral guidance."},
+    "Jan 22, 2027": {n: "Threshold Moon", t: "Wisdom", r: "Stand in a doorway. Step through with your right foot to symbolize entering your new life, leaving the old year behind the threshold."}
   };
 
-  const FULL_MOONS = [
-    {d: "Jan 3", z: "Cancer", n: "Wolf Moon"}, {d: "Feb 1", z: "Leo", n: "Snow Moon"}, 
-    {d: "Mar 3", z: "Virgo", n: "Worm Moon"}, {d: "Apr 2", z: "Libra", n: "Pink Moon"}, 
-    {d: "May 1", z: "Scorpio", n: "Flower Moon"}, {d: "May 31", z: "Sagittarius", n: "Strawberry Moon"}, 
-    {d: "Jun 29", z: "Capricorn", n: "Buck Moon"}, {d: "Jul 29", z: "Aquarius", n: "Sturgeon Moon"}, 
-    {d: "Aug 28", z: "Pisces", n: "Harvest Moon"}, {d: "Sep 26", z: "Aries", n: "Hunter's Moon"}, 
-    {d: "Oct 25", z: "Taurus", n: "Beaver Moon"}, {d: "Nov 24", z: "Gemini", n: "Cold Moon"}, 
-    {d: "Dec 24", z: "Cancer", n: "Long Night Moon"}
-  ];
+  const FULL_MOONS = [{d: "Jan 3", z: "Cancer"}, {d: "Feb 1", z: "Leo"}, {d: "Mar 3", z: "Virgo"}, {d: "Apr 2", z: "Libra"}, {d: "May 1", z: "Scorpio"}, {d: "May 31", z: "Sagittarius"}, {d: "Jun 29", z: "Capricorn"}, {d: "Jul 29", z: "Aquarius"}, {d: "Aug 28", z: "Pisces"}, {d: "Sep 26", z: "Aries"}, {d: "Oct 25", z: "Taurus"}, {d: "Nov 24", z: "Gemini"}, {d: "Dec 24", z: "Cancer"}];
   const NEW_MOONS = ["Jan 18", "Feb 17", "Mar 18", "Apr 17", "May 16", "Jun 15", "Jul 14", "Aug 12", "Sep 11", "Oct 10", "Nov 9", "Dec 8"];
   const PIVOTS = {"Mar 20": "Spring Equinox", "Jun 21": "Summer Solstice", "Sep 22": "Autumn Equinox", "Dec 21": "Winter Solstice"};
 
@@ -136,18 +144,32 @@
     const T = (jd - 2451545.0) / 36525;
     let moonLong = (218.316 + 481267.881 * T + 6.289 * Math.sin((135.27 + 477198.87 * T) * Math.PI / 180));
     moonLong = (moonLong + 5.0) % 360; 
-    const zod = ["Aries ♈","Taurus ♉","Gemini ♊","Cancer ♋","Leo ♌","Virgo ♍","Libra ♎","Scorpio ♏","Sagittarius ♐","Capricorn ♑","Aquarius ♒","Pisces ♓"][Math.floor(moonLong / 30)];
-    let angle = (moonLong - ((280.466 + 36000.770 * T) % 360) + 360) % 360;
+    const signs = ["Aries ♈","Taurus ♉","Gemini ♊","Cancer ♋","Leo ♌","Virgo ♍","Libra ♎","Scorpio ♏","Sagittarius ♐","Capricorn ♑","Aquarius ♒","Pisces ♓"];
+    const zod = signs[Math.floor(moonLong / 30)];
+    const el = ZOD_ELEMENTS[zod];
+    let sunLong = (280.466 + 36000.770 * T) % 360;
+    let angle = (moonLong - sunLong + 360) % 360;
     
-    let fm = FULL_MOONS.find(m => m.d === dStr);
-    let moonName = fm ? fm.n : (angle > 185 ? "Waning Moon" : "Waxing Moon");
-    if (dStr === "Jan 22, 2027") moonName = "Threshold Moon";
+    let isFull = FULL_MOONS.some(m => m.d === dStr);
+    let isNew = NEW_MOONS.includes(dStr);
+    let isPivot = PIVOTS[dStr];
+
+    let phase = "Waning Crescent", ico = "🌘";
+    if (isFull) { phase = "Full Moon"; ico = "🌕"; }
+    else if (isNew) { phase = "New Moon"; ico = "🌑"; }
+    else if (angle < 90) { phase = "Waxing Crescent"; ico = "🌒"; }
+    else if (angle < 100) { phase = "First Quarter"; ico = "🌓"; }
+    else if (angle < 180) { phase = "Waxing Gibbous"; ico = "🌔"; }
+    else if (angle < 260) { phase = "Waning Gibbous"; ico = "🌖"; }
+    else if (angle < 280) { phase = "Last Quarter"; ico = "🌗"; }
 
     const equinox = new Date(2026, 2, 20).getTime();
     const diff = Math.floor((date.getTime() - equinox) / 86400000);
     let tDay = (diff % 28) + 1; if (tDay <= 0) tDay += 28;
     
-    return { ico: fm?"🌕": (NEW_MOONS.includes(dStr)?"🌑":"☾"), zod, tDay, el: ZOD_ELEMENTS[zod], elColor: ELEMENTS[ZOD_ELEMENTS[zod]], dStr, isFull: !!fm, moonName };
+    let archetype = FULL_MOON_DATA[dStr] || {n: "Ancestral Moon", t: "Alignment", r: "Sit in silent mediation for five minutes, syncing your breath with the heartbeat of the Earth."};
+
+    return { phase, ico, zod, tDay, el, elColor: ELEMENTS[el], dStr, isFull, isNew, isPivot, archetype };
   }
 
   function render() {
@@ -158,11 +180,23 @@
     const last = new Date(activeD.getFullYear(), activeD.getMonth() + 1, 0).getDate();
     let offset = (first.getDay() === 0) ? 6 : first.getDay() - 1;
     for(let i=0; i<offset; i++) grid.innerHTML += `<div></div>`;
+    
+    const todayStr = new Date().toDateString();
+
     for(let i=1; i<=last; i++) {
       const d = new Date(activeD.getFullYear(), activeD.getMonth(), i);
       const data = getCelestialData(d);
       const cell = document.createElement("div");
-      cell.className = `day ${d.toDateString() === selectedDate?'selected':''} ${d.toDateString() === new Date().toDateString()?'today':''} ${data.isFull?'full-moon-day':''} ${db.logs[d.toDateString()]?'period':''}`;
+      
+      let classes = ['day'];
+      if(d.toDateString() === selectedDate) classes.push('selected');
+      if(d.toDateString() === todayStr) classes.push('today');
+      if(data.isFull) classes.push('full-moon-day');
+      if(data.isNew) classes.push('new-moon-day');
+      if(data.isPivot) classes.push('celestial-pivot');
+      if(db.logs[d.toDateString()]) classes.push('period');
+      
+      cell.className = classes.join(' ');
       cell.innerHTML = `<span class="d-num">${i}</span><span class="t-num">${data.tDay}</span><span class="m-ico" style="filter: drop-shadow(0 0 5px ${data.elColor})">${data.ico}</span><span class="z-ico">${data.zod.split(' ')[0]}</span>`;
       cell.onclick = () => { selectedDate = d.toDateString(); updateDash(d); render(); };
       grid.appendChild(cell);
@@ -172,27 +206,68 @@
   function updateDash(date) {
     const data = getCelestialData(date);
     document.documentElement.style.setProperty('--aura', data.elColor);
-    document.getElementById("dashTitle").innerText = data.moonName.toUpperCase();
-    document.getElementById("dashSub").innerText = `DAY ${data.tDay} • ${data.zod} • ${data.dStr}`;
-    document.getElementById("elementTag").innerText = `✧ ${data.el} ENERGY ✧`;
     
-    const meta = MOON_DEEP[data.moonName] || {r: "Sit in quiet meditation for 5 minutes.", w: "The moon reminds us that we are always whole, even when we are in shadow."};
-    document.getElementById("guidanceText").innerText = meta.w;
-    document.getElementById("ritualText").innerText = meta.r;
+    const displayTitle = data.isFull ? data.archetype.n.toUpperCase() : `${data.ico} ${data.zod.split(' ')[0].toUpperCase()}`;
+    document.getElementById("dashTitle").innerText = displayTitle;
+    document.getElementById("detailedPhase").innerText = data.phase.toUpperCase();
+    document.getElementById("dashSub").innerText = `CYCLE DAY ${data.tDay} • ${data.dStr}`;
+    document.getElementById("elementTag").innerText = `✧ ${data.el} ENERGY ✧`;
     document.getElementById("journalInput").value = db.journals[date.toDateString()] || "";
+    document.getElementById("flowBtn").className = db.logs[date.toDateString()] ? "cycle-btn active" : "cycle-btn";
+    
+    document.getElementById("eventDisplay").innerHTML = data.isPivot ? `<div style="background:var(--gold); color:var(--space); font-family:'Cinzel'; font-size:0.6rem; padding:4px 12px; border-radius:20px; display:inline-block; margin-bottom:10px;">✨ ${data.isPivot.toUpperCase()}</div>` : "";
+
+    const whisper = (data.phase === "New Moon") ? `The dark moon in ${data.zod.split(' ')[0]} is a time for quiet planting. The theme of ${data.archetype.t.toLowerCase()} begins to stir.` : `The ${data.el.toLowerCase()} energy of ${data.zod.split(' ')[0]} supports your theme of ${data.archetype.t.toLowerCase()}. Walk with intention.`;
+    document.getElementById("guidanceText").innerText = whisper;
+    document.getElementById("ritualText").innerText = data.archetype.r;
+    
+    db.zodCache[date.toDateString()] = data.zod;
+    localStorage.setItem('ancestral_moon_map', JSON.stringify(db));
   }
 
   function copySisterReport() {
     const d = new Date(selectedDate);
     const data = getCelestialData(d);
-    const meta = MOON_DEEP[data.moonName] || {r: "Meditate."};
-    const report = `☾ Sister Moon Report ☽\nMoon: ${data.moonName}\nSign: ${data.zod}\n\nWhisper: ${meta.w}\n\nShared Ritual: ${meta.r}\n\nPracticing with you in spirit. ✨`;
-    navigator.clipboard.writeText(report).then(() => alert("Ritual Report Copied!"));
+    const report = `☾ Ancestral Moon Report ☽\nDate: ${data.dStr}, 2026\nMoon: ${data.archetype.n}\nTheme: ${data.archetype.t}\nPhase: ${data.phase} (${data.zod})\n\nWhisper: ${document.getElementById("guidanceText").innerText}\n\nShared Ritual: ${data.archetype.r}\n\nSynced with you in spirit. ✨`;
+    navigator.clipboard.writeText(report).then(() => {
+      const btn = document.querySelector(".sister-btn");
+      const oldText = btn.innerHTML;
+      btn.innerHTML = "✅ REPORT COPIED!";
+      setTimeout(() => btn.innerHTML = oldText, 2000);
+    });
   }
 
-  function toggleFlow() { db.logs[selectedDate] = !db.logs[selectedDate]; localStorage.setItem('ancestral_moon_map', JSON.stringify(db)); render(); }
+  function showView(view) {
+    document.getElementById('oracleDash').style.display = 'none';
+    document.getElementById('grimoireView').style.display = 'none';
+    document.getElementById('yearlyView').style.display = 'none';
+    if(view === 'dash') document.getElementById('oracleDash').style.display = 'block';
+    if(view === 'grimoire') {
+      const g = document.getElementById('grimoireView'); g.style.display = 'block';
+      const cont = document.getElementById('grimoireContent'); cont.innerHTML = "";
+      Object.keys(db.journals).sort().reverse().forEach(d => {
+        cont.innerHTML += `<div style="background:rgba(255,255,255,0.03); padding:15px; border-radius:15px; margin-bottom:10px; text-align:left; border-left:3px solid var(--aura);">
+          <div style="font-size:0.6rem; color:var(--gold); display:flex; justify-content:space-between;"><span>${d}</span> <span>${db.zodCache[d] || ''} ${db.logs[d] ? '🩸' : ''}</span></div>
+          <div style="font-family:'Charm'; font-size:1.1rem; margin-top:5px;">${db.journals[d] || "Silent meditation."}</div>
+        </div>`;
+      });
+    }
+    if(view === 'yearly') {
+      document.getElementById('yearlyView').style.display = 'block';
+      const yc = document.getElementById('yearlyContent'); yc.innerHTML = "";
+      yc.innerHTML += `<h4 style="color:var(--gold); font-family:'Cinzel';">CELESTIAL PIVOTS</h4>`;
+      for(let p in PIVOTS) yc.innerHTML += `<div style="display:flex; justify-content:space-between; font-size:0.7rem; border-bottom:1px solid rgba(255,255,255,0.05); padding:5px 0;"><span>✨ ${p}</span> <span>${PIVOTS[p]}</span></div>`;
+      yc.innerHTML += `<h4 style="color:var(--gold); font-family:'Cinzel'; margin-top:20px;">13 FULL MOONS</h4>`;
+      FULL_MOONS.forEach(m => {
+        const arch = FULL_MOON_DATA[m.d] || {n:"Moon"};
+        yc.innerHTML += `<div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.05); padding:5px 0;"><span>🌕 ${m.d} - ${arch.n}</span> <span>${m.z}</span></div>`;
+      });
+    }
+  }
+
+  function saveData() { db.journals[selectedDate] = document.getElementById("journalInput").value; localStorage.setItem('ancestral_moon_map', JSON.stringify(db)); }
+  function toggleFlow() { db.logs[selectedDate] = !db.logs[selectedDate]; localStorage.setItem('ancestral_moon_map', JSON.stringify(db)); render(); updateDash(new Date(selectedDate)); }
   function changeMonth(n) { activeD.setMonth(activeD.getMonth() + n); render(); }
-  function showView(v) { document.getElementById('oracleDash').style.display='none'; document.getElementById('yearlyView').style.display='none'; document.getElementById(v==='dash'?'oracleDash':v+'View').style.display='block'; }
 
   const sField = document.getElementById('starField');
   for(let i=0; i<80; i++) {
@@ -200,8 +275,10 @@
     s.style.left = Math.random()*100+'%'; s.style.top = Math.random()*100+'%';
     s.style.width = Math.random()*2+'px'; s.style.setProperty('--d', (Math.random()*4+2)+'s'); sField.appendChild(s);
   }
+
   render(); updateDash(new Date());
 </script>
 </body>
 </html>
+
 
