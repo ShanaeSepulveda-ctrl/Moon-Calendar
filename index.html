@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>The Ancestral Moon Map | V58 Harmonized</title>
+  <title>The Ancestral Moon Map | V59 Perfected</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Charm:wght@400;700&family=Quicksand:wght@300;500&display=swap" rel="stylesheet">
   <style>
     :root { 
@@ -150,37 +150,77 @@
 <script>
   let activeD = new Date(2026, 0, 16); 
   let selectedDate = new Date().toDateString();
-  let db = JSON.parse(localStorage.getItem('ancestral_moon_v58')) || { logs: {}, journals: {}, zodCache: {}, energy: {} };
+  let db = JSON.parse(localStorage.getItem('ancestral_moon_v59')) || { logs: {}, journals: {}, zodCache: {}, energy: {} };
 
   const ELEMENTS = { "FIRE": "#ff4d4d", "EARTH": "#2ecc71", "AIR": "#3498db", "WATER": "#df80ff" };
   const ZOD_ELEMENTS = { "Aries ♈":"FIRE", "Leo ♌":"FIRE", "Sagittarius ♐":"FIRE", "Taurus ♉":"EARTH", "Virgo ♍":"EARTH", "Capricorn ♑":"EARTH", "Gemini ♊":"AIR", "Libra ♎":"AIR", "Aquarius ♒":"AIR", "Cancer ♋":"WATER", "Scorpio ♏":"WATER", "Pisces ♓":"WATER" };
   
+  // 🔮 V57 CELESTIAL LIBRARY (Links & Deep Intel)
   const CELESTIAL_EVENTS = {
-    "Feb 2": {n: "Imbolc Portal", d: "A sacred midpoint between Winter and Spring. The earth is stirring.", l: "spiritual meaning of imbolc"},
-    "Aug 8": {n: "Lion's Gate Portal", d: "A massive alignment of Earth, Sirius, and the Sun in Leo.", l: "lions gate portal spiritual meaning"},
-    "Nov 1": {n: "Samhain Portal", d: "The veil is thinnest. Ancestors are close.", l: "samhain spiritual significance"},
-    "Feb 26": {n: "Mercury Retrograde Begins", d: "Communication turns inward. Review, don't rush.", l: "mercury retrograde meaning"},
-    "Mar 20": {n: "Mercury Direct", d: "The shadow period clears. Move forward.", l: "mercury direct meaning"},
-    "Jun 29": {n: "Mercury Retrograde Begins", d: "Thoughts turn nostalgic. Old friends may return.", l: "mercury retrograde cancer"},
-    "Oct 21": {n: "Mercury Retrograde Begins", d: "Deep psychological review. Secrets revealed.", l: "mercury retrograde scorpio"},
-    "Jan 1": {n: "Mars Retrograde", d: "Action turns passive. Patience is the lesson.", l: "mars retrograde meaning"}
+    "Feb 2": {n: "Imbolc Portal", d: "A sacred midpoint between Winter and Spring. The earth is stirring. Energy: Promise, Purification, First Light.", l: "spiritual meaning of imbolc"},
+    "Aug 8": {n: "Lion's Gate Portal", d: "A massive alignment of Earth, Sirius, and the Sun. High-frequency light codes for ascension and bold manifestation.", l: "lions gate portal spiritual meaning"},
+    "Nov 1": {n: "Samhain Portal", d: "The veil is thinnest. Ancestors are close. Energy: Commemorating the dead, Divination, Deep Roots.", l: "samhain spiritual significance"},
+    "Feb 26": {n: "Mercury Retrograde Begins", d: "Communication turns inward. Do not fear; review. Energy: Reflection, Rewriting, Pausing.", l: "mercury retrograde spiritual meaning"},
+    "Mar 20": {n: "Mercury Direct", d: "The shadow period clears. Move forward with the wisdom learned in the silence.", l: "mercury direct spiritual meaning"},
+    "Jun 29": {n: "Mercury Retrograde Begins", d: "Thoughts turn nostalgic. Old friends may return. Energy: Reconnecting, Revisiting, Remembering.", l: "mercury retrograde in cancer spiritual meaning"},
+    "Oct 21": {n: "Mercury Retrograde Begins", d: "Deep psychological review. Secrets are revealed for healing.", l: "mercury retrograde in scorpio spiritual meaning"},
+    "Jan 1": {n: "Mars Retrograde", d: "Action turns passive. Anger requires understanding, not expression. Energy: Internal Drive, Patience.", l: "mars retrograde spiritual meaning"}
   };
 
   const PIVOTS = {
-    "Mar 20": {n: "Spring Equinox", d: "The Ancestral New Year. Balance of day and night.", l: "spring equinox spiritual meaning"},
-    "Jun 21": {n: "Summer Solstice", d: "The longest day. The sun is at its peak power.", l: "summer solstice spiritual meaning"},
-    "Sep 22": {n: "Autumn Equinox", d: "The second harvest. We begin the descent.", l: "autumn equinox spiritual meaning"},
-    "Dec 21": {n: "Winter Solstice", d: "The longest night. The return of the light.", l: "winter solstice spiritual meaning"}
+    "Mar 20": {n: "Spring Equinox", d: "The Ancestral New Year. Balance of day and night. Life bursts forth from the void. Energy: Rebirth, New Beginnings, Balance.", l: "spring equinox spiritual meaning"},
+    "Jun 21": {n: "Summer Solstice", d: "The longest day. The sun is at its peak power. Celebrate the fullness of life. Energy: Vitality, Passion, Illumination.", l: "summer solstice spiritual meaning"},
+    "Sep 22": {n: "Autumn Equinox", d: "The second harvest. Day and night equal again. We begin the descent into the inner world. Energy: Balance, Release, Gratitude.", l: "autumn equinox spiritual meaning"},
+    "Dec 21": {n: "Winter Solstice", d: "The longest night. The return of the light. We honor the stillness and the spark in the dark. Energy: Rest, Hope, Rebirth.", l: "winter solstice spiritual meaning"}
   };
 
+  // 🌕 V57 DEEP MYSTICAL WISDOM (Poetic)
   const WHISPER_MATRIX = {
-    "New Moon": { "FIRE": "The seed needs heat. Your passion is the engine.", "EARTH": "Rest in the soil. Gather nutrients.", "AIR": "Plant a thought in the silence.", "WATER": "Feel deep waters without judgment." },
-    "Waxing": { "FIRE": "Act on the spark.", "EARTH": "Build the foundation slowly.", "AIR": "Speak your truth to the wind.", "WATER": "Trust the flow like a river." },
-    "Full Moon": { "FIRE": "Burn bright for your tribe.", "EARTH": "Harvest the gold you built.", "AIR": "See the truth clearly.", "WATER": "Overflow with sacred emotion." },
-    "Waning": { "FIRE": "Conserve your heat. Rest.", "EARTH": "Compost what no longer serves.", "AIR": "Release the old story.", "WATER": "Cleanse the soul's shore." }
+    "New Moon": {
+      "FIRE": "In the velvet dark, a spark is waiting. Your desire is not an accident; it is a memory of what you agreed to birth. Feed the heat.",
+      "EARTH": "You are a seed in the deep, dark soil. Do not rush to sprout. Drinking the nutrients of silence is the most important work right now.",
+      "AIR": "The mind is a vast, empty sky. Plant a single thought-form in the silence and watch how the universe organizes the winds around it.",
+      "WATER": "The womb of the world is dark and fluid. Allow your emotions to exist without judgment; they are the ancient waters of life."
+    },
+    "Waxing": {
+      "FIRE": "The spark has caught. Action is your prayer now. Do not hesitate; the fire needs your breath to grow.",
+      "EARTH": "The ancestors honor the slow hand. Lay your stones with patience; you are building a temple, not a tent.",
+      "AIR": "Speak your intention aloud. The wind carries your voice to the four corners of the earth. The universe is listening.",
+      "WATER": "Trust the flow. If a door opens, move through it like water through a canyon. Resistance only creates turbulence."
+    },
+    "Full Moon": {
+      "FIRE": "You are the bonfire on the mountain. Burn bright, not for ego, but so your tribe can find you in the dark.",
+      "EARTH": "The harvest is here. Look at what you have built. What you have touched with love has turned to gold. Give thanks to the soil.",
+      "AIR": "Clarity pierces the veil. You can see the whole picture now. Do not look away from the truth.",
+      "WATER": "The tides are at their peak. Let your heart overflow. Your vulnerability is not a weakness; it is your greatest power."
+    },
+    "Waning": {
+      "FIRE": "Let the fire burn down to embers. Conserve your heat for the coming cold. Rest is also a weapon of the warrior.",
+      "EARTH": "Compost what no longer serves. Return the dead leaves to the earth so they may feed the roots of your future.",
+      "AIR": "Release the old stories. The mind needs to be emptied so new wisdom can find space to enter.",
+      "WATER": "The tide recedes, revealing what was hidden. Walk the shore of your soul and cleanse what remains."
+    }
   };
 
-  // FULL MOON ANCHORS (Dates for Cycle Calculation)
+  // V57 RITUAL DATA (Detailed)
+  const FULL_MOON_DATA = {
+    "Jan 3": {n: "Wolf Moon", t: "Endurance", r: "Light a white candle. Stand in the cold air and hum your deepest truth. Imagine your voice joining the howl of your lineage.", l: "wolf moon spiritual meaning"},
+    "Feb 1": {n: "Snow Moon", t: "Purity", r: "Gather clean snow or ice in a bowl. As it melts, whisper the fears you wish to dissolve. Pour the water into the earth.", l: "snow moon spiritual meaning"},
+    "Mar 3": {n: "Worm Moon", t: "Awakening", r: "Stand barefoot on the earth or floor. Pulse your toes. Feel the vibration of the life force waking up beneath you.", l: "worm moon spiritual meaning"},
+    "Apr 2": {n: "Pink Moon", t: "Emergence", r: "Dip a pink flower or stone in water. Anoint your heart and forehead. Declare: 'I am blooming without apology.'", l: "pink moon spiritual meaning"},
+    "May 1": {n: "Flower Moon", t: "Potential", r: "Create a mandala of leaves and petals on the ground. Sit in the center and breathe in the abundance of the garden.", l: "flower moon spiritual meaning"},
+    "May 31": {n: "Strawberry Moon", t: "Vitality", r: "Eat a sweet fruit mindfully. Feel the nectar as the physical manifestation of your own hard-earned sweetness.", l: "strawberry moon spiritual meaning"},
+    "Jun 29": {n: "Buck Moon", t: "Abundance", r: "Stand tall, reaching arms high like antlers. Claim your space. Visualize your spirit connecting heaven and earth.", l: "buck moon spiritual meaning"},
+    "Jul 29": {n: "Sturgeon Moon", t: "Power", r: "Submerge your hands in a bowl of water. Ask the ancient spirits of the deep for the resilience to swim against the current.", l: "sturgeon moon spiritual meaning"},
+    "Aug 28": {n: "Harvest Moon", t: "Gratitude", r: "Hold a handful of grains or seeds. Name three things you have harvested this cycle. Offer the seeds to the birds or soil.", l: "harvest moon spiritual meaning"},
+    "Sep 26": {n: "Hunter's Moon", t: "Release", r: "Focus on a flame. Identify one habit you are hunting down to release. Blow out the candle to seal the end of that cycle.", l: "hunter's moon spiritual meaning"},
+    "Oct 25": {n: "Beaver Moon", t: "Preparation", r: "Physically clean your altar or sacred space. Light incense to clear the air. Prepare your inner temple for winter.", l: "beaver moon spiritual meaning"},
+    "Nov 24": {n: "Cold Moon", t: "Stillness", r: "Sit in total darkness for 5 minutes. Find the internal light that glows when the external world is frozen.", l: "cold moon spiritual meaning"},
+    "Dec 24": {n: "Long Night Moon", t: "Dreaming", r: "Place mugwort or lavender under your pillow. Ask your ancestors to speak to you in the dreamtime tonight.", l: "long night moon spiritual meaning"},
+    "Jan 22, 2027": {n: "Threshold Moon", t: "Wisdom", r: "Stand in a doorway. Step through with your right foot, consciously leaving the old cycle behind.", l: "spiritual meaning of 13th moon"}
+  };
+
+  // FULL MOON ANCHORS (V58 Logic for Cycle Count)
   const MOON_ANCHORS = [
     {d: new Date(2026, 0, 3), n: "Wolf Moon"},
     {d: new Date(2026, 1, 1), n: "Snow Moon"},
@@ -196,22 +236,6 @@
     {d: new Date(2026, 10, 24), n: "Cold Moon"},
     {d: new Date(2026, 11, 24), n: "Long Night Moon"}
   ];
-
-  const FULL_MOON_DATA = {
-    "Jan 3": {n: "Wolf Moon", t: "Endurance", r: "Light a white candle. Howl your truth to the wind.", l: "wolf moon spiritual meaning"},
-    "Feb 1": {n: "Snow Moon", t: "Purity", r: "Wash hands with melted ice to clarify vision.", l: "snow moon spiritual meaning"},
-    "Mar 3": {n: "Worm Moon", t: "Awakening", r: "Stand barefoot on earth. Feel the waking soil.", l: "worm moon spiritual meaning"},
-    "Apr 2": {n: "Pink Moon", t: "Emergence", r: "Anoint heart with rose water. Declare your blooming.", l: "pink moon spiritual meaning"},
-    "May 1": {n: "Flower Moon", t: "Potential", r: "Create a mandala of petals. Sit in its center.", l: "flower moon spiritual meaning"},
-    "May 31": {n: "Strawberry Moon", t: "Vitality", r: "Eat sweet fruit mindfully. Taste the nectar of life.", l: "strawberry moon spiritual meaning"},
-    "Jun 29": {n: "Buck Moon", t: "Abundance", r: "Raise arms like antlers. Claim your sovereign space.", l: "buck moon spiritual meaning"},
-    "Jul 29": {n: "Sturgeon Moon", t: "Power", r: "Submerge hands in water. Ask for resilience.", l: "sturgeon moon spiritual meaning"},
-    "Aug 28": {n: "Harvest Moon", t: "Gratitude", r: "Offer seeds to the earth. Thank the soil.", l: "harvest moon spiritual meaning"},
-    "Sep 26": {n: "Hunter's Moon", t: "Release", r: "Burn a list of habits. Watch the smoke rise.", l: "hunter's moon spiritual meaning"},
-    "Oct 25": {n: "Beaver Moon", t: "Preparation", r: "Cleanse your altar. Prepare for winter rest.", l: "beaver moon spiritual meaning"},
-    "Nov 24": {n: "Cold Moon", t: "Stillness", r: "Sit in darkness. Find the inner light.", l: "cold moon spiritual meaning"},
-    "Dec 24": {n: "Long Night Moon", t: "Dreaming", r: "Sleep with mugwort. Invite ancestral dreams.", l: "long night moon spiritual meaning"}
-  };
 
   const FULL_MOONS = [{d: "Jan 3", z: "Cancer"}, {d: "Feb 1", z: "Leo"}, {d: "Mar 3", z: "Virgo"}, {d: "Apr 2", z: "Libra"}, {d: "May 1", z: "Scorpio"}, {d: "May 31", z: "Sagittarius"}, {d: "Jun 29", z: "Capricorn"}, {d: "Jul 29", z: "Aquarius"}, {d: "Aug 28", z: "Pisces"}, {d: "Sep 26", z: "Aries"}, {d: "Oct 25", z: "Taurus"}, {d: "Nov 24", z: "Gemini"}, {d: "Dec 24", z: "Cancer"}];
   const NEW_MOONS = ["Jan 18", "Feb 17", "Mar 18", "Apr 17", "May 16", "Jun 15", "Jul 14", "Aug 12", "Sep 11", "Oct 10", "Nov 9", "Dec 8"];
@@ -242,7 +266,7 @@
     else if (angle < 260) { phase = "Waning Gibbous"; ico = "🌖"; }
     else if (angle < 280) { phase = "Last Quarter"; ico = "🌗"; }
 
-    // Corrected Cycle Day: Anchor to the LAST Full Moon
+    // V58 Corrected Cycle Day: Anchor to the LAST Full Moon
     let anchor = MOON_ANCHORS[0];
     for (let m of MOON_ANCHORS) {
       if (date >= m.d) anchor = m;
@@ -250,6 +274,7 @@
     const diffTime = Math.abs(date - anchor.d);
     let tDay = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
     
+    // V57 Deep Content Integration
     let archetype = FULL_MOON_DATA[dStr];
     let broadPhase = isFull ? "Full Moon" : isNew ? "New Moon" : (angle < 180 ? "Waxing" : "Waning");
     
@@ -257,8 +282,8 @@
     let ritual = archetype ? archetype.r : "Sit in silence. Connect with the element of " + el + ".";
 
     if (dStr === "Jan 22" && date.getFullYear() === 2027) {
-       archetype = {n: "Threshold Moon", t: "Wisdom", r: "Step through a doorway with intention.", l:"spiritual meaning of 13th moon"};
-       isFull = true; whisper = archetype.t + ": " + WHISPER_MATRIX["Full Moon"]["FIRE"];
+       archetype = FULL_MOON_DATA["Jan 22, 2027"];
+       isFull = true; whisper = archetype.t + ": " + WHISPER_MATRIX["Full Moon"]["FIRE"]; ritual = archetype.r;
     }
 
     return { phase, ico, zod, tDay, el, elColor: ELEMENTS[el], dStr, year: date.getFullYear(), isFull, isNew, isPivot, isEvent, archetype, whisper, ritual };
@@ -302,7 +327,7 @@
     const displayTitle = data.archetype ? data.archetype.n.toUpperCase() : `${data.ico} ${data.zod.split(' ')[0].toUpperCase()}`;
     document.getElementById("dashTitle").innerText = displayTitle;
     document.getElementById("detailedPhase").innerText = data.phase.toUpperCase();
-    document.getElementById("dashSub").innerText = `LUNAR DAY ${data.tDay} • ${data.dStr}, ${data.year}`;
+    document.getElementById("dashSub").innerText = `CYCLE DAY ${data.tDay} • ${data.dStr}, ${data.year}`;
     document.getElementById("elementTag").innerText = `✧ ${data.el} ENERGY ✧`;
     document.getElementById("journalInput").value = db.journals[date.toDateString()] || "";
     document.getElementById("flowBtn").className = db.logs[date.toDateString()] ? "cycle-btn active" : "cycle-btn";
@@ -329,13 +354,13 @@
     }
     
     db.zodCache[date.toDateString()] = data.zod;
-    localStorage.setItem('ancestral_moon_v58', JSON.stringify(db));
+    localStorage.setItem('ancestral_moon_v59', JSON.stringify(db));
   }
 
   function setEnergy(val) {
     let map = {'🔥':'fire','💧':'water','🌬️':'air','🪨':'earth'};
     db.energy[selectedDate] = map[val];
-    localStorage.setItem('ancestral_moon_v58', JSON.stringify(db));
+    localStorage.setItem('ancestral_moon_v59', JSON.stringify(db));
     updateDash(new Date(selectedDate));
   }
 
@@ -358,13 +383,14 @@
   }
 
   function jumpToDate(dateStr) { selectedDate = dateStr; activeD = new Date(dateStr); render(); updateDash(activeD); showView('dash'); }
-  function deleteEntry(dateStr) { if(confirm("Release this entry?")) { delete db.journals[dateStr]; delete db.logs[dateStr]; delete db.energy[dateStr]; localStorage.setItem('ancestral_moon_v58', JSON.stringify(db)); showView('grimoire'); } }
+  function deleteEntry(dateStr) { if(confirm("Release this entry?")) { delete db.journals[dateStr]; delete db.logs[dateStr]; delete db.energy[dateStr]; localStorage.setItem('ancestral_moon_v59', JSON.stringify(db)); showView('grimoire'); } }
 
   function showView(view) {
     document.getElementById('oracleDash').style.display = 'none';
     document.getElementById('grimoireView').style.display = 'none';
     document.getElementById('yearlyView').style.display = 'none';
     if(view === 'dash') document.getElementById('oracleDash').style.display = 'block';
+    
     if(view === 'grimoire') {
       const g = document.getElementById('grimoireView'); g.style.display = 'block';
       const cont = document.getElementById('grimoireContent'); cont.innerHTML = "";
@@ -394,8 +420,8 @@
     }
   }
 
-  function saveData() { db.journals[selectedDate] = document.getElementById("journalInput").value; localStorage.setItem('ancestral_moon_v58', JSON.stringify(db)); }
-  function toggleFlow() { db.logs[selectedDate] = !db.logs[selectedDate]; localStorage.setItem('ancestral_moon_v58', JSON.stringify(db)); render(); updateDash(new Date(selectedDate)); }
+  function saveData() { db.journals[selectedDate] = document.getElementById("journalInput").value; localStorage.setItem('ancestral_moon_v59', JSON.stringify(db)); }
+  function toggleFlow() { db.logs[selectedDate] = !db.logs[selectedDate]; localStorage.setItem('ancestral_moon_v59', JSON.stringify(db)); render(); updateDash(new Date(selectedDate)); }
   function changeMonth(n) { activeD.setMonth(activeD.getMonth() + n); render(); }
 
   const sField = document.getElementById('starField');
