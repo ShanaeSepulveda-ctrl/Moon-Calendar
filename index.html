@@ -231,5 +231,183 @@
     const T = (jd - 2451545.0) / 36525;
     let moonLong = (218.316 + 481267.881 * T + 6.289 * Math.sin((135.27 + 477198.87 * T) * Math.PI / 180));
     moonLong = (moonLong + 5.0) % 360; 
-    const signs = ["Aries ♈","Taurus
+    const signs = ["Aries ♈","Taurus ♉","Gemini ♊","Cancer ♋","Leo ♌","Virgo ♍","Libra ♎","Scorpio ♏","Sagittarius ♐","Capricorn ♑","Aquarius ♒","Pisces ♓"];
+    const zod = signs[Math.floor(moonLong / 30)];
+    const el = ZOD_ELEMENTS[zod];
+    let sunLong = (280.466 + 36000.770 * T) % 360;
+    let angle = (moonLong - sunLong + 360) % 360;
+    
+    let isFull = FULL_MOONS.some(m => m.d === dStr);
+    let isNew = NEW_MOONS.includes(dStr);
+    let isPivot = PIVOTS[dStr];
+    let isEvent = CELESTIAL_EVENTS[dStr];
+
+    let phase = "Waning Crescent", ico = "🌘";
+    if (isFull) { phase = "Full Moon"; ico = "🌕"; }
+    else if (isNew) { phase = "New Moon"; ico = "🌑"; }
+    else if (angle < 90) { phase = "Waxing Crescent"; ico = "🌒"; }
+    else if (angle < 100) { phase = "First Quarter"; ico = "🌓"; }
+    else if (angle < 180) { phase = "Waxing Gibbous"; ico = "🌔"; }
+    else if (angle < 260) { phase = "Waning Gibbous"; ico = "🌖"; }
+    else if (angle < 280) { phase = "Last Quarter"; ico = "🌗"; }
+
+    const equinox = new Date(2026, 2, 20).getTime();
+    const diff = Math.floor((date.getTime() - equinox) / 86400000);
+    let tDay = (diff % 28) + 1; if (tDay <= 0) tDay += 28;
+    
+    // Dynamic Logic
+    let archetype = FULL_MOON_DATA[dStr];
+    let broadPhase = isFull ? "Full Moon" : isNew ? "New Moon" : (angle < 180 ? "Waxing" : "Waning");
+    
+    let whisper = archetype ? archetype.t + ": " + WHISPER_MATRIX["Full Moon"][el] : WHISPER_MATRIX[broadPhase][el];
+    let ritual = archetype ? archetype.r : RITUAL_MATRIX[broadPhase];
+
+    // 13th Moon
+    if (dStr === "Jan 22" && date.getFullYear() === 2027) {
+       archetype = FULL_MOON_DATA["Jan 22, 2027"];
+       isFull = true; whisper = archetype.t + ": " + WHISPER_MATRIX["Full Moon"]["FIRE"]; ritual = archetype.r;
+    }
+
+    return { phase, ico, zod, tDay, el, elColor: ELEMENTS[el], dStr, year: date.getFullYear(), isFull, isNew, isPivot, isEvent, archetype, whisper, ritual };
+  }
+
+  function render() {
+    const grid = document.getElementById("calendar"); grid.innerHTML = "";
+    document.getElementById("monthLabel").innerText = `${activeD.toLocaleString('default', { month: 'long' }).toUpperCase()} ${activeD.getFullYear()}`;
+    ["M","T","W","T","F","S","S"].forEach(l => grid.innerHTML += `<div class="day-label">${l}</div>`);
+    const first = new Date(activeD.getFullYear(), activeD.getMonth(), 1);
+    const last = new Date(activeD.getFullYear(), activeD.getMonth() + 1, 0).getDate();
+    let offset = (first.getDay() === 0) ? 6 : first.getDay() - 1;
+    for(let i=0; i<offset; i++) grid.innerHTML += `<div></div>`;
+    
+    const todayStr = new Date().toDateString();
+
+    for(let i=1; i<=last; i++) {
+      const d = new Date(activeD.getFullYear(), activeD.getMonth(), i);
+      const data = getCelestialData(d);
+      const cell = document.createElement("div");
+      
+      let classes = ['day'];
+      if(d.toDateString() === selectedDate) classes.push('selected');
+      if(d.toDateString() === todayStr) classes.push('today');
+      if(data.isFull) classes.push('full-moon-day');
+      if(data.isNew) classes.push('new-moon-day');
+      if(data.isPivot || data.isEvent) classes.push('celestial-pivot');
+      if(db.logs[d.toDateString()]) classes.push('period');
+      
+      cell.className = classes.join(' ');
+      cell.innerHTML = `<span class="d-num">${i}</span><span class="t-num">${data.tDay}</span><span class="m-ico" style="filter: drop-shadow(0 0 5px ${data.elColor})">${data.ico}</span><span class="z-ico">${data.zod.split(' ')[0]}</span>`;
+      cell.onclick = () => { selectedDate = d.toDateString(); updateDash(d); render(); };
+      grid.appendChild(cell);
+    }
+  }
+
+  function updateDash(date) {
+    const data = getCelestialData(date);
+    document.documentElement.style.setProperty('--aura', data.elColor);
+    
+    const displayTitle = data.archetype ? data.archetype.n.toUpperCase() : `${data.ico} ${data.zod.split(' ')[0].toUpperCase()}`;
+    document.getElementById("dashTitle").innerText = displayTitle;
+    document.getElementById("detailedPhase").innerText = data.phase.toUpperCase();
+    document.getElementById("dashSub").innerText = `CYCLE DAY ${data.tDay} • ${data.dStr}, ${data.year}`;
+    document.getElementById("elementTag").innerText = `✧ ${data.el} ENERGY ✧`;
+    document.getElementById("journalInput").value = db.journals[date.toDateString()] || "";
+    document.getElementById("flowBtn").className = db.logs[date.toDateString()] ? "cycle-btn active" : "cycle-btn";
+    
+    document.getElementById("powerWords").innerText = ZOD_KEYWORDS[data.zod.split(' ')[0]];
+
+    let eventHTML = "";
+    if(data.isPivot === "Spring Equinox") eventHTML += `<div class="event-badge newyear-badge">HAPPY ANCESTRAL NEW YEAR! 🌸✨🌿</div><br>`;
+    else if(data.isPivot) eventHTML += `<div class="event-badge portal-badge">✨ ${data.isPivot.toUpperCase()}</div>`;
+    if(data.isEvent) eventHTML += `<div class="event-badge retro-badge" onclick="openModal('${data.isEvent.n}', '${data.isEvent.d}', '${data.isEvent.l}')">👁️ ${data.isEvent.n.toUpperCase()}</div>`;
+    document.getElementById("eventDisplay").innerHTML = eventHTML;
+
+    document.getElementById("guidanceText").innerText = data.whisper;
+    document.getElementById("ritualText").innerText = data.ritual;
+    
+    // Update Energy Buttons
+    const savedEnergy = db.energy[date.toDateString()];
+    document.querySelectorAll('.energy-btn').forEach(btn => {
+      btn.classList.remove('active');
+      if(btn.id === `e-${savedEnergy}`) btn.classList.add('active');
+    });
+    
+    db.zodCache[date.toDateString()] = data.zod;
+    localStorage.setItem('ancestral_moon_v55', JSON.stringify(db));
+  }
+
+  function setEnergy(val) {
+    let map = {'🔥':'fire','💧':'water','🌬️':'air','🪨':'earth'};
+    db.energy[selectedDate] = map[val];
+    localStorage.setItem('ancestral_moon_v55', JSON.stringify(db));
+    updateDash(new Date(selectedDate));
+  }
+
+  function openModal(title, desc, query) {
+    document.getElementById("modalTitle").innerText = title;
+    document.getElementById("modalText").innerText = desc;
+    document.getElementById("modalLink").href = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+    document.getElementById("cosmicModal").style.display = "block";
+    document.querySelector(".modal-overlay").style.display = "block";
+  }
+  function closeModal() { document.getElementById("cosmicModal").style.display = "none"; document.querySelector(".modal-overlay").style.display = "none"; }
+
+  function copySisterReport() {
+    const d = new Date(selectedDate);
+    const data = getCelestialData(d);
+    const report = `☾ Ancestral Moon Report: ${data.dStr}, ${data.year} ☽\nMoon: ${data.archetype ? data.archetype.n : data.phase}\nSign: ${data.zod} (${data.el})\n\nWhisper: ${document.getElementById("guidanceText").innerText}\n\nRitual: ${data.ritual}\n\nSynced via The Ancestral Moon Map ✨`;
+    navigator.clipboard.writeText(report).then(() => alert("Report Copied!"));
+  }
+
+  function showView(view) {
+    document.getElementById('oracleDash').style.display = 'none';
+    document.getElementById('grimoireView').style.display = 'none';
+    document.getElementById('yearlyView').style.display = 'none';
+    if(view === 'dash') document.getElementById('oracleDash').style.display = 'block';
+    
+    if(view === 'grimoire') {
+      const g = document.getElementById('grimoireView'); g.style.display = 'block';
+      const cont = document.getElementById('grimoireContent'); cont.innerHTML = "";
+      const dates = Object.keys(db.journals).concat(Object.keys(db.logs), Object.keys(db.energy)).sort((a,b) => new Date(b) - new Date(a));
+      [...new Set(dates)].forEach(d => {
+        if(db.journals[d] || db.logs[d] || db.energy[d]) {
+          let en = db.energy[d] ? (db.energy[d] === 'fire' ? '🔥' : db.energy[d] === 'water' ? '💧' : db.energy[d] === 'air' ? '🌬️' : '🪨') : '';
+          cont.innerHTML += `<div style="background:rgba(255,255,255,0.03); padding:15px; border-radius:15px; margin-bottom:10px; text-align:left; border-left:3px solid var(--aura);">
+            <div style="font-size:0.6rem; color:var(--gold); display:flex; justify-content:space-between;"><span>${d} • ${db.zodCache[d] || 'Cosmos'}</span> <span>${en} ${db.logs[d] ? '🩸' : ''}</span></div>
+            <div style="font-family:'Charm'; font-size:1.1rem; color:#eee;">${db.journals[d] || "<i>Quiet.</i>"}</div>
+          </div>`;
+        }
+      });
+    }
+    
+    if(view === 'yearly') {
+      document.getElementById('yearlyView').style.display = 'block';
+      const yc = document.getElementById('yearlyContent'); yc.innerHTML = "";
+      yc.innerHTML += `<h4 style="color:var(--gold); font-family:'Cinzel';">CELESTIAL PORTALS</h4>`;
+      for(let p in PIVOTS) yc.innerHTML += `<div style="display:flex; justify-content:space-between; font-size:0.7rem; border-bottom:1px solid rgba(255,255,255,0.05); padding:5px 0;"><span>✨ ${p}</span> <span>${PIVOTS[p]}</span></div>`;
+      for(let e in CELESTIAL_EVENTS) yc.innerHTML += `<div style="display:flex; justify-content:space-between; font-size:0.7rem; border-bottom:1px solid rgba(255,255,255,0.05); padding:5px 0; color:var(--retro);"><span>🌀 ${e}</span> <span>${CELESTIAL_EVENTS[e].n}</span></div>`;
+      yc.innerHTML += `<h4 style="color:var(--gold); font-family:'Cinzel'; margin-top:20px;">13 FULL MOONS</h4>`;
+      FULL_MOONS.forEach(m => {
+        const arch = FULL_MOON_DATA[m.d] || {n:"Moon"};
+        yc.innerHTML += `<div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.05); padding:5px 0;"><span>🌕 ${m.d} - ${arch.n}</span> <span>${m.z}</span></div>`;
+      });
+    }
+  }
+
+  function saveData() { db.journals[selectedDate] = document.getElementById("journalInput").value; localStorage.setItem('ancestral_moon_v55', JSON.stringify(db)); }
+  function toggleFlow() { db.logs[selectedDate] = !db.logs[selectedDate]; localStorage.setItem('ancestral_moon_v55', JSON.stringify(db)); render(); updateDash(new Date(selectedDate)); }
+  function changeMonth(n) { activeD.setMonth(activeD.getMonth() + n); render(); }
+
+  const sField = document.getElementById('starField');
+  for(let i=0; i<80; i++) {
+    const s = document.createElement('div'); s.className = 'star';
+    s.style.left = Math.random()*100+'%'; s.style.top = Math.random()*100+'%';
+    s.style.width = Math.random()*2+'px'; s.style.setProperty('--d', (Math.random()*4+2)+'s'); sField.appendChild(s);
+  }
+
+  render(); updateDash(new Date());
+</script>
+</body>
+</html>
+
 
