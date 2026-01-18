@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>The Ancestral Moon Map | V74 Minimalist Oracle</title>
+  <title>The Ancestral Moon Map | V75 True Minimalist</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Charm:wght@400;700&family=Quicksand:wght@300;500&display=swap" rel="stylesheet">
   <style>
     :root { 
@@ -27,14 +27,15 @@
     }
     #oracleDash { display: block; }
 
-    /* V74 Modal Updates for richer content */
+    /* COSMIC MODAL STYLING */
     #cosmicModal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 85%; max-width: 400px; background: rgba(15, 5, 25, 0.98); border: 2px solid var(--gold); border-radius: 25px; padding: 25px; z-index: 1000; text-align: left; box-shadow: 0 0 50px rgba(200, 180, 255, 0.3); max-height: 80vh; overflow-y: auto; }
     .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 999; }
     
-    .modal-section { margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
-    .modal-label { font-family: 'Cinzel'; font-size: 0.7rem; color: var(--gold); letter-spacing: 2px; display: block; margin-bottom: 5px; }
-    .modal-content-text { font-family: 'Charm'; font-size: 1.1rem; color: #fff; line-height: 1.4; }
-    .modal-link { color: var(--zodiac); font-size: 0.8rem; text-decoration: underline; cursor: pointer; display: block; margin-top: 5px; }
+    .modal-section { margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
+    .modal-section:last-child { border-bottom: none; }
+    .modal-label { font-family: 'Cinzel'; font-size: 0.7rem; color: var(--gold); letter-spacing: 2px; display: block; margin-bottom: 8px; font-weight: bold; }
+    .modal-content-text { font-family: 'Charm'; font-size: 1.2rem; color: #fff; line-height: 1.5; }
+    .modal-link { color: var(--zodiac); font-size: 0.8rem; text-decoration: underline; cursor: pointer; display: block; margin-top: 8px; font-family: 'Quicksand'; opacity: 0.8; }
 
     #calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; width: 100%; max-width: 450px; margin-bottom: 10px; }
     .day-label { font-size: 0.55rem; color: var(--gold); font-family: 'Cinzel'; opacity: 0.6; }
@@ -70,15 +71,16 @@
 
     #journalInput { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 15px; color: #fff; font-family: 'Charm'; font-size: 1.2rem; min-height: 100px; box-sizing: border-box; outline: none; }
     
-    /* V74 Minimalist Badges: Only for urgent alerts */
+    /* V75: Strict Badge Policy - Only Major Alerts */
     .event-badge { font-size: 0.6rem; padding: 4px 12px; border-radius: 15px; display: inline-block; margin-bottom: 5px; font-family: 'Cinzel'; letter-spacing: 1px; cursor: pointer; }
     .portal-badge { background: var(--portal); color: var(--space); box-shadow: 0 0 10px var(--portal); }
     .retro-badge { background: var(--retro); color: var(--space); box-shadow: 0 0 10px var(--retro); }
     .newyear-badge { background: linear-gradient(90deg, #2ecc71, #df80ff); color: white; box-shadow: 0 0 20px #2ecc71; padding: 8px 20px; font-size: 0.75rem; border: 1px solid white; cursor: pointer;}
     
-    /* V74 Clickable Title Styling */
-    .clickable-title { cursor: pointer; text-decoration: underline; text-decoration-style: dotted; text-underline-offset: 8px; text-decoration-color: rgba(230, 204, 255, 0.3); transition: 0.3s; }
-    .clickable-title:hover { text-shadow: 0 0 15px var(--gold); text-decoration-color: var(--gold); }
+    /* V75: Clickable Title Styling with Info Icon */
+    .clickable-title { cursor: pointer; transition: 0.3s; position: relative; display: inline-block; }
+    .clickable-title:hover { text-shadow: 0 0 20px var(--gold); color: #fff; }
+    .info-icon { font-size: 0.5em; vertical-align: middle; opacity: 0.7; margin-left: 5px; border: 1px solid var(--gold); border-radius: 50%; padding: 2px 5px; }
 
     .grim-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 5px; }
     .grim-btn { background: transparent; border: none; color: #aaa; font-size: 0.9rem; cursor: pointer; }
@@ -113,9 +115,9 @@
 <div id="oracleDash">
   <div id="eventDisplay"></div>
   
-  <h2 id="dashTitle" class="clickable-title" style="font-family:'Cinzel'; margin: 20px 0 5px 0; color:var(--gold); letter-spacing: 3px; font-size: 1.4rem;"></h2>
+  <h2 id="dashTitle" class="clickable-title" style="font-family:'Cinzel'; margin: 25px 0 5px 0; color:var(--gold); letter-spacing: 3px; font-size: 1.4rem;"></h2>
   
-  <div id="dashSub" style="font-size: 0.6rem; letter-spacing: 2px; margin-bottom: 25px; opacity: 0.8; font-family: 'Cinzel';"></div>
+  <div id="dashSub" style="font-size: 0.6rem; letter-spacing: 2px; margin-bottom: 30px; opacity: 0.8; font-family: 'Cinzel';"></div>
   
   <div class="wisdom-card">
     <span class="wisdom-label">ANCESTRAL WHISPER</span>
@@ -188,17 +190,16 @@
 <script>
   let activeD = new Date(2026, 0, 16); 
   let selectedDate = new Date().toDateString();
-  let db = JSON.parse(localStorage.getItem('ancestral_moon_v74')) || { logs: {}, journals: {}, zodCache: {}, energy: {} };
+  let db = JSON.parse(localStorage.getItem('ancestral_moon_v75')) || { logs: {}, journals: {}, zodCache: {}, energy: {} };
 
   const ELEMENTS = { "FIRE": "#ff4d4d", "EARTH": "#2ecc71", "AIR": "#3498db", "WATER": "#df80ff" };
   const ZOD_ELEMENTS = { "Aries ♈":"FIRE", "Leo ♌":"FIRE", "Sagittarius ♐":"FIRE", "Taurus ♉":"EARTH", "Virgo ♍":"EARTH", "Capricorn ♑":"EARTH", "Gemini ♊":"AIR", "Libra ♎":"AIR", "Aquarius ♒":"AIR", "Cancer ♋":"WATER", "Scorpio ♏":"WATER", "Pisces ♓":"WATER" };
   
-  // V74: Added Element Meanings for the new Popup
   const ELEMENT_MEANINGS = {
-    "FIRE": "Action, Spirit, Passion, Transformation. Fire energy asks you to move, burn away the old, and ignite your will.",
-    "EARTH": "Grounding, Body, Stability, Manifestation. Earth energy asks you to root down, care for your physical vessel, and build slowly.",
+    "FIRE": "Action, Spirit, Passion, Transformation. Fire energy asks you to move, burn away the old, and ignite your will. It is the spark of creation.",
+    "EARTH": "Grounding, Body, Stability, Manifestation. Earth energy asks you to root down, care for your physical vessel, and build slowly with patience.",
     "AIR": "Intellect, Communication, Vision, Breath. Air energy asks you to speak your truth, clarify your thoughts, and connect with ideas.",
-    "WATER": "Emotion, Intuition, Healing, Flow. Water energy asks you to feel deeply, cleanse your spirit, and trust the mystery."
+    "WATER": "Emotion, Intuition, Healing, Flow. Water energy asks you to feel deeply, cleanse your spirit, and trust the mystery of the unknown."
   };
 
   const PIVOT_DATA = {
@@ -229,7 +230,7 @@
 
   const FULL_MOONS_ARRAY = [
     {d: "Jan 3, 2026", z: "Cancer ♋"}, {d: "Feb 1, 2026", z: "Leo ♌"}, {d: "Mar 3, 2026", z: "Virgo ♍"}, {d: "Apr 2, 2026", z: "Libra ♎"}, {d: "May 1, 2026", z: "Scorpio ♏"}, {d: "May 31, 2026", z: "Sagittarius ♐"}, {d: "Jun 29, 2026", z: "Capricorn ♑"}, {d: "Jul 29, 2026", z: "Aquarius ♒"}, {d: "Aug 28, 2026", z: "Pisces ♓"}, {d: "Sep 26, 2026", z: "Aries ♈"}, {d: "Oct 25, 2026", z: "Taurus ♉"}, {d: "Nov 24, 2026", z: "Gemini ♊"}, {d: "Dec 24, 2026", z: "Cancer ♋"},
-    {d: "Jan 22, 2027", z: "Leo ♌"} // Shortened for V74 snippet, full list from V73 applies
+    {d: "Jan 22, 2027", z: "Leo ♌"} 
   ];
 
   const NEW_MOON_DATA = {
@@ -321,6 +322,21 @@
     {d: new Date(2026, 0, 3), n: "Wolf Moon"}, {d: new Date(2027, 0, 22), n: "Wolf Moon"}
   ];
 
+  const ZODIAC_WISDOM = {
+    "Aries": "When the Moon is in Aries, the soul craves action. You may feel a spark of divine impulse. It is a time for warrior energy—beginning, initiating, and bold courage.",
+    "Taurus": "Moon in Taurus calls for grounding. Your internal tide slows down to honor the senses. Root yourself in pleasure, food, and the tangible earth.",
+    "Gemini": "A Gemini Moon quickens the mind. The air is alive with curiosity. Your soul wants to speak, connect, and weave stories. Listen to the wind.",
+    "Cancer": "The Moon is at home in Cancer. Emotions flow like deep rivers. It is a time for the shell—turn inward, nurture the self, and honor the mother wound.",
+    "Leo": "Moon in Leo demands the heart be open. You are sovereign. Your soul seeks expression, warmth, and the courage to shine without apology.",
+    "Virgo": "In Virgo, the Moon asks for sacred order. It is a time to purify the temple of the body. Healing comes through ritual, detail, and service to the self.",
+    "Libra": "A Libra Moon seeks harmony. The soul looks for its reflection in others. Balance beauty with truth; relationship is the mirror of the moment.",
+    "Scorpio": "Moon in Scorpio is the descent into the underworld. The tide is deep and dark. Secrets, transformation, and rebirth are accessible now.",
+    "Sagittarius": "The Sagittarian Moon pulls the bow back. The soul seeks expansion, truth, and the horizon. Trust the quest and the wild unknown.",
+    "Capricorn": "Moon in Capricorn builds the legacy. Emotions become structure. It is a time for the elder within to speak—patience, ambition, and power.",
+    "Aquarius": "In Aquarius, the Moon looks to the future. You may feel detached yet connected to the whole. Honor the rebel spirit and the cosmic web.",
+    "Pisces": "The Pisces Moon dissolves boundaries. You are one with the ocean. Dreams are vivid, intuition is loud, and the veil is thin."
+  };
+
   function getDynamicContent(phase, zodiacSign, day) {
     try {
       if(!zodiacSign) return { whisper: "The stars are silent.", ritual: "Breathe." };
@@ -403,7 +419,7 @@
         ritual = newMoonData.r;
         affirm = "I am new.";
       } else {
-        let content = getDynamicDaily(phase, zod, date.getDate());
+        let content = getDynamicContent(phase, zod, date.getDate());
         whisper = content.whisper;
         ritual = content.ritual;
         affirm = getAffirmation(el);
@@ -412,6 +428,10 @@
       let shadow = "";
       if (isNew) {
         shadow = SHADOW_WORK[zod.split(' ')[0]] || "What is hidden?";
+      }
+
+      if (dStrFull.includes("Jan 22, 2027")) {
+         // Override for 13th moon handled via FULL_MOON_DATA[dStrFull]
       }
 
       return { phase, ico, zod, tDay, el, elColor: ELEMENTS[el], dStr: dStrShort, year: date.getFullYear(), isFull, isNew, isPivot: pivotData, isEvent, archetype: fullMoonData, whisper, ritual, shadow, affirm };
@@ -454,31 +474,26 @@
     }
   }
 
-  // V74: Updated to handle Title Clicks and Modal Content
+  // V75: Master Modal Logic and Clean Dash
   function updateDash(date) {
     const data = getCelestialData(date);
     document.documentElement.style.setProperty('--aura', data.elColor);
     
+    // Master Title
     const displayTitle = data.archetype ? data.archetype.n.toUpperCase() : `${data.phase.toUpperCase()} ${data.ico}`;
     const titleEl = document.getElementById("dashTitle");
-    titleEl.innerText = displayTitle;
-    
-    // Attach the Master Modal click
-    titleEl.onclick = function() {
-        openMasterModal(data);
-    };
+    titleEl.innerHTML = `${displayTitle} <span class="info-icon">i</span>`;
+    titleEl.onclick = function() { openMasterModal(data); };
     
     document.getElementById("dashSub").innerText = `LUNAR DAY ${data.tDay} • ${data.dStr}, ${data.year}`;
-    // Element tag removed from main view per request
-    // Badges removed per request, except critical alerts
     
+    // Clean Event Display (Only Critical Alerts)
     let eventHTML = "";
     if(data.isPivot && data.isPivot.n === "Spring Equinox") {
       eventHTML += `<div class="event-badge newyear-badge">HAPPY ANCESTRAL NEW YEAR! 🌸</div><br>`;
     } else if(data.isPivot) {
       eventHTML += `<div class="event-badge portal-badge">✨ ${data.isPivot.n.toUpperCase()}</div>`;
     }
-    
     if(data.isEvent) eventHTML += `<div class="event-badge retro-badge">👁️ ${data.isEvent.n.toUpperCase()}</div>`;
     
     document.getElementById("eventDisplay").innerHTML = eventHTML;
@@ -505,42 +520,34 @@
     }
     
     db.zodCache[date.toDateString()] = data.zod;
-    localStorage.setItem('ancestral_moon_v74', JSON.stringify(db));
+    localStorage.setItem('ancestral_moon_v75', JSON.stringify(db));
   }
 
-  // V74: New Master Modal Logic
   function openMasterModal(data) {
     const modal = document.getElementById("cosmicModal");
     const title = document.getElementById("modalTitle");
     const content = document.getElementById("modalContent");
     const overlay = document.querySelector(".modal-overlay");
     
-    // Set Title
     title.innerText = "COSMIC ALIGNMENT";
     
-    // Build Content
-    let html = "";
-    
-    // 1. ZODIAC SECTION
     const zodiacName = data.zod.split(' ')[0];
     const zodiacMeaning = ZODIAC_WISDOM[zodiacName] || "Trust the stars.";
-    html += `<div class="modal-section">
+    const phaseMeaning = PHASE_MEANINGS[data.phase] || "A time of transition.";
+    const elementMeaning = ELEMENT_MEANINGS[data.el] || "Balance your energy.";
+    
+    let html = `
+    <div class="modal-section">
       <span class="modal-label">MOON IN ${data.zod.toUpperCase()}</span>
       <div class="modal-content-text">${zodiacMeaning}</div>
       <a class="modal-link" href="https://www.google.com/search?q=moon+in+${zodiacName}+spiritual+meaning" target="_blank">Dive Deeper into ${zodiacName} Moon</a>
-    </div>`;
-    
-    // 2. PHASE SECTION
-    const phaseMeaning = PHASE_MEANINGS[data.phase] || "A time of transition.";
-    html += `<div class="modal-section">
+    </div>
+    <div class="modal-section">
       <span class="modal-label">PHASE INTEL: ${data.phase.toUpperCase()}</span>
       <div class="modal-content-text">${phaseMeaning}</div>
       <a class="modal-link" href="https://www.google.com/search?q=${data.phase}+moon+spiritual+meaning" target="_blank">Explore ${data.phase} Energy</a>
-    </div>`;
-    
-    // 3. ELEMENT SECTION
-    const elementMeaning = ELEMENT_MEANINGS[data.el] || "Balance your energy.";
-    html += `<div class="modal-section" style="border-bottom:none;">
+    </div>
+    <div class="modal-section" style="border-bottom:none;">
       <span class="modal-label" style="color:${data.elColor}">✧ ${data.el} ENERGY ✧</span>
       <div class="modal-content-text">${elementMeaning}</div>
       <a class="modal-link" href="https://www.google.com/search?q=${data.el.toLowerCase()}+element+spiritual+meaning" target="_blank">Mastering ${data.el} Energy</a>
@@ -554,7 +561,7 @@
   function setEnergy(val) {
     let map = {'🔥':'fire','💧':'water','🌬️':'air','🪨':'earth'};
     db.energy[selectedDate] = map[val];
-    localStorage.setItem('ancestral_moon_v74', JSON.stringify(db));
+    localStorage.setItem('ancestral_moon_v75', JSON.stringify(db));
     updateDash(new Date(selectedDate));
   }
 
@@ -572,7 +579,7 @@
   }
 
   function jumpToDate(dateStr) { selectedDate = dateStr; activeD = new Date(dateStr); render(); updateDash(activeD); showView('dash'); }
-  function deleteEntry(dateStr) { if(confirm("Release this entry?")) { delete db.journals[dateStr]; delete db.logs[dateStr]; delete db.energy[dateStr]; localStorage.setItem('ancestral_moon_v74', JSON.stringify(db)); showView('grimoire'); } }
+  function deleteEntry(dateStr) { if(confirm("Release this entry?")) { delete db.journals[dateStr]; delete db.logs[dateStr]; delete db.energy[dateStr]; localStorage.setItem('ancestral_moon_v75', JSON.stringify(db)); showView('grimoire'); } }
 
   function backupData() {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db));
@@ -591,7 +598,7 @@
       try {
         const importedDb = JSON.parse(e.target.result);
         db = importedDb;
-        localStorage.setItem('ancestral_moon_v74', JSON.stringify(db));
+        localStorage.setItem('ancestral_moon_v75', JSON.stringify(db));
         alert("Grimoire Restored Successfully.");
         render(); updateDash(new Date(selectedDate)); showView('grimoire');
       } catch(err) { alert("Invalid backup file."); }
@@ -658,11 +665,8 @@
       yc.innerHTML += `<h4 style="color:var(--gold); font-family:'Cinzel'; margin-top:15px;">CELESTIAL PIVOTS</h4>`;
       for(let p in PIVOT_DATA) {
         if (p.includes("Equinox") || p.includes("Solstice") || PIVOT_DATA[p].n.includes("Equinox") || PIVOT_DATA[p].n.includes("Solstice")) {
-             // Logic to filter pivots by year could go here if the keys included years, current implementation relies on generic keys + year specific overrides in PIVOT_DATA. 
-             // Since PIVOT_DATA keys are just dates (e.g. "Sep 22"), we show them all. 
-             // Refined logic for 2027 overrides:
-             if(currentYear === 2027 && (p === "Sep 22" || p === "Dec 21")) continue; // Skip 2026 dates in 2027
-             if(currentYear === 2026 && (p === "Sep 23" || p === "Dec 22")) continue; // Skip 2027 dates in 2026
+             if(currentYear === 2027 && (p === "Sep 22" || p === "Dec 21")) continue; 
+             if(currentYear === 2026 && (p === "Sep 23" || p === "Dec 22")) continue; 
              
              yc.innerHTML += `<div style="display:flex; justify-content:space-between; font-size:0.7rem; border-bottom:1px solid rgba(255,255,255,0.05); padding:5px 0;"><span>✨ ${PIVOT_DATA[p].n}</span> <span>${p}</span></div>`;
         }
@@ -692,8 +696,8 @@
     }
   }
 
-  function saveData() { db.journals[selectedDate] = document.getElementById("journalInput").value; localStorage.setItem('ancestral_moon_v74', JSON.stringify(db)); }
-  function toggleFlow() { db.logs[selectedDate] = !db.logs[selectedDate]; localStorage.setItem('ancestral_moon_v74', JSON.stringify(db)); render(); updateDash(new Date(selectedDate)); }
+  function saveData() { db.journals[selectedDate] = document.getElementById("journalInput").value; localStorage.setItem('ancestral_moon_v75', JSON.stringify(db)); }
+  function toggleFlow() { db.logs[selectedDate] = !db.logs[selectedDate]; localStorage.setItem('ancestral_moon_v75', JSON.stringify(db)); render(); updateDash(new Date(selectedDate)); }
   function changeMonth(n) { activeD.setMonth(activeD.getMonth() + n); render(); }
 
   const sField = document.getElementById('starField');
