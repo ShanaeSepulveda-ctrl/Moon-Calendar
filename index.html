@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>The Ancestral Moon Map | V78 Starlight Oracle</title>
+  <title>The Ancestral Moon Map | V79 Celestial Button</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Charm:wght@400;700&family=Quicksand:wght@300;500&display=swap" rel="stylesheet">
   <style>
     :root { 
@@ -17,7 +17,6 @@
       color: #fdfbff; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; overflow-x: hidden;
     }
     
-    /* V78 MAGICAL STAR FIELD */
     .star-field { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
     .star { position: absolute; background: white; border-radius: 50%; animation: twinkle var(--d) infinite ease-in-out; box-shadow: 0 0 4px rgba(255, 255, 255, 0.8); }
     @keyframes twinkle { 
@@ -32,7 +31,6 @@
     }
     #oracleDash { display: block; }
 
-    /* COSMIC MODAL STYLING */
     #cosmicModal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 85%; max-width: 400px; background: rgba(15, 5, 25, 0.98); border: 2px solid var(--gold); border-radius: 25px; padding: 25px; z-index: 1000; text-align: left; box-shadow: 0 0 50px rgba(200, 180, 255, 0.3); max-height: 80vh; overflow-y: auto; }
     .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 999; }
     
@@ -81,25 +79,34 @@
     .retro-badge { background: var(--retro); color: var(--space); box-shadow: 0 0 10px var(--retro); }
     .newyear-badge { background: linear-gradient(90deg, #2ecc71, #df80ff); color: white; box-shadow: 0 0 20px #2ecc71; padding: 8px 20px; font-size: 0.75rem; border: 1px solid white; cursor: pointer;}
     
-    /* V78: CLICKABLE GLOWING TITLE */
+    /* V79: NEW HIGHLIGHT BOX FOR TITLE */
     .clickable-title { 
       cursor: pointer; 
       transition: all 0.4s ease; 
       position: relative; 
       display: inline-block;
       text-shadow: 0 0 10px rgba(230, 204, 255, 0.3);
+      /* New Box Styling */
+      padding: 12px 30px;
+      background: rgba(230, 204, 255, 0.05);
+      border: 1px solid rgba(230, 204, 255, 0.25);
+      border-radius: 30px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
     }
     .clickable-title:hover { 
       text-shadow: 0 0 20px var(--gold), 0 0 40px var(--aura); 
-      transform: scale(1.02);
+      transform: scale(1.03) translateY(-3px);
       color: #fff;
+      /* Hover Boost */
+      background: rgba(230, 204, 255, 0.12);
+      border-color: var(--gold);
+      box-shadow: 0 10px 25px rgba(230, 204, 255, 0.3), inset 0 0 15px rgba(230, 204, 255, 0.1);
     }
 
     .grim-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 5px; }
     .grim-btn { background: transparent; border: none; color: #aaa; font-size: 0.9rem; cursor: pointer; }
     .support-link { margin-top: 20px; font-size: 0.7rem; color: var(--gold); opacity: 0.7; cursor: pointer; text-decoration: underline; font-family: 'Cinzel'; display: block; }
     
-    /* Backup Controls */
     .backup-section { border-top: 1px solid rgba(255,255,255,0.1); margin-top: 20px; padding-top: 20px; }
     .backup-title { font-family: 'Cinzel'; font-size: 0.7rem; color: var(--gold); margin-bottom: 10px; display:block;}
     .backup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -201,7 +208,7 @@
 <script>
   let activeD = new Date(2026, 0, 16); 
   let selectedDate = new Date().toDateString();
-  let db = JSON.parse(localStorage.getItem('ancestral_moon_v78')) || { logs: {}, journals: {}, zodCache: {}, energy: {} };
+  let db = JSON.parse(localStorage.getItem('ancestral_moon_v79')) || { logs: {}, journals: {}, zodCache: {}, energy: {} };
 
   const ELEMENTS = { "FIRE": "#ff4d4d", "EARTH": "#2ecc71", "AIR": "#3498db", "WATER": "#df80ff" };
   const ZOD_ELEMENTS = { "Aries ♈":"FIRE", "Leo ♌":"FIRE", "Sagittarius ♐":"FIRE", "Taurus ♉":"EARTH", "Virgo ♍":"EARTH", "Capricorn ♑":"EARTH", "Gemini ♊":"AIR", "Libra ♎":"AIR", "Aquarius ♒":"AIR", "Cancer ♋":"WATER", "Scorpio ♏":"WATER", "Pisces ♓":"WATER" };
@@ -516,7 +523,7 @@
     const displayTitle = data.archetype ? data.archetype.n.toUpperCase() : `${data.phase.toUpperCase()} ${data.ico}`;
     const titleEl = document.getElementById("dashTitle");
     
-    // V78: Removed info-icon, added hover effect
+    // V79: Removed info-icon, added hover effect
     titleEl.innerText = displayTitle; 
     titleEl.onclick = function() { openMasterModal(data); };
     
@@ -554,7 +561,7 @@
     }
     
     db.zodCache[date.toDateString()] = data.zod;
-    localStorage.setItem('ancestral_moon_v78', JSON.stringify(db));
+    localStorage.setItem('ancestral_moon_v79', JSON.stringify(db));
   }
 
   function openMasterModal(data) {
@@ -595,7 +602,7 @@
   function setEnergy(val) {
     let map = {'🔥':'fire','💧':'water','🌬️':'air','🪨':'earth'};
     db.energy[selectedDate] = map[val];
-    localStorage.setItem('ancestral_moon_v78', JSON.stringify(db));
+    localStorage.setItem('ancestral_moon_v79', JSON.stringify(db));
     updateDash(new Date(selectedDate));
   }
 
@@ -613,7 +620,7 @@
   }
 
   function jumpToDate(dateStr) { selectedDate = dateStr; activeD = new Date(dateStr); render(); updateDash(activeD); showView('dash'); }
-  function deleteEntry(dateStr) { if(confirm("Release this entry?")) { delete db.journals[dateStr]; delete db.logs[dateStr]; delete db.energy[dateStr]; localStorage.setItem('ancestral_moon_v78', JSON.stringify(db)); showView('grimoire'); } }
+  function deleteEntry(dateStr) { if(confirm("Release this entry?")) { delete db.journals[dateStr]; delete db.logs[dateStr]; delete db.energy[dateStr]; localStorage.setItem('ancestral_moon_v79', JSON.stringify(db)); showView('grimoire'); } }
 
   function backupData() {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db));
@@ -632,7 +639,7 @@
       try {
         const importedDb = JSON.parse(e.target.result);
         db = importedDb;
-        localStorage.setItem('ancestral_moon_v78', JSON.stringify(db));
+        localStorage.setItem('ancestral_moon_v79', JSON.stringify(db));
         alert("Grimoire Restored Successfully.");
         render(); updateDash(new Date(selectedDate)); showView('grimoire');
       } catch(err) { alert("Invalid backup file."); }
@@ -730,11 +737,11 @@
     }
   }
 
-  function saveData() { db.journals[selectedDate] = document.getElementById("journalInput").value; localStorage.setItem('ancestral_moon_v78', JSON.stringify(db)); }
-  function toggleFlow() { db.logs[selectedDate] = !db.logs[selectedDate]; localStorage.setItem('ancestral_moon_v78', JSON.stringify(db)); render(); updateDash(new Date(selectedDate)); }
+  function saveData() { db.journals[selectedDate] = document.getElementById("journalInput").value; localStorage.setItem('ancestral_moon_v79', JSON.stringify(db)); }
+  function toggleFlow() { db.logs[selectedDate] = !db.logs[selectedDate]; localStorage.setItem('ancestral_moon_v79', JSON.stringify(db)); render(); updateDash(new Date(selectedDate)); }
   function changeMonth(n) { activeD.setMonth(activeD.getMonth() + n); render(); }
 
-  // V78: UPGRADED STAR ENGINE (More stars, better glow)
+  // V79: UPGRADED STAR ENGINE (More stars, better glow)
   const sField = document.getElementById('starField');
   for(let i=0; i<200; i++) {
     const s = document.createElement('div'); s.className = 'star';
