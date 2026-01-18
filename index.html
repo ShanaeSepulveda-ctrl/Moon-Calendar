@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>The Ancestral Moon Map | V69 Unbreakable</title>
+  <title>The Ancestral Moon Map | V70 Crystal Clear</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Charm:wght@400;700&family=Quicksand:wght@300;500&display=swap" rel="stylesheet">
   <style>
     :root { 
       --space: #020105; --gold: #e6ccff; --glass: rgba(12, 6, 24, 0.96); 
       --blood: #ff3385; --aura: #9d50bb; --amethyst: #df80ff;
-      --retro: #ff6b6b; --portal: #ffd700; --moon-glow: #a8e6cf; --zodiac: #99ccff;
+      --retro: #ff6b6b; --portal: #ffd700; --moon-glow: #a8e6cf; --zodiac: #99ccff; --phase: #b388ff;
     }
     body { 
       font-family: 'Quicksand', sans-serif; background: var(--space); 
@@ -69,6 +69,7 @@
     .retro-badge { background: var(--retro); color: var(--space); box-shadow: 0 0 10px var(--retro); }
     .moon-badge { background: var(--moon-glow); color: var(--space); box-shadow: 0 0 10px var(--moon-glow); }
     .zodiac-badge { background: var(--zodiac); color: var(--space); box-shadow: 0 0 10px var(--zodiac); }
+    .phase-badge { background: var(--phase); color: var(--space); box-shadow: 0 0 10px var(--phase); }
     .newyear-badge { background: linear-gradient(90deg, #2ecc71, #df80ff); color: white; box-shadow: 0 0 20px #2ecc71; padding: 8px 20px; font-size: 0.75rem; border: 1px solid white; cursor: pointer;}
     
     .grim-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 5px; }
@@ -104,6 +105,7 @@
 <div id="oracleDash">
   <div id="eventDisplay"></div>
   <div id="elementTag" style="font-size: 0.5rem; letter-spacing: 1.5px; color: var(--aura); font-weight: bold; margin-bottom: 5px;"></div>
+  
   <span id="detailedPhase" style="font-family: 'Cinzel'; font-size: 0.75rem; color: var(--gold); opacity: 0.9; letter-spacing: 3px; font-weight: bold;"></span>
   <h2 id="dashTitle" style="font-family:'Cinzel'; margin: 5px 0; color:var(--gold); letter-spacing: 3px; font-size: 1.3rem;"></h2>
   <div id="dashSub" style="font-size: 0.6rem; letter-spacing: 2px; margin-bottom: 20px; opacity: 0.8; font-family: 'Cinzel';"></div>
@@ -180,99 +182,51 @@
 <script>
   let activeD = new Date(2026, 0, 16); 
   let selectedDate = new Date().toDateString();
-  let db = JSON.parse(localStorage.getItem('ancestral_moon_v69')) || { logs: {}, journals: {}, zodCache: {}, energy: {} };
+  let db = JSON.parse(localStorage.getItem('ancestral_moon_v70')) || { logs: {}, journals: {}, zodCache: {}, energy: {} };
 
   const ELEMENTS = { "FIRE": "#ff4d4d", "EARTH": "#2ecc71", "AIR": "#3498db", "WATER": "#df80ff" };
   const ZOD_ELEMENTS = { "Aries ♈":"FIRE", "Leo ♌":"FIRE", "Sagittarius ♐":"FIRE", "Taurus ♉":"EARTH", "Virgo ♍":"EARTH", "Capricorn ♑":"EARTH", "Gemini ♊":"AIR", "Libra ♎":"AIR", "Aquarius ♒":"AIR", "Cancer ♋":"WATER", "Scorpio ♏":"WATER", "Pisces ♓":"WATER" };
   
   const DAILY_WISDOM_LIBRARY = {
-    "Aries": {
-      "Waxing": ["The spark has caught. Fan the flame with action.", "Do not hesitate. Warrior spirit supports you now.", "Initiate. The waxing fire creates a portal for new beginnings."],
-      "Waning": ["Release the anger. Let the fire burn to embers.", "Reflect on where you fought too hard. Rest now.", "Shed the need to be first. There is wisdom in the pause."],
-      "Full": ["Your passion is a beacon. Illuminate your desires.", "Stand tall and declare your sovereignty.", "The warrior stands in the light. Celebrate your victory."],
-      "New": ["In the dark, a seed of fire waits.", "The void is potential. Dream of a new conquest.", "Silence before the strike. Gather your energy."]
-    },
-    "Taurus": {
-      "Waxing": ["Build slowly. Lay one brick at a time with love.", "Nourish the seed. Attend to your physical body.", "Ground your intentions. Make them tangible and real."],
-      "Waning": ["Release clutter. Return what you do not need to the soil.", "Compost the excess. Find value in simplicity.", "Let go of stubbornness. Be reshaped by the seasons."],
-      "Full": ["A harvest of pleasure. Celebrate abundance.", "Honor the body with good food and touch.", "Manifestation in form. What you built is solid."],
-      "New": ["Plant deep. The soil is rich and dark.", "Set intentions for security and peace.", "Rest in the earth's embrace."]
-    },
-    "Gemini": {
-      "Waxing": ["Speak your truth. Words carry power now.", "Connect ideas. Weave a new story for your life.", "Curiosity is key. Follow the thread."],
-      "Waning": ["Quiet the mind. Release spinning thoughts.", "Unlearn. Let go of old narratives.", "The wind settles. Find silence between words."],
-      "Full": ["Illuminate the mind. Clarity comes in a flash.", "The conversation is open. Speak clearly.", "A whirlwind of connection. Share your light."],
-      "New": ["Plant a thought-form. The air is ready.", "What do you need to say? Set the intention.", "A blank page. Write the first line."]
-    },
-    "Cancer": {
-      "Waxing": ["Nurture the dream. Protect your intentions.", "Flow with the tide. Trust your feelings.", "Build a shell of safety. Grow in security."],
-      "Waning": ["Release emotional weight. Cleansing tears are holy.", "Let the tide go out. Forgive the past.", "Return to the source. Waters recede to reveal truth."],
-      "Full": ["Overflowing heart. Emotions are holy.", "The Mother shines. Honor your lineage.", "High tide of intuition. Trust what you feel."],
-      "New": ["The womb of the world. Rest in dark waters.", "Plant love in the center of your home.", "Retreat inward to dream."]
-    },
-    "Leo": {
-      "Waxing": ["Shine. Take up space.", "Create. Express your unique soul.", "Play. Approach goals with joy."],
-      "Waning": ["Release the need for applause.", "Let the ego rest. Stars shine when the sun sets.", "Shed the performance. Be you."],
-      "Full": ["Radiance. You are the sun center.", "Lead with love. Others will follow.", "Celebrate yourself. Recognize the divine within."],
-      "New": ["A seed of creativity. What art waits in the dark?", "Set an intention for joy.", "Listen to the steady beat of your truth."]
-    },
-    "Virgo": {
-      "Waxing": ["Refine the plan. God is in the details.", "Attend to daily rituals.", "Purify your intent. Ask for clarity."],
-      "Waning": ["Cleanse. Sweep the dust away.", "Release perfectionism. You are enough.", "Analyze what worked, let go of what failed."],
-      "Full": ["The priestess stands tall. Service is magic.", "Order from chaos. See the pattern.", "Healing light. Focus on wholeness."],
-      "New": ["Plant a seed of order.", "Set an intention for health.", "Quiet service. Serve your soul in the dark."]
-    },
-    "Libra": {
-      "Waxing": ["Balance the scales. Move with grace.", "Beautify your path. Find art in the journey.", "Connect. Partnership aids growth."],
-      "Waning": ["Release the need to please.", "Let go of indecision. Trust your choice.", "Unbind yourself from expectations."],
-      "Full": ["Mirror magic. The world reflects you.", "Climax of beauty. Surround yourself with love.", "Justice and harmony. Seek the middle path."],
-      "New": ["Set an intention for peace.", "Sow seeds of partnership.", "Rest in equilibrium."]
-    },
-    "Scorpio": {
-      "Waxing": ["Dive deep. Treasure lies below.", "Invest your energy fully.", "Trust your gut. The mystery unfolds."],
-      "Waning": ["Shed the skin. Let go of the old form.", "Release the grudge. Poison hurts the vessel.", "Compost of the soul. Feed the roots."],
-      "Full": ["The Phoenix rises. Rebirth is here.", "Secrets revealed. Look with compassion.", "Intense magic. Your power is potent."],
-      "New": ["The void. Sit in the dark without fear.", "What must die to be born?", "Plant a secret. Keep magic hidden."]
-    },
-    "Sagittarius": {
-      "Waxing": ["Aim high. The arrow flies far.", "Explore. Say yes to adventure.", "Expand your vision beyond the horizon."],
-      "Waning": ["Release the dogma. Find truth, not just rightness.", "Simplify the quest. Carry only what you need.", "The wanderer rests. Find wisdom in stillness."],
-      "Full": ["Truth illuminates. See the big picture.", "Wild celebration. Dance with the cosmos.", "The teacher speaks. Share wisdom."],
-      "New": ["Plant a seed of freedom.", "Seek the philosophy that frees you.", "Trust the path in the dark."]
-    },
-    "Capricorn": {
-      "Waxing": ["Climb. You are strong.", "Commit. Discipline rewards you.", "Build the legacy. Every stone matters."],
-      "Waning": ["Release the burden. Put the world down.", "Flow around the obstacle.", "The Elder rests. Wisdom comes from silence."],
-      "Full": ["The summit. Look how far you came.", "Power manifested. Own your authority.", "Structure and light."],
-      "New": ["Blueprint in the dark. Plan the empire.", "What is your Great Work?", "Ground your ambition."]
-    },
-    "Aquarius": {
-      "Waxing": ["Innovate. Try a new way.", "Connect with the web.", "Break the mold. Freedom is fuel."],
-      "Waning": ["Release detachment. Come back to heart.", "Let go of being different. Just be.", "Clear the static."],
-      "Full": ["Cosmic connection. You are a star.", "The Rebel shines. Stand for belief.", "Vision of the future."],
-      "New": ["Download the vision.", "Where do you need space?", "Plant a seed for the collective."]
-    },
-    "Pisces": {
-      "Waxing": ["Dream. The veil is thin.", "Flow. Float with the river.", "Create from the soul."],
-      "Waning": ["Dissolve. Let boundaries melt.", "Surrender to the ocean.", "Cleansing rain washes sorrow."],
-      "Full": ["Mystical union. One with the divine.", "The dreamer awakens.", "Ocean of light."],
-      "New": ["The womb of the universe.", "Pray and connect.", "Drift in the silence."]
-    }
+    "Aries": { "Waxing": ["The spark has caught. Fan the flame.", "Do not hesitate. Warrior spirit supports you.", "Initiate. The waxing fire is a portal."], "Waning": ["Release anger. Let the fire burn to embers.", "Reflect on battles fought. Rest now.", "Shed the need to be first. Pause."], "Full": ["Your passion is a beacon. Illuminate desires.", "Stand tall. Declare your sovereignty.", "Victory in light. Celebrate yourself."], "New": ["In the dark, a seed of fire waits.", "Dream of conquest. The void is potential.", "Silence before the strike. Gather energy."] },
+    "Taurus": { "Waxing": ["Build slowly. One brick at a time.", "Nourish the seed. Attend to your body.", "Ground intentions. Make them real."], "Waning": ["Release clutter. Return to the soil.", "Compost excess. Find value in simplicity.", "Let go of stubbornness. Be reshaped."], "Full": ["Harvest of pleasure. Celebrate abundance.", "Honor the body with touch and taste.", "Manifestation in form. It is solid."], "New": ["Plant deep. Soil is rich.", "Set intentions for peace.", "Rest in the earth's embrace."] },
+    "Gemini": { "Waxing": ["Speak truth. Words have power.", "Connect ideas. Weave a new story.", "Curiosity is key. Follow the thread."], "Waning": ["Quiet the mind. Release spinning thoughts.", "Unlearn. Let go of old narratives.", "Wind settles. Find silence."], "Full": ["Illuminate the mind. Flash of clarity.", "Open conversation. Speak clearly.", "Whirlwind of connection. Share light."], "New": ["Plant a thought. Air is ready.", "Set intention for voice.", "Blank page. Write the first line."] },
+    "Cancer": { "Waxing": ["Nurture the dream. Protect intentions.", "Flow with tide. Trust feelings.", "Build a shell. Grow in safety."], "Waning": ["Release weight. Tears are holy.", "Let tide go out. Forgive the past.", "Return to source. Waters recede."], "Full": ["Overflowing heart. Emotions are power.", "The Mother shines. Honor lineage.", "High tide of intuition. Trust it."], "New": ["Womb of the world. Rest in water.", "Plant love in the center.", "Retreat inward to dream."] },
+    "Leo": { "Waxing": ["Shine. Take up space.", "Create. Express your soul.", "Play. Joy is the path."], "Waning": ["Release need for applause.", "Ego rests. Stars shine at night.", "Shed performance. Be you."], "Full": ["Radiance. You are the sun.", "Lead with love.", "Celebrate the divine within."], "New": ["Seed of creativity. Art waits in dark.", "Intention for joy.", "Listen to your heart beat."] },
+    "Virgo": { "Waxing": ["Refine the plan. Details matter.", "Attend to ritual.", "Purify intent. Ask for clarity."], "Waning": ["Cleanse. Sweep the dust.", "Release perfectionism. You are enough.", "Analyze and let go."], "Full": ["Priestess stands tall. Service is magic.", "Order from chaos. See the pattern.", "Healing light. Focus on wholeness."], "New": ["Plant seed of order.", "Intention for health.", "Quiet service in the dark."] },
+    "Libra": { "Waxing": ["Balance scales. Move with grace.", "Beautify path. Art in journey.", "Connect. Partnership aids growth."], "Waning": ["Release people pleasing.", "Let go of indecision.", "Unbind expectations."], "Full": ["Mirror magic. World reflects you.", "Climax of beauty. Surround with love.", "Justice and harmony. Seek middle path."], "New": ["Intention for peace.", "Sow seeds of partnership.", "Rest in equilibrium."] },
+    "Scorpio": { "Waxing": ["Dive deep. Treasure below.", "Invest energy fully.", "Trust gut. Mystery unfolds."], "Waning": ["Shed skin. Let old form die.", "Release grudge. Poison hurts vessel.", "Compost of soul. Feed roots."], "Full": ["Phoenix rises. Rebirth is here.", "Secrets revealed. Compassion.", "Intense magic. Power is potent."], "New": ["The void. Sit without fear.", "What must die to be born?", "Plant a secret."] },
+    "Sagittarius": { "Waxing": ["Aim high. Arrow flies far.", "Explore. Say yes.", "Expand vision beyond horizon."], "Waning": ["Release dogma. Find truth.", "Simplify quest. Carry less.", "Wanderer rests. Wisdom in stillness."], "Full": ["Truth illuminates. Big picture.", "Wild celebration. Dance with cosmos.", "Teacher speaks. Share wisdom."], "New": ["Plant seed of freedom.", "Seek philosophy that frees.", "Trust path in dark."] },
+    "Capricorn": { "Waxing": ["Climb. You are strong.", "Commit. Discipline rewards.", "Build legacy. Stone by stone."], "Waning": ["Release burden. Put world down.", "Flow around obstacle.", "Elder rests. Silence is wisdom."], "Full": ["The summit. Look how far.", "Power manifested. Own authority.", "Structure and light."], "New": ["Blueprint in dark. Plan empire.", "What is Great Work?", "Ground ambition."] },
+    "Aquarius": { "Waxing": ["Innovate. Try new way.", "Connect with web.", "Break mold. Freedom is fuel."], "Waning": ["Release detachment. Heart open.", "Let go of being different. Just be.", "Clear static."], "Full": ["Cosmic connection. You are a star.", "Rebel shines. Stand for belief.", "Vision of future."], "New": ["Download vision.", "Where do you need space?", "Seed for collective."] },
+    "Pisces": { "Waxing": ["Dream. Veil is thin.", "Flow. Float with river.", "Create from soul."], "Waning": ["Dissolve. Boundaries melt.", "Surrender to ocean.", "Cleansing rain washes sorrow."], "Full": ["Mystical union. One with divine.", "Dreamer awakens.", "Ocean of light."], "New": ["Womb of universe.", "Pray and connect.", "Drift in silence."] }
   };
 
   const DAILY_RITUALS = {
-    "Aries": ["Light a red candle. Stare into the flame.", "Move your body vigorously for 5 mins.", "Stand in the sun and breathe fire."],
-    "Taurus": ["Walk barefoot on the grass.", "Eat fruit slowly, savoring every bite.", "Hold a smooth stone in your palm."],
-    "Gemini": ["Write a letter to your future self.", "Stand in the wind and whisper a wish.", "Burn incense and watch the smoke."],
-    "Cancer": ["Take a ritual bath with salt.", "Place a bowl of water under the moon.", "Hand on heart, breathe deeply."],
-    "Leo": ["Wear something gold.", "Dance to your favorite song.", "Sun gaze safely at sunset."],
-    "Virgo": ["Clean one corner mindfully.", "Drink herbal tea with intention.", "List 3 things you are grateful for."],
-    "Libra": ["Light two candles for balance.", "Place fresh flowers on your altar.", "Meditate on the sound of a bell."],
-    "Scorpio": ["Sit in total darkness.", "Burn a paper with a fear written on it.", "Scry in a bowl of dark water."],
-    "Sagittarius": ["Walk a new path today.", "Light a purple candle.", "Look at the horizon and dream."],
-    "Capricorn": ["Stand like a mountain.", "Plant a seed in a pot.", "Hold a piece of quartz."],
-    "Aquarius": ["Meditate on the stars.", "Open a window for fresh air.", "Visualize a web of light."],
-    "Pisces": ["Listen to rain or water sounds.", "Dip feet in water.", "Sleep with a crystal."]
+    "Aries": ["Light a red candle.", "Move vigorously for 5 mins.", "Breathe fire in the sun."],
+    "Taurus": ["Walk barefoot on grass.", "Eat fruit slowly.", "Hold a smooth stone."],
+    "Gemini": ["Write to future self.", "Whisper wish to wind.", "Burn incense."],
+    "Cancer": ["Bath with salt.", "Bowl of water under moon.", "Hand on heart breathe."],
+    "Leo": ["Wear gold.", "Dance to song.", "Sun gaze safely."],
+    "Virgo": ["Clean one corner.", "Herbal tea ritual.", "List gratitude."],
+    "Libra": ["Light two candles.", "Flowers on altar.", "Meditate on bell sound."],
+    "Scorpio": ["Sit in total darkness.", "Burn fear on paper.", "Scry in dark water."],
+    "Sagittarius": ["Walk new path.", "Light purple candle.", "Dream at horizon."],
+    "Capricorn": ["Stand like mountain.", "Plant a seed.", "Hold quartz."],
+    "Aquarius": ["Meditate on stars.", "Fresh air.", "Visualize web of light."],
+    "Pisces": ["Listen to water.", "Feet in water.", "Sleep with crystal."]
+  };
+
+  const PHASE_MEANINGS = {
+    "New Moon": "A time of new beginnings, planting seeds, and setting intentions in the dark.",
+    "Waxing Crescent": "The sprout pushes through. Focus on strength, growth, and initial action.",
+    "First Quarter": "Resistance meets action. Overcome obstacles and make decisions.",
+    "Waxing Gibbous": "Refinement. The bud is forming. Review and tweak your plans.",
+    "Full Moon": "Peak energy. Illumination, celebration, and manifestation.",
+    "Waning Gibbous": "Gratitude and sharing. The harvest is in. Give back.",
+    "Last Quarter": "Release and forgiveness. Let go of what you don't need.",
+    "Waning Crescent": "Surrender and rest. Empty the cup to prepare for the new.",
+    "Moon": "The emotional tide of the soul."
   };
 
   const ZODIAC_WISDOM = {
@@ -347,24 +301,21 @@
   const FULL_MOONS = [{d: "Jan 3", z: "Cancer ♋"}, {d: "Feb 1", z: "Leo ♌"}, {d: "Mar 3", z: "Virgo ♍"}, {d: "Apr 2", z: "Libra ♎"}, {d: "May 1", z: "Scorpio ♏"}, {d: "May 31", z: "Sagittarius ♐"}, {d: "Jun 29", z: "Capricorn ♑"}, {d: "Jul 29", z: "Aquarius ♒"}, {d: "Aug 28", z: "Pisces ♓"}, {d: "Sep 26", z: "Aries ♈"}, {d: "Oct 25", z: "Taurus ♉"}, {d: "Nov 24", z: "Gemini ♊"}, {d: "Dec 24", z: "Cancer ♋"}];
   const NEW_MOONS = ["Jan 18", "Feb 17", "Mar 18", "Apr 17", "May 16", "Jun 15", "Jul 14", "Aug 12", "Sep 11", "Oct 10", "Nov 9", "Dec 8"];
 
-  // 🛠️ HELPER: Dynamic Wisdom Generator (With Safety Net)
   function getDynamicContent(phase, zodiacSign, day) {
     try {
       if(!zodiacSign) return { whisper: "The stars are silent.", ritual: "Breathe." };
       
-      const s = zodiacSign.split(' ')[0]; // Extract name (e.g. "Aries")
-      const varIdx = day % 3; // Rotation logic
+      const s = zodiacSign.split(' ')[0]; 
+      const varIdx = day % 3; 
       
       let pKey = "Waxing";
       if (phase.includes("New")) pKey = "New";
       else if (phase.includes("Full")) pKey = "Full";
       else if (phase.includes("Waning") || phase.includes("Last")) pKey = "Waning";
 
-      // Defaults if lookup fails
       let whisper = `The moon in ${s} asks you to listen deeply today.`;
       let ritual = "Sit in silence and breathe.";
       
-      // Try to get dynamic content safely
       if (DAILY_WISDOM_LIBRARY[s] && DAILY_WISDOM_LIBRARY[s][pKey]) {
         whisper = DAILY_WISDOM_LIBRARY[s][pKey][varIdx];
       }
@@ -396,11 +347,11 @@
       const T = (jd - 2451545.0) / 36525;
       let moonLong = (218.316 + 481267.881 * T + 6.289 * Math.sin((135.27 + 477198.87 * T) * Math.PI / 180));
       moonLong = (moonLong + 5.0) % 360;
-      if (moonLong < 0) moonLong += 360; // Safety check for negative mod
+      if (moonLong < 0) moonLong += 360;
       
       const signs = ["Aries ♈","Taurus ♉","Gemini ♊","Cancer ♋","Leo ♌","Virgo ♍","Libra ♎","Scorpio ♏","Sagittarius ♐","Capricorn ♑","Aquarius ♒","Pisces ♓"];
       const zodIndex = Math.floor(moonLong / 30);
-      const zod = signs[zodIndex] || "Aries ♈"; // Safety fallback
+      const zod = signs[zodIndex] || "Aries ♈";
       const el = ZOD_ELEMENTS[zod] || "EARTH";
       
       let sunLong = (280.466 + 36000.770 * T) % 360;
@@ -429,12 +380,10 @@
       let archetype = FULL_MOON_DATA[dStr];
       let content = getDynamicContent(phase, zod, date.getDate());
       
-      // WHISPER MATRIX fallback logic
-      const genericWhisper = {
-        "Full Moon": { "FIRE": "Burn bright.", "EARTH": "Harvest gold.", "AIR": "See clearly.", "WATER": "Feel deeply." }
-      };
+      // V70 FIX: WHISPER_MATRIX fallback is simplified to prevent error
+      const whisperFallback = "The stars guide you.";
       
-      let whisper = archetype ? archetype.t + ": " + (WHISPER_MATRIX[el] || "The moon speaks.") : content.whisper;
+      let whisper = archetype ? archetype.t + ": " + whisperFallback : content.whisper;
       let ritual = archetype ? archetype.r : content.ritual;
       let affirm = getAffirmation(el);
       
@@ -454,9 +403,6 @@
       return { phase: "Moon", ico: "🌑", zod: "Aries ♈", tDay: 1, el: "FIRE", elColor: "#fff", dStr: "", year: 2026, isFull:false, isNew:false, isPivot:false, isEvent:false, archetype:null, whisper:"Quiet.", ritual:"Breathe.", shadow:"", affirm:"" };
     }
   }
-
-  // RE-INJECTED WHISPER MATRIX FOR BACKUP
-  const WHISPER_MATRIX = { "FIRE": "Burn bright.", "EARTH": "Harvest gold.", "AIR": "See clearly.", "WATER": "Feel deeply." };
 
   function render() {
     const grid = document.getElementById("calendar"); 
@@ -495,9 +441,17 @@
     const data = getCelestialData(date);
     document.documentElement.style.setProperty('--aura', data.elColor);
     
+    // V70 FIX: Redundancy check for Title vs Subheader
     const displayTitle = data.archetype ? data.archetype.n.toUpperCase() : `${data.phase.toUpperCase()} ${data.ico}`;
     document.getElementById("dashTitle").innerText = displayTitle;
-    document.getElementById("detailedPhase").innerText = data.phase.toUpperCase();
+    
+    // If the main title already contains the phase name, hide the top subheader text to avoid duplication
+    if (displayTitle.includes(data.phase.toUpperCase())) {
+       document.getElementById("detailedPhase").innerText = "";
+    } else {
+       document.getElementById("detailedPhase").innerText = data.phase.toUpperCase();
+    }
+    
     document.getElementById("dashSub").innerText = `LUNAR DAY ${data.tDay} • ${data.dStr}, ${data.year}`;
     document.getElementById("elementTag").innerText = `✧ ${data.el} ENERGY ✧`;
     document.getElementById("journalInput").value = db.journals[date.toDateString()] || "";
@@ -513,6 +467,9 @@
     if(data.isEvent) eventHTML += `<div class="event-badge retro-badge" onclick="openModal('${data.isEvent.n}', '${data.isEvent.d}', '${data.isEvent.l}')">👁️ ${data.isEvent.n.toUpperCase()}</div>`;
     
     eventHTML += `<div class="event-badge zodiac-badge" onclick="openZodiacModal('${data.zod.split(' ')[0]}')">✨ MOON IN ${data.zod.toUpperCase()}</div>`;
+    
+    // V70 NEW: Phase Intel Badge for ALL phases
+    eventHTML += `<div class="event-badge phase-badge" onclick="openPhaseModal('${data.phase}')">🔮 PHASE INTEL</div>`;
     
     if(data.archetype && data.isFull) eventHTML += `<div class="event-badge moon-badge" onclick="openModal('${data.archetype.n}', 'Full Moon in ${data.zod}. Theme: ${data.archetype.t}.', '${data.archetype.l}')">👁️ INTEL</div>`;
     
@@ -540,13 +497,13 @@
     }
     
     db.zodCache[date.toDateString()] = data.zod;
-    localStorage.setItem('ancestral_moon_v69', JSON.stringify(db));
+    localStorage.setItem('ancestral_moon_v70', JSON.stringify(db));
   }
 
   function setEnergy(val) {
     let map = {'🔥':'fire','💧':'water','🌬️':'air','🪨':'earth'};
     db.energy[selectedDate] = map[val];
-    localStorage.setItem('ancestral_moon_v69', JSON.stringify(db));
+    localStorage.setItem('ancestral_moon_v70', JSON.stringify(db));
     updateDash(new Date(selectedDate));
   }
 
@@ -568,6 +525,15 @@
     document.querySelector(".modal-overlay").style.display = "block";
   }
 
+  function openPhaseModal(phaseName) {
+    document.getElementById("modalTitle").innerText = phaseName.toUpperCase();
+    document.getElementById("modalText").innerText = PHASE_MEANINGS[phaseName] || "Trust the cycle.";
+    document.getElementById("sunMoonDistinction").style.display = "none";
+    document.getElementById("modalLink").href = `https://www.google.com/search?q=${phaseName}+moon+spiritual+meaning`;
+    document.getElementById("cosmicModal").style.display = "block";
+    document.querySelector(".modal-overlay").style.display = "block";
+  }
+
   function closeModal() { document.getElementById("cosmicModal").style.display = "none"; document.querySelector(".modal-overlay").style.display = "none"; }
 
   function copySisterReport() {
@@ -582,7 +548,7 @@
   }
 
   function jumpToDate(dateStr) { selectedDate = dateStr; activeD = new Date(dateStr); render(); updateDash(activeD); showView('dash'); }
-  function deleteEntry(dateStr) { if(confirm("Release this entry?")) { delete db.journals[dateStr]; delete db.logs[dateStr]; delete db.energy[dateStr]; localStorage.setItem('ancestral_moon_v69', JSON.stringify(db)); showView('grimoire'); } }
+  function deleteEntry(dateStr) { if(confirm("Release this entry?")) { delete db.journals[dateStr]; delete db.logs[dateStr]; delete db.energy[dateStr]; localStorage.setItem('ancestral_moon_v70', JSON.stringify(db)); showView('grimoire'); } }
 
   function backupData() {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db));
@@ -601,7 +567,7 @@
       try {
         const importedDb = JSON.parse(e.target.result);
         db = importedDb;
-        localStorage.setItem('ancestral_moon_v69', JSON.stringify(db));
+        localStorage.setItem('ancestral_moon_v70', JSON.stringify(db));
         alert("Grimoire Restored Successfully.");
         render(); updateDash(new Date(selectedDate)); showView('grimoire');
       } catch(err) { alert("Invalid backup file."); }
@@ -680,8 +646,8 @@
     }
   }
 
-  function saveData() { db.journals[selectedDate] = document.getElementById("journalInput").value; localStorage.setItem('ancestral_moon_v69', JSON.stringify(db)); }
-  function toggleFlow() { db.logs[selectedDate] = !db.logs[selectedDate]; localStorage.setItem('ancestral_moon_v69', JSON.stringify(db)); render(); updateDash(new Date(selectedDate)); }
+  function saveData() { db.journals[selectedDate] = document.getElementById("journalInput").value; localStorage.setItem('ancestral_moon_v70', JSON.stringify(db)); }
+  function toggleFlow() { db.logs[selectedDate] = !db.logs[selectedDate]; localStorage.setItem('ancestral_moon_v70', JSON.stringify(db)); render(); updateDash(new Date(selectedDate)); }
   function changeMonth(n) { activeD.setMonth(activeD.getMonth() + n); render(); }
 
   const sField = document.getElementById('starField');
