@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>The Ancestral Moon Map | V61 New Year</title>
+  <title>The Ancestral Moon Map | V62 Cosmic Soul</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Charm:wght@400;700&family=Quicksand:wght@300;500&display=swap" rel="stylesheet">
   <style>
     :root { 
       --space: #020105; --gold: #e6ccff; --glass: rgba(12, 6, 24, 0.96); 
       --blood: #ff3385; --aura: #9d50bb; --amethyst: #df80ff;
-      --retro: #ff6b6b; --portal: #ffd700; --moon-glow: #a8e6cf;
+      --retro: #ff6b6b; --portal: #ffd700; --moon-glow: #a8e6cf; --zodiac: #99ccff;
     }
     body { 
       font-family: 'Quicksand', sans-serif; background: var(--space); 
@@ -67,13 +67,12 @@
     .portal-badge { background: var(--portal); color: var(--space); box-shadow: 0 0 10px var(--portal); }
     .retro-badge { background: var(--retro); color: var(--space); box-shadow: 0 0 10px var(--retro); }
     .moon-badge { background: var(--moon-glow); color: var(--space); box-shadow: 0 0 10px var(--moon-glow); }
+    .zodiac-badge { background: var(--zodiac); color: var(--space); box-shadow: 0 0 10px var(--zodiac); }
     .newyear-badge { background: linear-gradient(90deg, #2ecc71, #df80ff); color: white; box-shadow: 0 0 20px #2ecc71; padding: 8px 20px; font-size: 0.75rem; border: 1px solid white; cursor: pointer;}
     
     .grim-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 5px; }
     .grim-btn { background: transparent; border: none; color: #aaa; font-size: 0.9rem; cursor: pointer; }
     .support-link { margin-top: 20px; font-size: 0.7rem; color: var(--gold); opacity: 0.7; cursor: pointer; text-decoration: underline; font-family: 'Cinzel'; display: block; }
-
-    /* Backup Controls */
     .backup-controls { display: flex; gap: 10px; margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); }
     .backup-btn { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid var(--gold); color: var(--gold); padding: 8px; border-radius: 10px; font-family: 'Cinzel'; font-size: 0.6rem; cursor: pointer; }
   </style>
@@ -133,7 +132,10 @@
 <div class="modal-overlay" onclick="closeModal()"></div>
 <div id="cosmicModal">
   <h2 id="modalTitle" style="font-family:'Cinzel'; color:var(--gold);"></h2>
-  <div id="modalText" style="font-family:'Charm'; font-size:1.2rem; color:#fff; margin:20px 0;"></div>
+  <div id="modalText" style="font-family:'Charm'; font-size:1.1rem; color:#fff; margin:20px 0;"></div>
+  <div id="sunMoonDistinction" style="font-size: 0.7rem; color: var(--zodiac); border-top: 1px solid rgba(255,255,255,0.2); padding-top: 10px; margin-top: 10px; font-family: 'Quicksand'; font-style: italic; display:none;">
+    Note: The Sun Sign is your external Season. This tracks your Moon Sign—your internal emotional tide.
+  </div>
   <a id="modalLink" href="#" target="_blank" class="explore-btn">EXPLORE DEEPER</a>
 </div>
 
@@ -161,11 +163,27 @@
 <script>
   let activeD = new Date(2026, 0, 16); 
   let selectedDate = new Date().toDateString();
-  let db = JSON.parse(localStorage.getItem('ancestral_moon_v60')) || { logs: {}, journals: {}, zodCache: {}, energy: {} };
+  let db = JSON.parse(localStorage.getItem('ancestral_moon_v62')) || { logs: {}, journals: {}, zodCache: {}, energy: {} };
 
   const ELEMENTS = { "FIRE": "#ff4d4d", "EARTH": "#2ecc71", "AIR": "#3498db", "WATER": "#df80ff" };
   const ZOD_ELEMENTS = { "Aries ♈":"FIRE", "Leo ♌":"FIRE", "Sagittarius ♐":"FIRE", "Taurus ♉":"EARTH", "Virgo ♍":"EARTH", "Capricorn ♑":"EARTH", "Gemini ♊":"AIR", "Libra ♎":"AIR", "Aquarius ♒":"AIR", "Cancer ♋":"WATER", "Scorpio ♏":"WATER", "Pisces ♓":"WATER" };
   
+  // 🔮 MYSTICAL MOON-IN-ZODIAC WISDOM
+  const ZODIAC_WISDOM = {
+    "Aries": "When the Moon is in Aries, the soul craves action. You may feel a spark of divine impulse. It is a time for warrior energy—beginning, initiating, and bold courage.",
+    "Taurus": "Moon in Taurus calls for grounding. Your internal tide slows down to honor the senses. Root yourself in pleasure, food, and the tangible earth.",
+    "Gemini": "A Gemini Moon quickens the mind. The air is alive with curiosity. Your soul wants to speak, connect, and weave stories. Listen to the wind.",
+    "Cancer": "The Moon is at home in Cancer. Emotions flow like deep rivers. It is a time for the shell—turn inward, nurture the self, and honor the mother wound.",
+    "Leo": "Moon in Leo demands the heart be open. You are sovereign. Your soul seeks expression, warmth, and the courage to shine without apology.",
+    "Virgo": "In Virgo, the Moon asks for sacred order. It is a time to purify the temple of the body. Healing comes through ritual, detail, and service to the self.",
+    "Libra": "A Libra Moon seeks harmony. The soul looks for its reflection in others. Balance beauty with truth; relationship is the mirror of the moment.",
+    "Scorpio": "Moon in Scorpio is the descent into the underworld. The tide is deep and dark. Secrets, transformation, and rebirth are accessible now.",
+    "Sagittarius": "The Sagittarian Moon pulls the bow back. The soul seeks expansion, truth, and the horizon. Trust the quest and the wild unknown.",
+    "Capricorn": "Moon in Capricorn builds the legacy. Emotions become structure. It is a time for the elder within to speak—patience, ambition, and power.",
+    "Aquarius": "In Aquarius, the Moon looks to the future. You may feel detached yet connected to the whole. Honor the rebel spirit and the cosmic web.",
+    "Pisces": "The Pisces Moon dissolves boundaries. You are one with the ocean. Dreams are vivid, intuition is loud, and the veil is thin."
+  };
+
   const CELESTIAL_EVENTS = {
     "Feb 2": {n: "Imbolc Portal", d: "A sacred midpoint between Winter and Spring. The earth is stirring. Energy: Promise, Purification, First Light.", l: "spiritual meaning of imbolc"},
     "Aug 8": {n: "Lion's Gate Portal", d: "A massive alignment of Earth, Sirius, and the Sun. High-frequency light codes for ascension and bold manifestation.", l: "lions gate portal spiritual meaning"},
@@ -185,30 +203,10 @@
   };
 
   const WHISPER_MATRIX = {
-    "New Moon": {
-      "FIRE": "In the velvet dark, a spark is waiting. Your desire is not an accident; it is a memory of what you agreed to birth. Feed the heat.",
-      "EARTH": "You are a seed in the deep, dark soil. Do not rush to sprout. Drinking the nutrients of silence is the most important work right now.",
-      "AIR": "The mind is a vast, empty sky. Plant a single thought-form in the silence and watch how the universe organizes the winds around it.",
-      "WATER": "The womb of the world is dark and fluid. Allow your emotions to exist without judgment; they are the ancient waters of life."
-    },
-    "Waxing": {
-      "FIRE": "The spark has caught. Action is your prayer now. Do not hesitate; the fire needs your breath to grow.",
-      "EARTH": "The ancestors honor the slow hand. Lay your stones with patience; you are building a temple, not a tent.",
-      "AIR": "Speak your intention aloud. The wind carries your voice to the four corners of the earth. The universe is listening.",
-      "WATER": "Trust the flow. If a door opens, move through it like water through a canyon. Resistance only creates turbulence."
-    },
-    "Full Moon": {
-      "FIRE": "You are the bonfire on the mountain. Burn bright, not for ego, but so your tribe can find you in the dark.",
-      "EARTH": "The harvest is here. Look at what you have built. What you have touched with love has turned to gold. Give thanks to the soil.",
-      "AIR": "Clarity pierces the veil. You can see the whole picture now. Do not look away from the truth.",
-      "WATER": "The tides are at their peak. Let your heart overflow. Your vulnerability is not a weakness; it is your greatest power."
-    },
-    "Waning": {
-      "FIRE": "Let the fire burn down to embers. Conserve your heat for the coming cold. Rest is also a weapon of the warrior.",
-      "EARTH": "Compost what no longer serves. Return the dead leaves to the earth so they may feed the roots of your future.",
-      "AIR": "Release the old stories. The mind needs to be emptied so new wisdom can find space to enter.",
-      "WATER": "The tide recedes, revealing what was hidden. Walk the shore of your soul and cleanse what remains."
-    }
+    "New Moon": { "FIRE": "In the velvet dark, a spark is waiting. Your desire is not an accident.", "EARTH": "You are a seed in the deep, dark soil. Do not rush to sprout.", "AIR": "The mind is a vast, empty sky. Plant a single thought-form.", "WATER": "The womb of the world is dark and fluid. Allow emotions to exist." },
+    "Waxing": { "FIRE": "The spark has caught. Action is your prayer now.", "EARTH": "The ancestors honor the slow hand. Lay your stones with patience.", "AIR": "Speak your intention aloud. The wind carries your voice.", "WATER": "Trust the flow. Move like water through a canyon." },
+    "Full Moon": { "FIRE": "You are the bonfire on the mountain. Burn bright for your tribe.", "EARTH": "The harvest is here. What you built has turned to gold.", "AIR": "Clarity pierces the veil. Do not look away from the truth.", "WATER": "The tides are at their peak. Your vulnerability is power." },
+    "Waning": { "FIRE": "Let the fire burn to embers. Rest is a weapon of the warrior.", "EARTH": "Compost what no longer serves to feed the roots of your future.", "AIR": "Release the old stories. Empty the mind for new wisdom.", "WATER": "The tide recedes. Walk the shore of your soul and cleanse." }
   };
 
   const FULL_MOON_DATA = {
@@ -229,19 +227,7 @@
   };
 
   const MOON_ANCHORS = [
-    {d: new Date(2026, 0, 3), n: "Wolf Moon"},
-    {d: new Date(2026, 1, 1), n: "Snow Moon"},
-    {d: new Date(2026, 2, 3), n: "Worm Moon"},
-    {d: new Date(2026, 3, 2), n: "Pink Moon"},
-    {d: new Date(2026, 4, 1), n: "Flower Moon"},
-    {d: new Date(2026, 4, 31), n: "Strawberry Moon"},
-    {d: new Date(2026, 5, 29), n: "Buck Moon"},
-    {d: new Date(2026, 6, 29), n: "Sturgeon Moon"},
-    {d: new Date(2026, 7, 28), n: "Harvest Moon"},
-    {d: new Date(2026, 8, 26), n: "Hunter's Moon"},
-    {d: new Date(2026, 9, 25), n: "Beaver Moon"},
-    {d: new Date(2026, 10, 24), n: "Cold Moon"},
-    {d: new Date(2026, 11, 24), n: "Long Night Moon"}
+    {d: new Date(2026, 0, 3), n: "Wolf Moon"}, {d: new Date(2026, 1, 1), n: "Snow Moon"}, {d: new Date(2026, 2, 3), n: "Worm Moon"}, {d: new Date(2026, 3, 2), n: "Pink Moon"}, {d: new Date(2026, 4, 1), n: "Flower Moon"}, {d: new Date(2026, 4, 31), n: "Strawberry Moon"}, {d: new Date(2026, 5, 29), n: "Buck Moon"}, {d: new Date(2026, 6, 29), n: "Sturgeon Moon"}, {d: new Date(2026, 7, 28), n: "Harvest Moon"}, {d: new Date(2026, 8, 26), n: "Hunter's Moon"}, {d: new Date(2026, 9, 25), n: "Beaver Moon"}, {d: new Date(2026, 10, 24), n: "Cold Moon"}, {d: new Date(2026, 11, 24), n: "Long Night Moon"}
   ];
 
   const FULL_MOONS = [{d: "Jan 3", z: "Cancer"}, {d: "Feb 1", z: "Leo"}, {d: "Mar 3", z: "Virgo"}, {d: "Apr 2", z: "Libra"}, {d: "May 1", z: "Scorpio"}, {d: "May 31", z: "Sagittarius"}, {d: "Jun 29", z: "Capricorn"}, {d: "Jul 29", z: "Aquarius"}, {d: "Aug 28", z: "Pisces"}, {d: "Sep 26", z: "Aries"}, {d: "Oct 25", z: "Taurus"}, {d: "Nov 24", z: "Gemini"}, {d: "Dec 24", z: "Cancer"}];
@@ -336,7 +322,6 @@
     document.getElementById("flowBtn").className = db.logs[date.toDateString()] ? "cycle-btn active" : "cycle-btn";
     
     let eventHTML = "";
-    // V61 FIX: Correctly check for Spring Equinox object logic
     if(data.isPivot && data.isPivot.n === "Spring Equinox") {
       eventHTML += `<div class="event-badge newyear-badge" onclick="openModal('${data.isPivot.n}', '${data.isPivot.d}', '${data.isPivot.l}')">HAPPY ANCESTRAL NEW YEAR! 🌸✨🌿</div><br>`;
     } else if(data.isPivot) {
@@ -344,6 +329,9 @@
     }
     
     if(data.isEvent) eventHTML += `<div class="event-badge retro-badge" onclick="openModal('${data.isEvent.n}', '${data.isEvent.d}', '${data.isEvent.l}')">👁️ ${data.isEvent.n.toUpperCase()}</div>`;
+    // Zodiac Badge
+    eventHTML += `<div class="event-badge zodiac-badge" onclick="openZodiacModal('${data.zod.split(' ')[0]}')">✨ MOON IN ${data.zod.toUpperCase()}</div>`;
+    
     if(data.archetype && data.isFull) eventHTML += `<div class="event-badge moon-badge" onclick="openModal('${data.archetype.n}', 'Full Moon in ${data.zod}. Theme: ${data.archetype.t}.', '${data.archetype.l}')">👁️ INTEL</div>`;
     
     document.getElementById("eventDisplay").innerHTML = eventHTML;
@@ -362,23 +350,34 @@
     }
     
     db.zodCache[date.toDateString()] = data.zod;
-    localStorage.setItem('ancestral_moon_v60', JSON.stringify(db));
+    localStorage.setItem('ancestral_moon_v62', JSON.stringify(db));
   }
 
   function setEnergy(val) {
     let map = {'🔥':'fire','💧':'water','🌬️':'air','🪨':'earth'};
     db.energy[selectedDate] = map[val];
-    localStorage.setItem('ancestral_moon_v60', JSON.stringify(db));
+    localStorage.setItem('ancestral_moon_v62', JSON.stringify(db));
     updateDash(new Date(selectedDate));
   }
 
   function openModal(title, desc, query) {
     document.getElementById("modalTitle").innerText = title;
     document.getElementById("modalText").innerText = desc;
+    document.getElementById("sunMoonDistinction").style.display = "none";
     document.getElementById("modalLink").href = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
     document.getElementById("cosmicModal").style.display = "block";
     document.querySelector(".modal-overlay").style.display = "block";
   }
+
+  function openZodiacModal(sign) {
+    document.getElementById("modalTitle").innerText = `MOON IN ${sign.toUpperCase()}`;
+    document.getElementById("modalText").innerText = ZODIAC_WISDOM[sign];
+    document.getElementById("sunMoonDistinction").style.display = "block";
+    document.getElementById("modalLink").href = `https://www.google.com/search?q=moon+in+${sign}+spiritual+meaning`;
+    document.getElementById("cosmicModal").style.display = "block";
+    document.querySelector(".modal-overlay").style.display = "block";
+  }
+
   function closeModal() { document.getElementById("cosmicModal").style.display = "none"; document.querySelector(".modal-overlay").style.display = "none"; }
 
   function copySisterReport() {
@@ -391,7 +390,7 @@
   }
 
   function jumpToDate(dateStr) { selectedDate = dateStr; activeD = new Date(dateStr); render(); updateDash(activeD); showView('dash'); }
-  function deleteEntry(dateStr) { if(confirm("Release this entry?")) { delete db.journals[dateStr]; delete db.logs[dateStr]; delete db.energy[dateStr]; localStorage.setItem('ancestral_moon_v60', JSON.stringify(db)); showView('grimoire'); } }
+  function deleteEntry(dateStr) { if(confirm("Release this entry?")) { delete db.journals[dateStr]; delete db.logs[dateStr]; delete db.energy[dateStr]; localStorage.setItem('ancestral_moon_v62', JSON.stringify(db)); showView('grimoire'); } }
 
   function backupData() {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db));
@@ -410,7 +409,7 @@
       try {
         const importedDb = JSON.parse(e.target.result);
         db = importedDb;
-        localStorage.setItem('ancestral_moon_v60', JSON.stringify(db));
+        localStorage.setItem('ancestral_moon_v62', JSON.stringify(db));
         alert("Grimoire Restored Successfully.");
         render(); updateDash(new Date(selectedDate)); showView('grimoire');
       } catch(err) { alert("Invalid backup file."); }
@@ -453,8 +452,8 @@
     }
   }
 
-  function saveData() { db.journals[selectedDate] = document.getElementById("journalInput").value; localStorage.setItem('ancestral_moon_v60', JSON.stringify(db)); }
-  function toggleFlow() { db.logs[selectedDate] = !db.logs[selectedDate]; localStorage.setItem('ancestral_moon_v60', JSON.stringify(db)); render(); updateDash(new Date(selectedDate)); }
+  function saveData() { db.journals[selectedDate] = document.getElementById("journalInput").value; localStorage.setItem('ancestral_moon_v62', JSON.stringify(db)); }
+  function toggleFlow() { db.logs[selectedDate] = !db.logs[selectedDate]; localStorage.setItem('ancestral_moon_v62', JSON.stringify(db)); render(); updateDash(new Date(selectedDate)); }
   function changeMonth(n) { activeD.setMonth(activeD.getMonth() + n); render(); }
 
   const sField = document.getElementById('starField');
@@ -468,3 +467,4 @@
 </script>
 </body>
 </html>
+
