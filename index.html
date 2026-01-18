@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>The Ancestral Moon Map | V63 Shadow & Light</title>
+  <title>The Ancestral Moon Map | V64 Aligned Phase</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Charm:wght@400;700&family=Quicksand:wght@300;500&display=swap" rel="stylesheet">
   <style>
     :root { 
@@ -97,7 +97,6 @@
 <div id="oracleDash">
   <div id="eventDisplay"></div>
   <div id="elementTag" style="font-size: 0.5rem; letter-spacing: 1.5px; color: var(--aura); font-weight: bold; margin-bottom: 5px;"></div>
-  <span id="detailedPhase" style="font-family: 'Cinzel'; font-size: 0.75rem; color: var(--gold); opacity: 0.9; letter-spacing: 3px; font-weight: bold;"></span>
   <h2 id="dashTitle" style="font-family:'Cinzel'; margin: 5px 0; color:var(--gold); letter-spacing: 3px; font-size: 1.3rem;"></h2>
   <div id="dashSub" style="font-size: 0.6rem; letter-spacing: 2px; margin-bottom: 20px; opacity: 0.8; font-family: 'Cinzel';"></div>
   
@@ -168,7 +167,7 @@
 <script>
   let activeD = new Date(2026, 0, 16); 
   let selectedDate = new Date().toDateString();
-  let db = JSON.parse(localStorage.getItem('ancestral_moon_v63')) || { logs: {}, journals: {}, zodCache: {}, energy: {} };
+  let db = JSON.parse(localStorage.getItem('ancestral_moon_v64')) || { logs: {}, journals: {}, zodCache: {}, energy: {} };
 
   const ELEMENTS = { "FIRE": "#ff4d4d", "EARTH": "#2ecc71", "AIR": "#3498db", "WATER": "#df80ff" };
   const ZOD_ELEMENTS = { "Aries ♈":"FIRE", "Leo ♌":"FIRE", "Sagittarius ♐":"FIRE", "Taurus ♉":"EARTH", "Virgo ♍":"EARTH", "Capricorn ♑":"EARTH", "Gemini ♊":"AIR", "Libra ♎":"AIR", "Aquarius ♒":"AIR", "Cancer ♋":"WATER", "Scorpio ♏":"WATER", "Pisces ♓":"WATER" };
@@ -337,9 +336,10 @@
     const data = getCelestialData(date);
     document.documentElement.style.setProperty('--aura', data.elColor);
     
-    const displayTitle = data.archetype ? data.archetype.n.toUpperCase() : `${data.ico} ${data.zod.split(' ')[0].toUpperCase()}`;
+    // V64 FIX: Display Phase Name + Icon instead of Zodiac in main title
+    const displayTitle = data.archetype ? data.archetype.n.toUpperCase() : `${data.phase.toUpperCase()} ${data.ico}`;
     document.getElementById("dashTitle").innerText = displayTitle;
-    document.getElementById("detailedPhase").innerText = data.phase.toUpperCase();
+    
     document.getElementById("dashSub").innerText = `LUNAR DAY ${data.tDay} • ${data.dStr}, ${data.year}`;
     document.getElementById("elementTag").innerText = `✧ ${data.el} ENERGY ✧`;
     document.getElementById("journalInput").value = db.journals[date.toDateString()] || "";
@@ -382,13 +382,13 @@
     }
     
     db.zodCache[date.toDateString()] = data.zod;
-    localStorage.setItem('ancestral_moon_v63', JSON.stringify(db));
+    localStorage.setItem('ancestral_moon_v64', JSON.stringify(db));
   }
 
   function setEnergy(val) {
     let map = {'🔥':'fire','💧':'water','🌬️':'air','🪨':'earth'};
     db.energy[selectedDate] = map[val];
-    localStorage.setItem('ancestral_moon_v63', JSON.stringify(db));
+    localStorage.setItem('ancestral_moon_v64', JSON.stringify(db));
     updateDash(new Date(selectedDate));
   }
 
@@ -424,7 +424,7 @@
   }
 
   function jumpToDate(dateStr) { selectedDate = dateStr; activeD = new Date(dateStr); render(); updateDash(activeD); showView('dash'); }
-  function deleteEntry(dateStr) { if(confirm("Release this entry?")) { delete db.journals[dateStr]; delete db.logs[dateStr]; delete db.energy[dateStr]; localStorage.setItem('ancestral_moon_v63', JSON.stringify(db)); showView('grimoire'); } }
+  function deleteEntry(dateStr) { if(confirm("Release this entry?")) { delete db.journals[dateStr]; delete db.logs[dateStr]; delete db.energy[dateStr]; localStorage.setItem('ancestral_moon_v64', JSON.stringify(db)); showView('grimoire'); } }
 
   function backupData() {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db));
@@ -443,7 +443,7 @@
       try {
         const importedDb = JSON.parse(e.target.result);
         db = importedDb;
-        localStorage.setItem('ancestral_moon_v63', JSON.stringify(db));
+        localStorage.setItem('ancestral_moon_v64', JSON.stringify(db));
         alert("Grimoire Restored Successfully.");
         render(); updateDash(new Date(selectedDate)); showView('grimoire');
       } catch(err) { alert("Invalid backup file."); }
@@ -487,7 +487,6 @@
 
       yc.innerHTML += `<h4 style="color:var(--gold); font-family:'Cinzel'; margin-top:20px;">13 NEW MOONS</h4>`;
       NEW_MOONS.forEach(dStr => {
-        // Calculate sign for New Moon list
         const d = new Date(`${dStr}, 2026`);
         const data = getCelestialData(d);
         yc.innerHTML += `<div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.05); padding:5px 0; color:var(--amethyst);"><span>🌑 ${dStr} - New Moon</span> <span>${data.zod}</span></div>`;
@@ -495,8 +494,8 @@
     }
   }
 
-  function saveData() { db.journals[selectedDate] = document.getElementById("journalInput").value; localStorage.setItem('ancestral_moon_v63', JSON.stringify(db)); }
-  function toggleFlow() { db.logs[selectedDate] = !db.logs[selectedDate]; localStorage.setItem('ancestral_moon_v63', JSON.stringify(db)); render(); updateDash(new Date(selectedDate)); }
+  function saveData() { db.journals[selectedDate] = document.getElementById("journalInput").value; localStorage.setItem('ancestral_moon_v64', JSON.stringify(db)); }
+  function toggleFlow() { db.logs[selectedDate] = !db.logs[selectedDate]; localStorage.setItem('ancestral_moon_v64', JSON.stringify(db)); render(); updateDash(new Date(selectedDate)); }
   function changeMonth(n) { activeD.setMonth(activeD.getMonth() + n); render(); }
 
   const sField = document.getElementById('starField');
