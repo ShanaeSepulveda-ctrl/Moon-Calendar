@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>The Ancestral Moon Map | V64 Aligned Phase</title>
+  <title>The Ancestral Moon Map | V65 Scribe's Archive</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Charm:wght@400;700&family=Quicksand:wght@300;500&display=swap" rel="stylesheet">
   <style>
     :root { 
@@ -73,8 +73,14 @@
     .grim-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 5px; }
     .grim-btn { background: transparent; border: none; color: #aaa; font-size: 0.9rem; cursor: pointer; }
     .support-link { margin-top: 20px; font-size: 0.7rem; color: var(--gold); opacity: 0.7; cursor: pointer; text-decoration: underline; font-family: 'Cinzel'; display: block; }
-    .backup-controls { display: flex; gap: 10px; margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); }
-    .backup-btn { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid var(--gold); color: var(--gold); padding: 8px; border-radius: 10px; font-family: 'Cinzel'; font-size: 0.6rem; cursor: pointer; }
+    
+    /* Backup Controls */
+    .backup-section { border-top: 1px solid rgba(255,255,255,0.1); margin-top: 20px; padding-top: 20px; }
+    .backup-title { font-family: 'Cinzel'; font-size: 0.7rem; color: var(--gold); margin-bottom: 10px; display:block;}
+    .backup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .backup-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--gold); color: var(--gold); padding: 10px; border-radius: 10px; font-family: 'Cinzel'; font-size: 0.6rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; }
+    .backup-btn:hover { background: rgba(255,255,255,0.1); }
+    .export-btn { background: var(--aura); border: none; color: white; grid-column: span 2; }
   </style>
 </head>
 <body>
@@ -97,6 +103,7 @@
 <div id="oracleDash">
   <div id="eventDisplay"></div>
   <div id="elementTag" style="font-size: 0.5rem; letter-spacing: 1.5px; color: var(--aura); font-weight: bold; margin-bottom: 5px;"></div>
+  <span id="detailedPhase" style="font-family: 'Cinzel'; font-size: 0.75rem; color: var(--gold); opacity: 0.9; letter-spacing: 3px; font-weight: bold;"></span>
   <h2 id="dashTitle" style="font-family:'Cinzel'; margin: 5px 0; color:var(--gold); letter-spacing: 3px; font-size: 1.3rem;"></h2>
   <div id="dashSub" style="font-size: 0.6rem; letter-spacing: 2px; margin-bottom: 20px; opacity: 0.8; font-family: 'Cinzel';"></div>
   
@@ -146,15 +153,19 @@
 <div id="grimoireView">
   <span style="float:right; cursor:pointer;" onclick="showView('dash')">✕</span>
   <h2 style="font-family:'Cinzel';">MY SACRED HISTORY</h2>
-  <div style="font-size:0.6rem; margin-bottom:10px; opacity:0.6;">Your history is kept privately on this device. Use backup to save it.</div>
+  <div style="font-size:0.6rem; margin-bottom:10px; opacity:0.6;">Your journey is sacred. Export to view your patterns.</div>
   
-  <div class="backup-controls">
-    <button class="backup-btn" onclick="backupData()">⬇️ BACKUP GRIMOIRE</button>
-    <button class="backup-btn" onclick="document.getElementById('restoreInput').click()">⬆️ RESTORE GRIMOIRE</button>
+  <div class="backup-section">
+    <span class="backup-title">DATA MANAGEMENT</span>
+    <div class="backup-grid">
+        <button class="backup-btn export-btn" onclick="exportToCSV()">📊 EXPORT SPREADSHEET (READABLE)</button>
+        <button class="backup-btn" onclick="backupData()">⬇️ BACKUP (FILE)</button>
+        <button class="backup-btn" onclick="document.getElementById('restoreInput').click()">⬆️ RESTORE</button>
+    </div>
     <input type="file" id="restoreInput" style="display:none" onchange="restoreData(this)">
   </div>
   
-  <div id="grimoireContent" style="max-height: 400px; overflow-y: auto; margin-top: 15px;"></div>
+  <div id="grimoireContent" style="max-height: 350px; overflow-y: auto; margin-top: 15px;"></div>
   <a class="support-link" href="https://ko-fi.com/theancientrhythm" target="_blank">Created with Love • Support the Journey</a>
 </div>
 
@@ -167,7 +178,7 @@
 <script>
   let activeD = new Date(2026, 0, 16); 
   let selectedDate = new Date().toDateString();
-  let db = JSON.parse(localStorage.getItem('ancestral_moon_v64')) || { logs: {}, journals: {}, zodCache: {}, energy: {} };
+  let db = JSON.parse(localStorage.getItem('ancestral_moon_v65')) || { logs: {}, journals: {}, zodCache: {}, energy: {} };
 
   const ELEMENTS = { "FIRE": "#ff4d4d", "EARTH": "#2ecc71", "AIR": "#3498db", "WATER": "#df80ff" };
   const ZOD_ELEMENTS = { "Aries ♈":"FIRE", "Leo ♌":"FIRE", "Sagittarius ♐":"FIRE", "Taurus ♉":"EARTH", "Virgo ♍":"EARTH", "Capricorn ♑":"EARTH", "Gemini ♊":"AIR", "Libra ♎":"AIR", "Aquarius ♒":"AIR", "Cancer ♋":"WATER", "Scorpio ♏":"WATER", "Pisces ♓":"WATER" };
@@ -336,10 +347,8 @@
     const data = getCelestialData(date);
     document.documentElement.style.setProperty('--aura', data.elColor);
     
-    // V64 FIX: Display Phase Name + Icon instead of Zodiac in main title
     const displayTitle = data.archetype ? data.archetype.n.toUpperCase() : `${data.phase.toUpperCase()} ${data.ico}`;
     document.getElementById("dashTitle").innerText = displayTitle;
-    
     document.getElementById("dashSub").innerText = `LUNAR DAY ${data.tDay} • ${data.dStr}, ${data.year}`;
     document.getElementById("elementTag").innerText = `✧ ${data.el} ENERGY ✧`;
     document.getElementById("journalInput").value = db.journals[date.toDateString()] || "";
@@ -362,7 +371,6 @@
     document.getElementById("guidanceText").innerText = data.whisper;
     document.getElementById("ritualText").innerText = data.ritual;
     
-    // Shadow Work Card Logic
     if (data.isNew && data.shadow) {
       document.getElementById("shadowCard").style.display = "block";
       document.getElementById("shadowText").innerText = data.shadow;
@@ -382,13 +390,13 @@
     }
     
     db.zodCache[date.toDateString()] = data.zod;
-    localStorage.setItem('ancestral_moon_v64', JSON.stringify(db));
+    localStorage.setItem('ancestral_moon_v65', JSON.stringify(db));
   }
 
   function setEnergy(val) {
     let map = {'🔥':'fire','💧':'water','🌬️':'air','🪨':'earth'};
     db.energy[selectedDate] = map[val];
-    localStorage.setItem('ancestral_moon_v64', JSON.stringify(db));
+    localStorage.setItem('ancestral_moon_v65', JSON.stringify(db));
     updateDash(new Date(selectedDate));
   }
 
@@ -424,7 +432,7 @@
   }
 
   function jumpToDate(dateStr) { selectedDate = dateStr; activeD = new Date(dateStr); render(); updateDash(activeD); showView('dash'); }
-  function deleteEntry(dateStr) { if(confirm("Release this entry?")) { delete db.journals[dateStr]; delete db.logs[dateStr]; delete db.energy[dateStr]; localStorage.setItem('ancestral_moon_v64', JSON.stringify(db)); showView('grimoire'); } }
+  function deleteEntry(dateStr) { if(confirm("Release this entry?")) { delete db.journals[dateStr]; delete db.logs[dateStr]; delete db.energy[dateStr]; localStorage.setItem('ancestral_moon_v65', JSON.stringify(db)); showView('grimoire'); } }
 
   function backupData() {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db));
@@ -443,12 +451,40 @@
       try {
         const importedDb = JSON.parse(e.target.result);
         db = importedDb;
-        localStorage.setItem('ancestral_moon_v64', JSON.stringify(db));
+        localStorage.setItem('ancestral_moon_v65', JSON.stringify(db));
         alert("Grimoire Restored Successfully.");
         render(); updateDash(new Date(selectedDate)); showView('grimoire');
       } catch(err) { alert("Invalid backup file."); }
     };
     reader.readAsText(file);
+  }
+
+  function exportToCSV() {
+    let csv = "Date,Moon Phase,Zodiac,Element,Flow,Energy,Journal Entry\n";
+    const dates = Object.keys(db.journals).concat(Object.keys(db.logs), Object.keys(db.energy)).sort((a,b) => new Date(b) - new Date(a));
+    const uniqueDates = [...new Set(dates)];
+    
+    uniqueDates.forEach(dStr => {
+      const d = new Date(dStr);
+      const celestial = getCelestialData(d);
+      
+      let flow = db.logs[dStr] ? "Yes" : "No";
+      let energy = db.energy[dStr] ? db.energy[dStr].toUpperCase() : "N/A";
+      let entry = db.journals[dStr] ? db.journals[dStr].replace(/(\r\n|\n|\r)/gm, " ").replace(/"/g, '""') : "";
+      let phase = celestial.archetype ? celestial.archetype.n : celestial.phase;
+      
+      csv += `"${dStr}","${phase}","${celestial.zod}","${celestial.el}","${flow}","${energy}","${entry}"\n`;
+    });
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", "grimoire_export.csv");
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   }
 
   function showView(view) {
@@ -494,8 +530,8 @@
     }
   }
 
-  function saveData() { db.journals[selectedDate] = document.getElementById("journalInput").value; localStorage.setItem('ancestral_moon_v64', JSON.stringify(db)); }
-  function toggleFlow() { db.logs[selectedDate] = !db.logs[selectedDate]; localStorage.setItem('ancestral_moon_v64', JSON.stringify(db)); render(); updateDash(new Date(selectedDate)); }
+  function saveData() { db.journals[selectedDate] = document.getElementById("journalInput").value; localStorage.setItem('ancestral_moon_v65', JSON.stringify(db)); }
+  function toggleFlow() { db.logs[selectedDate] = !db.logs[selectedDate]; localStorage.setItem('ancestral_moon_v65', JSON.stringify(db)); render(); updateDash(new Date(selectedDate)); }
   function changeMonth(n) { activeD.setMonth(activeD.getMonth() + n); render(); }
 
   const sField = document.getElementById('starField');
