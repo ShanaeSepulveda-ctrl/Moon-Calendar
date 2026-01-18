@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>The Ancestral Moon Map | V62 Cosmic Soul</title>
+  <title>The Ancestral Moon Map | V63 Shadow & Light</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Charm:wght@400;700&family=Quicksand:wght@300;500&display=swap" rel="stylesheet">
   <style>
     :root { 
@@ -97,13 +97,18 @@
 <div id="oracleDash">
   <div id="eventDisplay"></div>
   <div id="elementTag" style="font-size: 0.5rem; letter-spacing: 1.5px; color: var(--aura); font-weight: bold; margin-bottom: 5px;"></div>
-  <span id="detailedPhase" style="font-family: 'Cinzel'; font-size: 0.6rem; color: var(--gold); opacity: 0.7; letter-spacing: 2px;"></span>
+  <span id="detailedPhase" style="font-family: 'Cinzel'; font-size: 0.75rem; color: var(--gold); opacity: 0.9; letter-spacing: 3px; font-weight: bold;"></span>
   <h2 id="dashTitle" style="font-family:'Cinzel'; margin: 5px 0; color:var(--gold); letter-spacing: 3px; font-size: 1.3rem;"></h2>
   <div id="dashSub" style="font-size: 0.6rem; letter-spacing: 2px; margin-bottom: 20px; opacity: 0.8; font-family: 'Cinzel';"></div>
   
   <div class="wisdom-card">
     <span class="wisdom-label">ANCESTRAL WHISPER</span>
     <div class="wisdom-text" id="guidanceText"></div>
+  </div>
+
+  <div class="wisdom-card" id="shadowCard" style="display:none; border-left: 3px solid var(--retro);">
+    <span class="wisdom-label" style="color:var(--retro);">SHADOW WORK INQUIRY</span>
+    <div class="wisdom-text" id="shadowText"></div>
   </div>
 
   <div class="wisdom-card">
@@ -163,12 +168,11 @@
 <script>
   let activeD = new Date(2026, 0, 16); 
   let selectedDate = new Date().toDateString();
-  let db = JSON.parse(localStorage.getItem('ancestral_moon_v62')) || { logs: {}, journals: {}, zodCache: {}, energy: {} };
+  let db = JSON.parse(localStorage.getItem('ancestral_moon_v63')) || { logs: {}, journals: {}, zodCache: {}, energy: {} };
 
   const ELEMENTS = { "FIRE": "#ff4d4d", "EARTH": "#2ecc71", "AIR": "#3498db", "WATER": "#df80ff" };
   const ZOD_ELEMENTS = { "Aries ♈":"FIRE", "Leo ♌":"FIRE", "Sagittarius ♐":"FIRE", "Taurus ♉":"EARTH", "Virgo ♍":"EARTH", "Capricorn ♑":"EARTH", "Gemini ♊":"AIR", "Libra ♎":"AIR", "Aquarius ♒":"AIR", "Cancer ♋":"WATER", "Scorpio ♏":"WATER", "Pisces ♓":"WATER" };
   
-  // 🔮 MYSTICAL MOON-IN-ZODIAC WISDOM
   const ZODIAC_WISDOM = {
     "Aries": "When the Moon is in Aries, the soul craves action. You may feel a spark of divine impulse. It is a time for warrior energy—beginning, initiating, and bold courage.",
     "Taurus": "Moon in Taurus calls for grounding. Your internal tide slows down to honor the senses. Root yourself in pleasure, food, and the tangible earth.",
@@ -182,6 +186,21 @@
     "Capricorn": "Moon in Capricorn builds the legacy. Emotions become structure. It is a time for the elder within to speak—patience, ambition, and power.",
     "Aquarius": "In Aquarius, the Moon looks to the future. You may feel detached yet connected to the whole. Honor the rebel spirit and the cosmic web.",
     "Pisces": "The Pisces Moon dissolves boundaries. You are one with the ocean. Dreams are vivid, intuition is loud, and the veil is thin."
+  };
+
+  const SHADOW_WORK = {
+    "Aries": "Where am I afraid to be weak, and does my anger protect a deeper hurt?",
+    "Taurus": "What comfort zone has become a cage? What am I hoarding out of fear?",
+    "Gemini": "What truth am I silencing to keep the peace? Where is my mind distracting my heart?",
+    "Cancer": "What old wound am I nurturing instead of healing? Where do I need to mother myself?",
+    "Leo": "Where do I seek validation from others instead of myself? What part of my light am I hiding?",
+    "Virgo": "Where does my perfectionism stop me from living? What mess am I afraid to make?",
+    "Libra": "Where am I compromising my soul to please another? What imbalance am I ignoring?",
+    "Scorpio": "What secret am I keeping from myself? What needs to die so I can be reborn?",
+    "Sagittarius": "What am I running away from? Does my quest for freedom hurt those I love?",
+    "Capricorn": "Where have I let ambition silence my intuition? What burden is not mine to carry?",
+    "Aquarius": "Where do I detach to avoid feeling? Am I observing life instead of living it?",
+    "Pisces": "What reality am I escaping? Where do I need boundaries to protect my energy?"
   };
 
   const CELESTIAL_EVENTS = {
@@ -269,13 +288,18 @@
     
     let whisper = archetype ? archetype.t + ": " + WHISPER_MATRIX["Full Moon"][el] : WHISPER_MATRIX[broadPhase][el];
     let ritual = archetype ? archetype.r : "Sit in silence. Connect with the element of " + el + ".";
+    
+    let shadow = "";
+    if (isNew) {
+      shadow = SHADOW_WORK[zod.split(' ')[0]];
+    }
 
     if (dStr === "Jan 22" && date.getFullYear() === 2027) {
        archetype = FULL_MOON_DATA["Jan 22, 2027"];
        isFull = true; whisper = archetype.t + ": " + WHISPER_MATRIX["Full Moon"]["FIRE"]; ritual = archetype.r;
     }
 
-    return { phase, ico, zod, tDay, el, elColor: ELEMENTS[el], dStr, year: date.getFullYear(), isFull, isNew, isPivot, isEvent, archetype, whisper, ritual };
+    return { phase, ico, zod, tDay, el, elColor: ELEMENTS[el], dStr, year: date.getFullYear(), isFull, isNew, isPivot, isEvent, archetype, whisper, ritual, shadow };
   }
 
   function render() {
@@ -329,7 +353,7 @@
     }
     
     if(data.isEvent) eventHTML += `<div class="event-badge retro-badge" onclick="openModal('${data.isEvent.n}', '${data.isEvent.d}', '${data.isEvent.l}')">👁️ ${data.isEvent.n.toUpperCase()}</div>`;
-    // Zodiac Badge
+    
     eventHTML += `<div class="event-badge zodiac-badge" onclick="openZodiacModal('${data.zod.split(' ')[0]}')">✨ MOON IN ${data.zod.toUpperCase()}</div>`;
     
     if(data.archetype && data.isFull) eventHTML += `<div class="event-badge moon-badge" onclick="openModal('${data.archetype.n}', 'Full Moon in ${data.zod}. Theme: ${data.archetype.t}.', '${data.archetype.l}')">👁️ INTEL</div>`;
@@ -337,6 +361,14 @@
     document.getElementById("eventDisplay").innerHTML = eventHTML;
     document.getElementById("guidanceText").innerText = data.whisper;
     document.getElementById("ritualText").innerText = data.ritual;
+    
+    // Shadow Work Card Logic
+    if (data.isNew && data.shadow) {
+      document.getElementById("shadowCard").style.display = "block";
+      document.getElementById("shadowText").innerText = data.shadow;
+    } else {
+      document.getElementById("shadowCard").style.display = "none";
+    }
     
     const savedEnergy = db.energy[date.toDateString()];
     document.querySelectorAll('.energy-btn').forEach(btn => btn.classList.remove('active'));
@@ -350,13 +382,13 @@
     }
     
     db.zodCache[date.toDateString()] = data.zod;
-    localStorage.setItem('ancestral_moon_v62', JSON.stringify(db));
+    localStorage.setItem('ancestral_moon_v63', JSON.stringify(db));
   }
 
   function setEnergy(val) {
     let map = {'🔥':'fire','💧':'water','🌬️':'air','🪨':'earth'};
     db.energy[selectedDate] = map[val];
-    localStorage.setItem('ancestral_moon_v62', JSON.stringify(db));
+    localStorage.setItem('ancestral_moon_v63', JSON.stringify(db));
     updateDash(new Date(selectedDate));
   }
 
@@ -385,12 +417,14 @@
     const data = getCelestialData(d);
     let extra = data.isEvent ? `\n🌀 Intel: ${data.isEvent.n}` : "";
     if (data.isPivot) extra = `\n✨ Portal: ${data.isPivot.n}`;
-    const report = `☾ Ancestral Moon Report: ${data.dStr}, ${data.year} ☽\nMoon: ${data.archetype ? data.archetype.n : data.phase}\nSign: ${data.zod} (${data.el})\n\nWhisper: ${document.getElementById("guidanceText").innerText}\n\nRitual: ${data.ritual}${extra}\n\nSynced via The Ancestral Moon Map ✨`;
+    let shadow = data.isNew ? `\n🌑 Shadow Work: ${data.shadow}` : "";
+
+    const report = `☾ Ancestral Moon Report: ${data.dStr}, ${data.year} ☽\nMoon: ${data.archetype ? data.archetype.n : data.phase}\nSign: ${data.zod} (${data.el})\n\nWhisper: ${document.getElementById("guidanceText").innerText}\n\nRitual: ${data.ritual}${shadow}${extra}\n\nSynced via The Ancestral Moon Map ✨`;
     navigator.clipboard.writeText(report).then(() => alert("Report Copied!"));
   }
 
   function jumpToDate(dateStr) { selectedDate = dateStr; activeD = new Date(dateStr); render(); updateDash(activeD); showView('dash'); }
-  function deleteEntry(dateStr) { if(confirm("Release this entry?")) { delete db.journals[dateStr]; delete db.logs[dateStr]; delete db.energy[dateStr]; localStorage.setItem('ancestral_moon_v62', JSON.stringify(db)); showView('grimoire'); } }
+  function deleteEntry(dateStr) { if(confirm("Release this entry?")) { delete db.journals[dateStr]; delete db.logs[dateStr]; delete db.energy[dateStr]; localStorage.setItem('ancestral_moon_v63', JSON.stringify(db)); showView('grimoire'); } }
 
   function backupData() {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db));
@@ -409,7 +443,7 @@
       try {
         const importedDb = JSON.parse(e.target.result);
         db = importedDb;
-        localStorage.setItem('ancestral_moon_v62', JSON.stringify(db));
+        localStorage.setItem('ancestral_moon_v63', JSON.stringify(db));
         alert("Grimoire Restored Successfully.");
         render(); updateDash(new Date(selectedDate)); showView('grimoire');
       } catch(err) { alert("Invalid backup file."); }
@@ -444,16 +478,25 @@
       yc.innerHTML += `<h4 style="color:var(--gold); font-family:'Cinzel';">CELESTIAL PIVOTS</h4>`;
       for(let p in PIVOTS) yc.innerHTML += `<div style="display:flex; justify-content:space-between; font-size:0.7rem; border-bottom:1px solid rgba(255,255,255,0.05); padding:5px 0;"><span>✨ ${PIVOTS[p].n}</span> <span>${p}</span></div>`;
       for(let e in CELESTIAL_EVENTS) yc.innerHTML += `<div style="display:flex; justify-content:space-between; font-size:0.7rem; border-bottom:1px solid rgba(255,255,255,0.05); padding:5px 0; color:var(--retro);"><span>🌀 ${CELESTIAL_EVENTS[e].n}</span> <span>${e}</span></div>`;
+      
       yc.innerHTML += `<h4 style="color:var(--gold); font-family:'Cinzel'; margin-top:20px;">13 FULL MOONS</h4>`;
       FULL_MOONS.forEach(m => {
         const arch = FULL_MOON_DATA[m.d] || {n:"Moon"};
         yc.innerHTML += `<div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.05); padding:5px 0;"><span>🌕 ${m.d} - ${arch.n}</span> <span>${m.z}</span></div>`;
       });
+
+      yc.innerHTML += `<h4 style="color:var(--gold); font-family:'Cinzel'; margin-top:20px;">13 NEW MOONS</h4>`;
+      NEW_MOONS.forEach(dStr => {
+        // Calculate sign for New Moon list
+        const d = new Date(`${dStr}, 2026`);
+        const data = getCelestialData(d);
+        yc.innerHTML += `<div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.05); padding:5px 0; color:var(--amethyst);"><span>🌑 ${dStr} - New Moon</span> <span>${data.zod}</span></div>`;
+      });
     }
   }
 
-  function saveData() { db.journals[selectedDate] = document.getElementById("journalInput").value; localStorage.setItem('ancestral_moon_v62', JSON.stringify(db)); }
-  function toggleFlow() { db.logs[selectedDate] = !db.logs[selectedDate]; localStorage.setItem('ancestral_moon_v62', JSON.stringify(db)); render(); updateDash(new Date(selectedDate)); }
+  function saveData() { db.journals[selectedDate] = document.getElementById("journalInput").value; localStorage.setItem('ancestral_moon_v63', JSON.stringify(db)); }
+  function toggleFlow() { db.logs[selectedDate] = !db.logs[selectedDate]; localStorage.setItem('ancestral_moon_v63', JSON.stringify(db)); render(); updateDash(new Date(selectedDate)); }
   function changeMonth(n) { activeD.setMonth(activeD.getMonth() + n); render(); }
 
   const sField = document.getElementById('starField');
