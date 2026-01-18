@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>The Ancestral Moon Map | V60 Sovereign</title>
+  <title>The Ancestral Moon Map | V61 New Year</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Charm:wght@400;700&family=Quicksand:wght@300;500&display=swap" rel="stylesheet">
   <style>
     :root { 
@@ -336,8 +336,13 @@
     document.getElementById("flowBtn").className = db.logs[date.toDateString()] ? "cycle-btn active" : "cycle-btn";
     
     let eventHTML = "";
-    if(data.isPivot === "Spring Equinox") eventHTML += `<div class="event-badge newyear-badge" onclick="openModal('${data.isPivot.n}', '${data.isPivot.d}', '${data.isPivot.l}')">HAPPY ANCESTRAL NEW YEAR! 🌸✨🌿</div><br>`;
-    else if(data.isPivot) eventHTML += `<div class="event-badge portal-badge" onclick="openModal('${data.isPivot.n}', '${data.isPivot.d}', '${data.isPivot.l}')">✨ ${data.isPivot.n.toUpperCase()}</div>`;
+    // V61 FIX: Correctly check for Spring Equinox object logic
+    if(data.isPivot && data.isPivot.n === "Spring Equinox") {
+      eventHTML += `<div class="event-badge newyear-badge" onclick="openModal('${data.isPivot.n}', '${data.isPivot.d}', '${data.isPivot.l}')">HAPPY ANCESTRAL NEW YEAR! 🌸✨🌿</div><br>`;
+    } else if(data.isPivot) {
+      eventHTML += `<div class="event-badge portal-badge" onclick="openModal('${data.isPivot.n}', '${data.isPivot.d}', '${data.isPivot.l}')">✨ ${data.isPivot.n.toUpperCase()}</div>`;
+    }
+    
     if(data.isEvent) eventHTML += `<div class="event-badge retro-badge" onclick="openModal('${data.isEvent.n}', '${data.isEvent.d}', '${data.isEvent.l}')">👁️ ${data.isEvent.n.toUpperCase()}</div>`;
     if(data.archetype && data.isFull) eventHTML += `<div class="event-badge moon-badge" onclick="openModal('${data.archetype.n}', 'Full Moon in ${data.zod}. Theme: ${data.archetype.t}.', '${data.archetype.l}')">👁️ INTEL</div>`;
     
@@ -438,8 +443,8 @@
       document.getElementById('yearlyView').style.display = 'block';
       const yc = document.getElementById('yearlyContent'); yc.innerHTML = "";
       yc.innerHTML += `<h4 style="color:var(--gold); font-family:'Cinzel';">CELESTIAL PIVOTS</h4>`;
-      for(let p in PIVOTS) yc.innerHTML += `<div style="display:flex; justify-content:space-between; font-size:0.7rem; border-bottom:1px solid rgba(255,255,255,0.05); padding:5px 0;"><span>✨ ${p}</span> <span>${PIVOTS[p].n}</span></div>`;
-      for(let e in CELESTIAL_EVENTS) yc.innerHTML += `<div style="display:flex; justify-content:space-between; font-size:0.7rem; border-bottom:1px solid rgba(255,255,255,0.05); padding:5px 0; color:var(--retro);"><span>🌀 ${e}</span> <span>${CELESTIAL_EVENTS[e].n}</span></div>`;
+      for(let p in PIVOTS) yc.innerHTML += `<div style="display:flex; justify-content:space-between; font-size:0.7rem; border-bottom:1px solid rgba(255,255,255,0.05); padding:5px 0;"><span>✨ ${PIVOTS[p].n}</span> <span>${p}</span></div>`;
+      for(let e in CELESTIAL_EVENTS) yc.innerHTML += `<div style="display:flex; justify-content:space-between; font-size:0.7rem; border-bottom:1px solid rgba(255,255,255,0.05); padding:5px 0; color:var(--retro);"><span>🌀 ${CELESTIAL_EVENTS[e].n}</span> <span>${e}</span></div>`;
       yc.innerHTML += `<h4 style="color:var(--gold); font-family:'Cinzel'; margin-top:20px;">13 FULL MOONS</h4>`;
       FULL_MOONS.forEach(m => {
         const arch = FULL_MOON_DATA[m.d] || {n:"Moon"};
