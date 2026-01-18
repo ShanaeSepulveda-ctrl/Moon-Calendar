@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>The Ancestral Moon Map | V59 Perfected</title>
+  <title>The Ancestral Moon Map | V60 Sovereign</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Charm:wght@400;700&family=Quicksand:wght@300;500&display=swap" rel="stylesheet">
   <style>
     :root { 
@@ -72,6 +72,10 @@
     .grim-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 5px; }
     .grim-btn { background: transparent; border: none; color: #aaa; font-size: 0.9rem; cursor: pointer; }
     .support-link { margin-top: 20px; font-size: 0.7rem; color: var(--gold); opacity: 0.7; cursor: pointer; text-decoration: underline; font-family: 'Cinzel'; display: block; }
+
+    /* Backup Controls */
+    .backup-controls { display: flex; gap: 10px; margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); }
+    .backup-btn { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid var(--gold); color: var(--gold); padding: 8px; border-radius: 10px; font-family: 'Cinzel'; font-size: 0.6rem; cursor: pointer; }
   </style>
 </head>
 <body>
@@ -136,9 +140,16 @@
 <div id="grimoireView">
   <span style="float:right; cursor:pointer;" onclick="showView('dash')">✕</span>
   <h2 style="font-family:'Cinzel';">MY SACRED HISTORY</h2>
-  <div style="font-size:0.6rem; margin-bottom:15px; opacity:0.6;">Your history is kept privately on this device.</div>
-  <div id="grimoireContent" style="max-height: 450px; overflow-y: auto;"></div>
-  <a class="support-link" onclick="alert('Link your Etsy or website here!')">Created with Love • Support the Journey</a>
+  <div style="font-size:0.6rem; margin-bottom:10px; opacity:0.6;">Your history is kept privately on this device. Use backup to save it.</div>
+  
+  <div class="backup-controls">
+    <button class="backup-btn" onclick="backupData()">⬇️ BACKUP GRIMOIRE</button>
+    <button class="backup-btn" onclick="document.getElementById('restoreInput').click()">⬆️ RESTORE GRIMOIRE</button>
+    <input type="file" id="restoreInput" style="display:none" onchange="restoreData(this)">
+  </div>
+  
+  <div id="grimoireContent" style="max-height: 400px; overflow-y: auto; margin-top: 15px;"></div>
+  <a class="support-link" href="https://ko-fi.com/theancientrhythm" target="_blank">Created with Love • Support the Journey</a>
 </div>
 
 <div id="yearlyView">
@@ -150,12 +161,11 @@
 <script>
   let activeD = new Date(2026, 0, 16); 
   let selectedDate = new Date().toDateString();
-  let db = JSON.parse(localStorage.getItem('ancestral_moon_v59')) || { logs: {}, journals: {}, zodCache: {}, energy: {} };
+  let db = JSON.parse(localStorage.getItem('ancestral_moon_v60')) || { logs: {}, journals: {}, zodCache: {}, energy: {} };
 
   const ELEMENTS = { "FIRE": "#ff4d4d", "EARTH": "#2ecc71", "AIR": "#3498db", "WATER": "#df80ff" };
   const ZOD_ELEMENTS = { "Aries ♈":"FIRE", "Leo ♌":"FIRE", "Sagittarius ♐":"FIRE", "Taurus ♉":"EARTH", "Virgo ♍":"EARTH", "Capricorn ♑":"EARTH", "Gemini ♊":"AIR", "Libra ♎":"AIR", "Aquarius ♒":"AIR", "Cancer ♋":"WATER", "Scorpio ♏":"WATER", "Pisces ♓":"WATER" };
   
-  // 🔮 V57 CELESTIAL LIBRARY (Links & Deep Intel)
   const CELESTIAL_EVENTS = {
     "Feb 2": {n: "Imbolc Portal", d: "A sacred midpoint between Winter and Spring. The earth is stirring. Energy: Promise, Purification, First Light.", l: "spiritual meaning of imbolc"},
     "Aug 8": {n: "Lion's Gate Portal", d: "A massive alignment of Earth, Sirius, and the Sun. High-frequency light codes for ascension and bold manifestation.", l: "lions gate portal spiritual meaning"},
@@ -174,7 +184,6 @@
     "Dec 21": {n: "Winter Solstice", d: "The longest night. The return of the light. We honor the stillness and the spark in the dark. Energy: Rest, Hope, Rebirth.", l: "winter solstice spiritual meaning"}
   };
 
-  // 🌕 V57 DEEP MYSTICAL WISDOM (Poetic)
   const WHISPER_MATRIX = {
     "New Moon": {
       "FIRE": "In the velvet dark, a spark is waiting. Your desire is not an accident; it is a memory of what you agreed to birth. Feed the heat.",
@@ -202,7 +211,6 @@
     }
   };
 
-  // V57 RITUAL DATA (Detailed)
   const FULL_MOON_DATA = {
     "Jan 3": {n: "Wolf Moon", t: "Endurance", r: "Light a white candle. Stand in the cold air and hum your deepest truth. Imagine your voice joining the howl of your lineage.", l: "wolf moon spiritual meaning"},
     "Feb 1": {n: "Snow Moon", t: "Purity", r: "Gather clean snow or ice in a bowl. As it melts, whisper the fears you wish to dissolve. Pour the water into the earth.", l: "snow moon spiritual meaning"},
@@ -220,7 +228,6 @@
     "Jan 22, 2027": {n: "Threshold Moon", t: "Wisdom", r: "Stand in a doorway. Step through with your right foot, consciously leaving the old cycle behind.", l: "spiritual meaning of 13th moon"}
   };
 
-  // FULL MOON ANCHORS (V58 Logic for Cycle Count)
   const MOON_ANCHORS = [
     {d: new Date(2026, 0, 3), n: "Wolf Moon"},
     {d: new Date(2026, 1, 1), n: "Snow Moon"},
@@ -266,15 +273,11 @@
     else if (angle < 260) { phase = "Waning Gibbous"; ico = "🌖"; }
     else if (angle < 280) { phase = "Last Quarter"; ico = "🌗"; }
 
-    // V58 Corrected Cycle Day: Anchor to the LAST Full Moon
     let anchor = MOON_ANCHORS[0];
-    for (let m of MOON_ANCHORS) {
-      if (date >= m.d) anchor = m;
-    }
+    for (let m of MOON_ANCHORS) { if (date >= m.d) anchor = m; }
     const diffTime = Math.abs(date - anchor.d);
     let tDay = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
     
-    // V57 Deep Content Integration
     let archetype = FULL_MOON_DATA[dStr];
     let broadPhase = isFull ? "Full Moon" : isNew ? "New Moon" : (angle < 180 ? "Waxing" : "Waning");
     
@@ -327,7 +330,7 @@
     const displayTitle = data.archetype ? data.archetype.n.toUpperCase() : `${data.ico} ${data.zod.split(' ')[0].toUpperCase()}`;
     document.getElementById("dashTitle").innerText = displayTitle;
     document.getElementById("detailedPhase").innerText = data.phase.toUpperCase();
-    document.getElementById("dashSub").innerText = `CYCLE DAY ${data.tDay} • ${data.dStr}, ${data.year}`;
+    document.getElementById("dashSub").innerText = `LUNAR DAY ${data.tDay} • ${data.dStr}, ${data.year}`;
     document.getElementById("elementTag").innerText = `✧ ${data.el} ENERGY ✧`;
     document.getElementById("journalInput").value = db.journals[date.toDateString()] || "";
     document.getElementById("flowBtn").className = db.logs[date.toDateString()] ? "cycle-btn active" : "cycle-btn";
@@ -354,13 +357,13 @@
     }
     
     db.zodCache[date.toDateString()] = data.zod;
-    localStorage.setItem('ancestral_moon_v59', JSON.stringify(db));
+    localStorage.setItem('ancestral_moon_v60', JSON.stringify(db));
   }
 
   function setEnergy(val) {
     let map = {'🔥':'fire','💧':'water','🌬️':'air','🪨':'earth'};
     db.energy[selectedDate] = map[val];
-    localStorage.setItem('ancestral_moon_v59', JSON.stringify(db));
+    localStorage.setItem('ancestral_moon_v60', JSON.stringify(db));
     updateDash(new Date(selectedDate));
   }
 
@@ -383,7 +386,32 @@
   }
 
   function jumpToDate(dateStr) { selectedDate = dateStr; activeD = new Date(dateStr); render(); updateDash(activeD); showView('dash'); }
-  function deleteEntry(dateStr) { if(confirm("Release this entry?")) { delete db.journals[dateStr]; delete db.logs[dateStr]; delete db.energy[dateStr]; localStorage.setItem('ancestral_moon_v59', JSON.stringify(db)); showView('grimoire'); } }
+  function deleteEntry(dateStr) { if(confirm("Release this entry?")) { delete db.journals[dateStr]; delete db.logs[dateStr]; delete db.energy[dateStr]; localStorage.setItem('ancestral_moon_v60', JSON.stringify(db)); showView('grimoire'); } }
+
+  function backupData() {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db));
+    const downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href", dataStr);
+    downloadAnchorNode.setAttribute("download", "ancestral_moon_backup.json");
+    document.body.appendChild(downloadAnchorNode);
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+  }
+
+  function restoreData(input) {
+    const file = input.files[0];
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        const importedDb = JSON.parse(e.target.result);
+        db = importedDb;
+        localStorage.setItem('ancestral_moon_v60', JSON.stringify(db));
+        alert("Grimoire Restored Successfully.");
+        render(); updateDash(new Date(selectedDate)); showView('grimoire');
+      } catch(err) { alert("Invalid backup file."); }
+    };
+    reader.readAsText(file);
+  }
 
   function showView(view) {
     document.getElementById('oracleDash').style.display = 'none';
@@ -409,7 +437,7 @@
     if(view === 'yearly') {
       document.getElementById('yearlyView').style.display = 'block';
       const yc = document.getElementById('yearlyContent'); yc.innerHTML = "";
-      yc.innerHTML += `<h4 style="color:var(--gold); font-family:'Cinzel';">CELESTIAL PORTALS</h4>`;
+      yc.innerHTML += `<h4 style="color:var(--gold); font-family:'Cinzel';">CELESTIAL PIVOTS</h4>`;
       for(let p in PIVOTS) yc.innerHTML += `<div style="display:flex; justify-content:space-between; font-size:0.7rem; border-bottom:1px solid rgba(255,255,255,0.05); padding:5px 0;"><span>✨ ${p}</span> <span>${PIVOTS[p].n}</span></div>`;
       for(let e in CELESTIAL_EVENTS) yc.innerHTML += `<div style="display:flex; justify-content:space-between; font-size:0.7rem; border-bottom:1px solid rgba(255,255,255,0.05); padding:5px 0; color:var(--retro);"><span>🌀 ${e}</span> <span>${CELESTIAL_EVENTS[e].n}</span></div>`;
       yc.innerHTML += `<h4 style="color:var(--gold); font-family:'Cinzel'; margin-top:20px;">13 FULL MOONS</h4>`;
@@ -420,8 +448,8 @@
     }
   }
 
-  function saveData() { db.journals[selectedDate] = document.getElementById("journalInput").value; localStorage.setItem('ancestral_moon_v59', JSON.stringify(db)); }
-  function toggleFlow() { db.logs[selectedDate] = !db.logs[selectedDate]; localStorage.setItem('ancestral_moon_v59', JSON.stringify(db)); render(); updateDash(new Date(selectedDate)); }
+  function saveData() { db.journals[selectedDate] = document.getElementById("journalInput").value; localStorage.setItem('ancestral_moon_v60', JSON.stringify(db)); }
+  function toggleFlow() { db.logs[selectedDate] = !db.logs[selectedDate]; localStorage.setItem('ancestral_moon_v60', JSON.stringify(db)); render(); updateDash(new Date(selectedDate)); }
   function changeMonth(n) { activeD.setMonth(activeD.getMonth() + n); render(); }
 
   const sField = document.getElementById('starField');
