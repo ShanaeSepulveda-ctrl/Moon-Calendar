@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>The Ancestral Moon Map | V70 Crystal Clear</title>
+  <title>The Ancestral Moon Map | V71 Divine Depth</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Charm:wght@400;700&family=Quicksand:wght@300;500&display=swap" rel="stylesheet">
   <style>
     :root { 
@@ -54,7 +54,7 @@
 
     .wisdom-card { text-align: left; background: rgba(0,0,0,0.4); padding: 20px; border-radius: 25px; border-left: 3px solid var(--aura); margin-bottom: 15px; }
     .wisdom-label { font-family: 'Cinzel'; font-size: 0.6rem; color: var(--gold); letter-spacing: 2px; display: block; margin-bottom: 8px; }
-    .wisdom-text { font-family: 'Charm'; font-size: 1.25rem; line-height: 1.5; color: #eee; }
+    .wisdom-text { font-family: 'Charm'; font-size: 1.15rem; line-height: 1.6; color: #eee; }
     .affirmation { font-family: 'Cinzel'; font-size: 0.7rem; color: var(--gold); margin-top: 12px; opacity: 0.8; font-style: italic; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 8px;}
     
     .energy-row { display: flex; justify-content: space-between; margin-bottom: 5px; }
@@ -182,71 +182,357 @@
 <script>
   let activeD = new Date(2026, 0, 16); 
   let selectedDate = new Date().toDateString();
-  let db = JSON.parse(localStorage.getItem('ancestral_moon_v70')) || { logs: {}, journals: {}, zodCache: {}, energy: {} };
+  let db = JSON.parse(localStorage.getItem('ancestral_moon_v71')) || { logs: {}, journals: {}, zodCache: {}, energy: {} };
 
   const ELEMENTS = { "FIRE": "#ff4d4d", "EARTH": "#2ecc71", "AIR": "#3498db", "WATER": "#df80ff" };
   const ZOD_ELEMENTS = { "Aries ♈":"FIRE", "Leo ♌":"FIRE", "Sagittarius ♐":"FIRE", "Taurus ♉":"EARTH", "Virgo ♍":"EARTH", "Capricorn ♑":"EARTH", "Gemini ♊":"AIR", "Libra ♎":"AIR", "Aquarius ♒":"AIR", "Cancer ♋":"WATER", "Scorpio ♏":"WATER", "Pisces ♓":"WATER" };
   
+  // 📚 V71 THE DIVINE LIBRARY (Deep, Poetic, Expanded)
   const DAILY_WISDOM_LIBRARY = {
-    "Aries": { "Waxing": ["The spark has caught. Fan the flame.", "Do not hesitate. Warrior spirit supports you.", "Initiate. The waxing fire is a portal."], "Waning": ["Release anger. Let the fire burn to embers.", "Reflect on battles fought. Rest now.", "Shed the need to be first. Pause."], "Full": ["Your passion is a beacon. Illuminate desires.", "Stand tall. Declare your sovereignty.", "Victory in light. Celebrate yourself."], "New": ["In the dark, a seed of fire waits.", "Dream of conquest. The void is potential.", "Silence before the strike. Gather energy."] },
-    "Taurus": { "Waxing": ["Build slowly. One brick at a time.", "Nourish the seed. Attend to your body.", "Ground intentions. Make them real."], "Waning": ["Release clutter. Return to the soil.", "Compost excess. Find value in simplicity.", "Let go of stubbornness. Be reshaped."], "Full": ["Harvest of pleasure. Celebrate abundance.", "Honor the body with touch and taste.", "Manifestation in form. It is solid."], "New": ["Plant deep. Soil is rich.", "Set intentions for peace.", "Rest in the earth's embrace."] },
-    "Gemini": { "Waxing": ["Speak truth. Words have power.", "Connect ideas. Weave a new story.", "Curiosity is key. Follow the thread."], "Waning": ["Quiet the mind. Release spinning thoughts.", "Unlearn. Let go of old narratives.", "Wind settles. Find silence."], "Full": ["Illuminate the mind. Flash of clarity.", "Open conversation. Speak clearly.", "Whirlwind of connection. Share light."], "New": ["Plant a thought. Air is ready.", "Set intention for voice.", "Blank page. Write the first line."] },
-    "Cancer": { "Waxing": ["Nurture the dream. Protect intentions.", "Flow with tide. Trust feelings.", "Build a shell. Grow in safety."], "Waning": ["Release weight. Tears are holy.", "Let tide go out. Forgive the past.", "Return to source. Waters recede."], "Full": ["Overflowing heart. Emotions are power.", "The Mother shines. Honor lineage.", "High tide of intuition. Trust it."], "New": ["Womb of the world. Rest in water.", "Plant love in the center.", "Retreat inward to dream."] },
-    "Leo": { "Waxing": ["Shine. Take up space.", "Create. Express your soul.", "Play. Joy is the path."], "Waning": ["Release need for applause.", "Ego rests. Stars shine at night.", "Shed performance. Be you."], "Full": ["Radiance. You are the sun.", "Lead with love.", "Celebrate the divine within."], "New": ["Seed of creativity. Art waits in dark.", "Intention for joy.", "Listen to your heart beat."] },
-    "Virgo": { "Waxing": ["Refine the plan. Details matter.", "Attend to ritual.", "Purify intent. Ask for clarity."], "Waning": ["Cleanse. Sweep the dust.", "Release perfectionism. You are enough.", "Analyze and let go."], "Full": ["Priestess stands tall. Service is magic.", "Order from chaos. See the pattern.", "Healing light. Focus on wholeness."], "New": ["Plant seed of order.", "Intention for health.", "Quiet service in the dark."] },
-    "Libra": { "Waxing": ["Balance scales. Move with grace.", "Beautify path. Art in journey.", "Connect. Partnership aids growth."], "Waning": ["Release people pleasing.", "Let go of indecision.", "Unbind expectations."], "Full": ["Mirror magic. World reflects you.", "Climax of beauty. Surround with love.", "Justice and harmony. Seek middle path."], "New": ["Intention for peace.", "Sow seeds of partnership.", "Rest in equilibrium."] },
-    "Scorpio": { "Waxing": ["Dive deep. Treasure below.", "Invest energy fully.", "Trust gut. Mystery unfolds."], "Waning": ["Shed skin. Let old form die.", "Release grudge. Poison hurts vessel.", "Compost of soul. Feed roots."], "Full": ["Phoenix rises. Rebirth is here.", "Secrets revealed. Compassion.", "Intense magic. Power is potent."], "New": ["The void. Sit without fear.", "What must die to be born?", "Plant a secret."] },
-    "Sagittarius": { "Waxing": ["Aim high. Arrow flies far.", "Explore. Say yes.", "Expand vision beyond horizon."], "Waning": ["Release dogma. Find truth.", "Simplify quest. Carry less.", "Wanderer rests. Wisdom in stillness."], "Full": ["Truth illuminates. Big picture.", "Wild celebration. Dance with cosmos.", "Teacher speaks. Share wisdom."], "New": ["Plant seed of freedom.", "Seek philosophy that frees.", "Trust path in dark."] },
-    "Capricorn": { "Waxing": ["Climb. You are strong.", "Commit. Discipline rewards.", "Build legacy. Stone by stone."], "Waning": ["Release burden. Put world down.", "Flow around obstacle.", "Elder rests. Silence is wisdom."], "Full": ["The summit. Look how far.", "Power manifested. Own authority.", "Structure and light."], "New": ["Blueprint in dark. Plan empire.", "What is Great Work?", "Ground ambition."] },
-    "Aquarius": { "Waxing": ["Innovate. Try new way.", "Connect with web.", "Break mold. Freedom is fuel."], "Waning": ["Release detachment. Heart open.", "Let go of being different. Just be.", "Clear static."], "Full": ["Cosmic connection. You are a star.", "Rebel shines. Stand for belief.", "Vision of future."], "New": ["Download vision.", "Where do you need space?", "Seed for collective."] },
-    "Pisces": { "Waxing": ["Dream. Veil is thin.", "Flow. Float with river.", "Create from soul."], "Waning": ["Dissolve. Boundaries melt.", "Surrender to ocean.", "Cleansing rain washes sorrow."], "Full": ["Mystical union. One with divine.", "Dreamer awakens.", "Ocean of light."], "New": ["Womb of universe.", "Pray and connect.", "Drift in silence."] }
+    "Aries": { 
+      "Waxing": [
+        "The spark of creation has caught in the dry grass of your soul. Do not fear the heat; fan this flame with bold action, for what burns now clears the path for the new world you are building.", 
+        "The ancestors whisper of courage today. You are being asked to step into the arena of your life not as a spectator, but as the warrior who knows that hesitation is the only true defeat.", 
+        "Initiation requires a first step that feels like jumping off a cliff. The waxing fire supports this leap. Trust that your wings will open the moment you decide to fly."
+      ], 
+      "Waning": [
+        "The warrior lays down the sword. Release the anger that has protected you but now only weighs you down. Let the fire burn down to warm embers that comfort rather than consume.", 
+        "Reflect on the battles you have fought this cycle. Honor your scars as maps of where you have been, but do not carry the war into the time of rest. Peace is also a victory.", 
+        "Shed the need to be first, to be right, or to be seen. There is profound wisdom in the pause between heartbeats. Let your fire turn inward to illuminate your own shadows."
+      ], 
+      "Full": [
+        "Your passion is a beacon on the mountaintop. Do not dim your light to make others comfortable. You are asked to occupy your full radiance without apology or hesitation.", 
+        "Stand tall and declare your sovereignty to the cosmos. You are the architect of your fate, and the fire in your belly is the fuel for your empire. Own your power completely.", 
+        "The warrior stands in the full light of day. Celebrate the victories, however small, that have brought you to this moment. Your endurance is your crown."
+      ], 
+      "New": [
+        "In the velvet dark, a seed of fire waits to be struck. You are in the void of potential. Do not rush the sunrise; gather your strength in the silence before the strike.", 
+        "Dream of a new conquest, not of lands, but of self-mastery. The Aries new moon asks you to define who you are becoming when the world isn't watching.", 
+        "Silence before the thunder. Gather your energy, conserve your heat, and prepare your will. A great cycle of action is beginning, but tonight, we rest in the potential."
+      ] 
+    },
+    "Taurus": { 
+      "Waxing": [
+        "Build slowly, for you are building a cathedral, not a tent. Lay one brick at a time with absolute love and presence. The ancestors honor the slow hand that creates lasting beauty.", 
+        "Nourish the seed of your intention. Attend to your physical body as the holy vessel it is. Eat rooted foods, drink deep waters, and remember that your spirit needs a sturdy home.", 
+        "Ground your intentions into the tangible world. Do not just dream it; make it real. Write it down, touch the earth, and solidify your vision with the weight of stone."
+      ], 
+      "Waning": [
+        "Release the physical clutter that chokes your space. Return what you do not need to the soil or to others. You cannot receive the new harvest if your hands are full of yesterday.", 
+        "Compost the excess. Taurus asks you to find value in simplicity. Strip away the ornate layers until you find the solid, unshakeable core of your truth.", 
+        "Let go of stubbornness. Like the earth, allow yourself to be reshaped by the seasons. To yield is not to break; it is to trust the wisdom of the cycle."
+      ], 
+      "Full": [
+        "A harvest of pleasure is yours. Celebrate the abundance that is already in your hands. Do not look for what is missing; revel in the golden weight of what is present.", 
+        "Honor the body with touch, scent, and taste. Your senses are the gates to the divine. Worship your own existence by deeply enjoying the simple gifts of being alive.", 
+        "Manifestation in form. What you have built is solid and real. Stand on the firm ground of your achievements and feel the support of the earth beneath you."
+      ], 
+      "New": [
+        "Plant deep. The soil is rich, dark, and ready. Do not sow seeds of fear; sow seeds of peace, security, and long-term worth. What you plant now will outlast you.", 
+        "Set intentions for peace that settles in the bones. Call in the silence of the deep forest. You are safe to rest here, held by gravity and grace.", 
+        "Rest in the earth's embrace. You do not need to strive or push. Like a stone in a river, let the world flow around you while you remain centered and still."
+      ] 
+    },
+    "Gemini": { 
+      "Waxing": [
+        "Speak your truth, for words are spells. The waxing moon carries your voice on the wind to the corners of your life where it is needed most. Do not silence your song.", 
+        "Connect the dots. Your mind is weaving a new story for your life, stitching together ideas that seem separate. Trust the curiosity that pulls you in a new direction.", 
+        "Curiosity is the key that unlocks the stagnant doors. Follow the thread of interest, no matter how thin, for it leads to a tapestry of wisdom you cannot yet see."
+      ], 
+      "Waning": [
+        "Quiet the mind. The winds are spinning too fast; release the thoughts that circle like vultures. Let them fly away so you can hear the whisper of your own heart.", 
+        "Unlearn. Let go of the old narratives that keep you small. You are not who you were told you are. You are the storyteller, and you can edit the script.", 
+        "The wind settles. Find the profound silence between the words. In the gap between thoughts, the truth of your spirit is waiting to be heard."
+      ], 
+      "Full": [
+        "Illuminate the mind. A flash of clarity pierces the fog. You see the whole picture now, the intricate web of connections. Do not look away from the truth.", 
+        "The conversation is open between you and the cosmos. Speak clearly your desires, and listen deeply for the reply. Your voice is a vibration that shapes reality.", 
+        "A whirlwind of connection. Share your light with your community. You are a messenger, and your joy is the message. Spread it like pollen on the breeze."
+      ], 
+      "New": [
+        "Plant a thought-form in the fertile silence. The air is still and ready for a new word. What spell will you cast with your intention today?", 
+        "Set an intention for your voice. Where have you been silent? Where have you swallowed your truth? Resolve to speak, even if your voice shakes.", 
+        "A blank page lies before you. The Gemini new moon hands you the quill. Write the first line of the new chapter with courage and wit."
+      ] 
+    },
+    "Cancer": { 
+      "Waxing": [
+        "Nurture the dream as you would a tender child. Protect your growing intentions from the harsh winds of criticism. You grow best when you feel safe and held.", 
+        "Flow with the rising tide. Your emotional guidance system is calibrating. Trust the feelings that surface; they are not distractions, they are the compass.", 
+        "Build a shell of safety. It is not weak to need sanctuary. Create a space where your softest self can breathe without fear of being bruised."
+      ], 
+      "Waning": [
+        "Release the emotional weight you carry for others. The tears you cry are holy water, cleansing the temple of your soul. Let them fall freely.", 
+        "Let the tide go out. Forgive the past, not for them, but to unchain your own ankle. You cannot swim freely if you are dragging the wreckage of yesterday.", 
+        "Return to the source. The waters are receding to reveal the truth on the ocean floor. Look at what remains when the emotion settles. That is your core."
+      ], 
+      "Full": [
+        "Overflowing heart. Let your emotions spill over the edges; they are valid and holy. You are a vessel of deep feeling, and that is your superpower, not your flaw.", 
+        "The Mother shines through you. Honor your lineage, the women who came before, and the mother within yourself. You are the keeper of the ancient flame.", 
+        "A high tide of intuition. You know things you cannot explain. Trust this knowing. It is the whisper of the water, ancient and unfailingly true."
+      ], 
+      "New": [
+        "The womb of the world is dark and fluid. Rest in these waters of creation. You do not need to be solid right now; you only need to be receptive.", 
+        "Plant love in the center of your home. Set an intention to make your life a sanctuary. Where there is love, there is growth.", 
+        "Retreat inward. The crab finds safety in the sand to dream. Allow yourself to hide from the world so you can be found by your own spirit."
+      ] 
+    },
+    "Leo": { 
+      "Waxing": [
+        "Shine. The world does not serve from your shrinking. Like the sun climbing the sky, you are asked to occupy your full radiance without apology.", 
+        "Create. Leo energy demands that you express your unique soul. Paint, dance, write, or build—not for the outcome, but for the sheer joy of the act.", 
+        "Play. Approach your goals with the lightness of a child. Seriousness is a heavy coat; take it off and run freely into the direction of your joy."
+      ], 
+      "Waning": [
+        "Release the need for applause. Your worth is not determined by how many eyes are watching. Find the glow that comes from within, independent of praise.", 
+        "Let the ego rest. The sun sets so the stars can shine. Step back from the center stage and find the quiet dignity of simply being.", 
+        "Shed the performance. Who are you when no one is watching? Strip away the masks until you find the face that was yours before the world told you who to be."
+      ], 
+      "Full": [
+        "Radiance. You are the sun center of your own universe today. Burn bright, not to blind others, but to warm them. Your joy is a healing frequency.", 
+        "Heart-centered power. Lead with love and others will follow naturally. The true king or queen rules not by force, but by the size of their heart.", 
+        "Celebrate yourself. It is not vanity; it is recognizing the divine spark that lives in your chest. Honor the miracle of your own existence."
+      ], 
+      "New": [
+        "A seed of creativity lies in the dark. What art waits in the shadows to be born? What song is humming in your blood, waiting for a voice?", 
+        "Set an intention for joy. Where have you become too rigid? Where do you need more play? Invite the inner child to the altar.", 
+        "The heart's desire. Listen to the steady beat of your own truth. It is drumming a rhythm that is uniquely yours. Follow it."
+      ] 
+    },
+    "Virgo": { 
+      "Waxing": [
+        "Refine the plan. The divine is found in the details. Do not rush; the magic is in the mindful placement of each step. You are weaving a masterpiece.", 
+        "Attend to the daily rituals. Small steps, taken with great love, lead to the summit. Your routine is your prayer; make it sacred.", 
+        "Purify your intent. Virgo asks for clarity and service. Ask yourself: Does this serve my highest good? If not, prune it away to make room for growth."
+      ], 
+      "Waning": [
+        "Cleanse. Sweep the mental and physical dust away. A clear space leads to a clear mind. Release the chaos to find the calm center.", 
+        "Release perfectionism. It is a shield that keeps you from connecting. You are enough exactly as you are, messy and human and holy.", 
+        "Analyze what worked and let go of what failed. Do not carry the guilt of mistakes; carry only the wisdom they taught you."
+      ], 
+      "Full": [
+        "The priestess stands tall. Your service is your magic. How you help others is how you heal yourself. Stand in the dignity of your work.", 
+        "Order from chaos. See the pattern in the weaving. The universe is not random; it is an intricate design, and you are a vital thread.", 
+        "Healing light. Focus on the wholeness of the body. Treat your physical form with reverence; it is the only house your soul will ever own."
+      ], 
+      "New": [
+        "Plant a seed of order. Organize your inner world so that the outer world can reflect it. Peace begins in the quiet mind.", 
+        "Set an intention for health. Your body is the vessel for your magic. Ask it what it needs, and promise to listen.", 
+        "Quiet service. How can you serve your soul in the dark? Tend to your own garden before you try to feed the world."
+      ] 
+    },
+    "Libra": { 
+      "Waxing": [
+        "Balance the scales. Move forward with grace and diplomacy. You are the mediator between your dreams and your reality. Find the middle way.", 
+        "Beautify your path. Libra asks you to find the art in the journey. If it does not bring you beauty or peace, ask yourself why you are carrying it.", 
+        "Connect. Partnership aids your growth right now. You do not have to do this alone; reach out and find the hand that fits yours."
+      ], 
+      "Waning": [
+        "Release the need to please. Harmony starts within. You cannot set yourself on fire to keep others warm. Reclaim your own energy.", 
+        "Let go of indecision. Trust the choice you made. Standing at the crossroads only delays the journey. Pick a path and walk it with conviction.", 
+        "Unbind yourself from the expectations of others. Their disappointment is not your burden to carry. Be true to your own soul first."
+      ], 
+      "Full": [
+        "Mirror magic. The world reflects your internal state. Look at your relationships as mirrors; what are they showing you about yourself?", 
+        "A climax of beauty. Surround yourself with what you love. Let art, music, and softness be your armor against the hardness of the world.", 
+        "Justice and harmony. Seek the middle path in the full light. Where there has been conflict, bring the balm of understanding."
+      ], 
+      "New": [
+        "Set an intention for peace. Where is the war in your life? Call a ceasefire and invite tranquility to sit at your table.", 
+        "Sow seeds of partnership. Call in your divine mirrors, the people who will reflect your light back to you.", 
+        "Rest in equilibrium. The scales are still. In this balance, you can find the center point from which all action flows."
+      ] 
+    },
+    "Scorpio": { 
+      "Waxing": [
+        "Dive deep. The surface is not where the treasure lies. You are being called to the depths of your own psyche. Do not fear what swims there.", 
+        "Invest your energy. Scorpio asks for total commitment. Do not dabble; immerse yourself. Transformation requires your whole heart.", 
+        "Trust your gut. The mystery is unfolding, and your intuition is the only map you need. Close your eyes to see more clearly."
+      ], 
+      "Waning": [
+        "Shed the skin. Transformation requires letting go of the old form. It may feel raw, but the new skin is growing underneath. Trust the process.", 
+        "Release the grudge. Poison only hurts the vessel that holds it. Let go of the desire for revenge and find the freedom of indifference.", 
+        "The compost of the soul. Let the dead leaves of your past feed the roots of your future. Nothing is wasted; everything is transformed."
+      ], 
+      "Full": [
+        "The Phoenix rises. A powerful time for rebirth and revelation. You are not who you were yesterday. Step out of the ashes and fly.", 
+        "Secrets revealed. Look at the shadow with compassion. What you hide holds power over you; bring it into the light and it dissolves.", 
+        "Intense magic. Your power is potent; use it wisely. Your gaze can heal or harm today. Choose to heal."
+      ], 
+      "New": [
+        "The void. Sit in the absolute dark and do not be afraid. In this darkness, you are unmaking yourself so you can be remade.", 
+        "Set an intention for transformation. What must die to be born? Offer it up to the dark mother and trust she will hold you.", 
+        "Plant a secret. Keep your magic hidden while it germinates. Power grows in silence. Tell no one your wish."
+      ] 
+    },
+    "Sagittarius": { 
+      "Waxing": [
+        "Aim high. The arrow flies further than you think. Do not limit your vision to what is practical; dream of what is possible.", 
+        "Explore. Say yes to the adventure calling your name. The comfort zone is a beautiful place, but nothing grows there.", 
+        "Expand your vision. Look beyond the horizon. The ancestors are widening your path; walk it with a stride of freedom."
+      ], 
+      "Waning": [
+        "Release the dogma. Let go of the need to be 'right' to find what is true. Wisdom is fluid, not fixed.", 
+        "Simplify the quest. You are carrying too much baggage for this journey. Carry only what you need: your truth and your hope.", 
+        "The wanderer rests. Find wisdom in the stillness. You do not need to seek answers out there; they are already written in your bones."
+      ], 
+      "Full": [
+        "The truth illuminates. You can see the big picture clearly now. The details fade, revealing the grand design of your life.", 
+        "Wild celebration. Dance with the cosmos tonight. Your spirit is vast, wild, and free. Let it take up the space it deserves.", 
+        "The teacher speaks. Share your wisdom with the world. Your story is the medicine someone else needs to hear."
+      ], 
+      "New": [
+        "Plant a seed of freedom. Where do you want to roam? What chains are you ready to break? The open road waits.", 
+        "Set an intention for truth. Seek the philosophy that frees you. Ask the big questions and listen for the whispers.", 
+        "The dark horizon. Trust that the path is there even if you cannot see it. Your faith is the lantern."
+      ] 
+    },
+    "Capricorn": { 
+      "Waxing": [
+        "Climb. The mountain is steep, but your legs are strong. Capricorn energy rewards discipline. Keep going; the view is worth it.", 
+        "Commit. You are building a legacy. Do not look for shortcuts; look for the stones that will stand for a hundred years.", 
+        "Build the legacy. Every stone matters. Work with integrity and patience. You are the architect of your own destiny."
+      ], 
+      "Waning": [
+        "Release the burden. You do not have to carry the weight of the world. Put the pack down and rest your shoulders.", 
+        "Let go of the rigid plan. The mountain path twists; do not try to walk a straight line. Flow around the obstacle like water.", 
+        "The Elder rests. Wisdom comes from silence, not just work. Sit and watch the world turn without trying to control it."
+      ], 
+      "Full": [
+        "The summit. Look at how far you have come. Acknowledge your hard work and the strength it took to get here.", 
+        "Power manifested. Own your authority in this life. You are the CEO of your soul. Lead with wisdom.", 
+        "Structure and light. Your foundations are illuminated. See where you are strong and give thanks for the ground beneath you."
+      ], 
+      "New": [
+        "Blueprint in the dark. Plan the empire you wish to build. In the silence, the structure of the future is revealed.", 
+        "Set an intention for purpose. What is your Great Work? What will you leave behind for the ones who come after?", 
+        "Ground your ambition. Root it in the earth before you try to climb. A tree with no roots cannot reach the sky."
+      ] 
+    },
+    "Aquarius": { 
+      "Waxing": [
+        "Innovate. Try a new way of doing the old thing. The ancestors applaud your ingenuity. Break the rules that no longer work.", 
+        "Connect with the web. Your vibration affects the collective. Send out a frequency of hope and watch it ripple back.", 
+        "Break the mold. Freedom is your fuel. Do not fit into the box they made for you; burn the box and use the light."
+      ], 
+      "Waning": [
+        "Release the detachment. Come back to your heart. It is safe to feel deeply and to be connected to humanity.", 
+        "Let go of the need to be different. Just be. You are unique simply because you exist; you do not need to prove it.", 
+        "Clear the static. Tune your frequency to a clearer channel. The noise of the world is loud; find the signal of your soul."
+      ], 
+      "Full": [
+        "Cosmic connection. You are a star in a vast constellation. Feel the threads of light connecting you to every living thing.", 
+        "The Rebel shines. Stand for what you believe in, even if you stand alone. Your authenticity is a revolution.", 
+        "A vision of the future. See what is possible for humanity. Hold the torch high so others can see the way forward."
+      ], 
+      "New": [
+        "Download the vision. The frequency is open for new ideas. Listen to the electric hum of the universe.", 
+        "Set an intention for freedom. Where do you need space? Break the chains of convention in the dark.", 
+        "Plant a seed for the collective. Dream not just for yourself, but for the world. We are all in this together."
+      ] 
+    },
+    "Pisces": { 
+      "Waxing": [
+        "Dream. The veil is thin; listen to the whispers of the unseen. Your imagination is the workshop of your reality.", 
+        "Flow. Do not push the river; float with it. Surrender your control and let the current take you to the holy water.", 
+        "Create from the soul. Art is your prayer. Paint, sing, or dance your emotions out of your body and into the world."
+      ], 
+      "Waning": [
+        "Dissolve. Let the boundaries melt away. You are not separate from the ocean; you are a drop returning to the source.", 
+        "Release the illusion. Surrender to the great mystery. What you are losing is only the shell; the pearl remains.", 
+        "Cleansing rain. Wash away the sorrow of the world. Let your tears join the waters of the earth in a sacred release."
+      ], 
+      "Full": [
+        "Mystical union. You are one with the divine. The separation is an illusion. Feel the god-spark in your own chest.", 
+        "The dreamer awakens. Intuition is at its peak. You know the truth without words. Trust the silent knowing.", 
+        "Ocean of light. Bathe in the spiritual waters. Let the waves of cosmic love wash over you and heal every wound."
+      ], 
+      "New": [
+        "The womb of the universe. Anything is possible in the void. Drift in the potential of the unmanifested.", 
+        "Set an intention for spiritual connection. Pray. Speak to the ancestors and listen for their soft reply.", 
+        "Drift in the silence. Let the current take you where you need to go. You do not need a map; you only need trust."
+      ] 
+    }
   };
 
   const DAILY_RITUALS = {
-    "Aries": ["Light a red candle.", "Move vigorously for 5 mins.", "Breathe fire in the sun."],
-    "Taurus": ["Walk barefoot on grass.", "Eat fruit slowly.", "Hold a smooth stone."],
-    "Gemini": ["Write to future self.", "Whisper wish to wind.", "Burn incense."],
-    "Cancer": ["Bath with salt.", "Bowl of water under moon.", "Hand on heart breathe."],
-    "Leo": ["Wear gold.", "Dance to song.", "Sun gaze safely."],
-    "Virgo": ["Clean one corner.", "Herbal tea ritual.", "List gratitude."],
-    "Libra": ["Light two candles.", "Flowers on altar.", "Meditate on bell sound."],
-    "Scorpio": ["Sit in total darkness.", "Burn fear on paper.", "Scry in dark water."],
-    "Sagittarius": ["Walk new path.", "Light purple candle.", "Dream at horizon."],
-    "Capricorn": ["Stand like mountain.", "Plant a seed.", "Hold quartz."],
-    "Aquarius": ["Meditate on stars.", "Fresh air.", "Visualize web of light."],
-    "Pisces": ["Listen to water.", "Feet in water.", "Sleep with crystal."]
+    "Aries": [
+      "Light a red candle and stand before it. As you breathe, imagine you are inhaling the fire itself. Let it circulate through your blood, burning away fear, until you feel strong enough to take the first step.", 
+      "Move your body vigorously for 5 minutes. Stomp your feet on the earth and shout if you need to. Shake the stagnation out of your limbs and reclaim the wild energy of your physical form.", 
+      "Stand in the sun (or visualize it) and breathe in fire. Feel the solar plexus chakra ignite with golden light. Affirm: 'I am the driver of my destiny.'"
+    ],
+    "Taurus": [
+      "Walk barefoot on the grass or soil. Feel the magnetic pull of the earth recharging your batteries. Imagine roots growing from your heels, anchoring you into deep, ancient safety.", 
+      "Eat a piece of fruit slowly, savoring every bite. Let the sweetness be a prayer of gratitude. Remind your body that it is safe, it is fed, and it is loved.", 
+      "Hold a smooth stone or crystal in your palm. Feel its weight and its age. Transfer your worries into the stone, knowing the earth can transmute them into peace."
+    ],
+    "Gemini": [
+      "Write a letter to your future self. Tell her what you are learning today. Seal it and put it away. You are weaving a thread of connection across time.", 
+      "Stand in the wind and whisper your wish. Let the breeze carry your words to the four corners of the earth. Trust that the air element is networking on your behalf.", 
+      "Burn incense and watch the smoke dance. Let your gaze soften. As the smoke rises, imagine it carrying your busy thoughts away, leaving your mind clear and open."
+    ],
+    "Cancer": [
+      "Take a ritual bath with salt and rose petals. As you submerge, imagine the water dissolving all emotional armor. Emerge soft, open, and cleansed.", 
+      "Place a bowl of fresh water under the moon (or on a windowsill). Speak your love into the water. In the morning, use it to wash your face or water a plant.", 
+      "Place your hand over your heart and breathe deeply. Visualize a silver light expanding from your chest, creating a bubble of safety around you. You are your own home."
+    ],
+    "Leo": [
+      "Wear something gold or yellow today. Let it be a symbol of your inner royalty. Walk with your head high, imagining a crown of light resting on your brow.", 
+      "Dance to your favorite song alone. Move without caring how it looks. Let the joy rise up from your hips and fill the room. You are celebrating your own aliveness.", 
+      "Sun gaze safely at sunrise or sunset (when the light is soft). Drink in the golden light through your eyes and let it fill every cell with vitality and confidence."
+    ],
+    "Virgo": [
+      "Clean one corner of your room mindfully. As you wipe away the dust, imagine you are clearing the cobwebs from your mind. Order in the home brings peace to the spirit.", 
+      "Drink herbal tea with intention. Hold the cup, feel the warmth, and thank the plants for their medicine. Sip slowly, grounding yourself in the present moment.", 
+      "Write a list of 3 things you are grateful for. Be specific. 'The way the light hits the floor.' 'The taste of coffee.' Sacredness is found in the smallest details."
+    ],
+    "Libra": [
+      "Light two candles for balance. Sit between them and breathe. Visualize your left side and right side integrating, masculine and feminine coming into perfect union.", 
+      "Place fresh flowers or something beautiful on your altar. Beauty is a high vibration. Let your eyes rest on it and feel your spirit lift to match its frequency.", 
+      "Meditate on the sound of a bell or chime. Listen to the note until it fades completely into silence. In that silence, find your center point."
+    ],
+    "Scorpio": [
+      "Sit in total darkness and silence. Do not try to fill the void. Let the darkness hold you. In this space, you are hidden, protected, and powerful.", 
+      "Write a fear or a secret on a piece of paper. Safely burn it in a fireproof bowl. Watch it turn to ash and declare: 'It no longer holds power over me.'", 
+      "Scry in a bowl of dark water. Stare into the black reflection and ask your intuition to show you what you need to know. Trust the first image that comes."
+    ],
+    "Sagittarius": [
+      "Walk in a new direction today. Take a route you have never taken. Invite the spirit of adventure into your mundane life. Keep your eyes open for signs.", 
+      "Light a purple candle for wisdom. Sit and ask the ancestors to expand your vision. Imagine your mind growing vast, like the sky above the desert.", 
+      "Look at the horizon and dream. If you can't see the horizon, visualize it. Feel the call of the distance. Remind yourself that your soul is limitless."
+    ],
+    "Capricorn": [
+      "Stand like a mountain, feet wide, unmoving. Feel the ancient stability of the earth supporting you. You are unshakeable. You have weathered storms before.", 
+      "Plant a seed in a small pot. Name the seed after a goal you have. Tend to it daily. As it roots, so does your ambition. Patience is the spell.", 
+      "Hold a piece of quartz or river rock. Feel its cold, hard reality. Remind yourself that you are building something real. Structure is spiritual."
+    ],
+    "Aquarius": [
+      "Meditate on the stars. If it is day, know they are there behind the blue. Feel your connection to the cosmic web. You are stardust made form.", 
+      "Open a window and breathe fresh air. Let the wind circulate through your home. Visualize it sweeping away stale energy and bringing in new inspiration.", 
+      "Visualize a web of light connecting you to every living being. Send a pulse of love down the web. Know that you are never truly alone."
+    ],
+    "Pisces": [
+      "Listen to the sound of rain or ocean waves (use a recording if needed). Let the sound wash over you. Imagine you are floating, weightless and free.", 
+      "Dip your feet in water (a bowl or a bath). Feel the coolness. Imagine the water drawing out all stress from your body and neutralizing it.", 
+      "Sleep with a crystal (like amethyst or moonstone) under your pillow. Ask your guides to speak to you in the dreamtime. Keep a journal by your bed."
+    ]
   };
 
   const PHASE_MEANINGS = {
-    "New Moon": "A time of new beginnings, planting seeds, and setting intentions in the dark.",
-    "Waxing Crescent": "The sprout pushes through. Focus on strength, growth, and initial action.",
-    "First Quarter": "Resistance meets action. Overcome obstacles and make decisions.",
-    "Waxing Gibbous": "Refinement. The bud is forming. Review and tweak your plans.",
-    "Full Moon": "Peak energy. Illumination, celebration, and manifestation.",
-    "Waning Gibbous": "Gratitude and sharing. The harvest is in. Give back.",
-    "Last Quarter": "Release and forgiveness. Let go of what you don't need.",
-    "Waning Crescent": "Surrender and rest. Empty the cup to prepare for the new.",
-    "Moon": "The emotional tide of the soul."
-  };
-
-  const ZODIAC_WISDOM = {
-    "Aries": "When the Moon is in Aries, the soul craves action. You may feel a spark of divine impulse. It is a time for warrior energy—beginning, initiating, and bold courage.",
-    "Taurus": "Moon in Taurus calls for grounding. Your internal tide slows down to honor the senses. Root yourself in pleasure, food, and the tangible earth.",
-    "Gemini": "A Gemini Moon quickens the mind. The air is alive with curiosity. Your soul wants to speak, connect, and weave stories. Listen to the wind.",
-    "Cancer": "The Moon is at home in Cancer. Emotions flow like deep rivers. It is a time for the shell—turn inward, nurture the self, and honor the mother wound.",
-    "Leo": "Moon in Leo demands the heart be open. You are sovereign. Your soul seeks expression, warmth, and the courage to shine without apology.",
-    "Virgo": "In Virgo, the Moon asks for sacred order. It is a time to purify the temple of the body. Healing comes through ritual, detail, and service to the self.",
-    "Libra": "A Libra Moon seeks harmony. The soul looks for its reflection in others. Balance beauty with truth; relationship is the mirror of the moment.",
-    "Scorpio": "Moon in Scorpio is the descent into the underworld. The tide is deep and dark. Secrets, transformation, and rebirth are accessible now.",
-    "Sagittarius": "The Sagittarian Moon pulls the bow back. The soul seeks expansion, truth, and the horizon. Trust the quest and the wild unknown.",
-    "Capricorn": "Moon in Capricorn builds the legacy. Emotions become structure. It is a time for the elder within to speak—patience, ambition, and power.",
-    "Aquarius": "In Aquarius, the Moon looks to the future. You may feel detached yet connected to the whole. Honor the rebel spirit and the cosmic web.",
-    "Pisces": "The Pisces Moon dissolves boundaries. You are one with the ocean. Dreams are vivid, intuition is loud, and the veil is thin."
+    "New Moon": "The Void. A time of absolute potential. The slate is wiped clean. Plant seeds in the dark, set intentions, and rest. The energy is internal and quiet.",
+    "Waxing Crescent": "The Sprout. The first sliver of light appears. Focus on strength, courage, and the initial push of action. Nurture the seed you planted.",
+    "First Quarter": "The Root. Resistance meets action. You may face obstacles; this is the test of your commitment. Make decisions and push through.",
+    "Waxing Gibbous": "The Bud. Refinement. The goal is in sight but not yet fully formed. Review your plans, tweak the details, and prepare for the bloom.",
+    "Full Moon": "The Bloom. Peak energy and illumination. Everything is heightened. Celebrate what has come to fruition and see the truth clearly.",
+    "Waning Gibbous": "The Fruit. Gratitude and sharing. The harvest is gathered. Share your wisdom and abundance with others. Reflect on the journey.",
+    "Last Quarter": "The Compost. Release and forgiveness. The energy turns inward. Let go of what no longer serves you to make space for the new cycle.",
+    "Waning Crescent": "The Seed. Surrender and rest. The moon is disappearing. Empty your cup. Rest deeply and wait for the new voice to speak.",
+    "Moon": "The emotional tide of the soul. She governs the waters, the intuition, and the hidden self."
   };
 
   const SHADOW_WORK = {
-    "Aries": "Where am I afraid to be weak, and does my anger protect a deeper hurt?",
-    "Taurus": "What comfort zone has become a cage? What am I hoarding out of fear?",
+    "Aries": "Where am I afraid to be weak? Does my anger protect a deeper hurt that needs tending?",
+    "Taurus": "What comfort zone has become a cage? What am I hoarding out of fear of scarcity?",
     "Gemini": "What truth am I silencing to keep the peace? Where is my mind distracting my heart?",
     "Cancer": "What old wound am I nurturing instead of healing? Where do I need to mother myself?",
     "Leo": "Where do I seek validation from others instead of myself? What part of my light am I hiding?",
@@ -301,6 +587,7 @@
   const FULL_MOONS = [{d: "Jan 3", z: "Cancer ♋"}, {d: "Feb 1", z: "Leo ♌"}, {d: "Mar 3", z: "Virgo ♍"}, {d: "Apr 2", z: "Libra ♎"}, {d: "May 1", z: "Scorpio ♏"}, {d: "May 31", z: "Sagittarius ♐"}, {d: "Jun 29", z: "Capricorn ♑"}, {d: "Jul 29", z: "Aquarius ♒"}, {d: "Aug 28", z: "Pisces ♓"}, {d: "Sep 26", z: "Aries ♈"}, {d: "Oct 25", z: "Taurus ♉"}, {d: "Nov 24", z: "Gemini ♊"}, {d: "Dec 24", z: "Cancer ♋"}];
   const NEW_MOONS = ["Jan 18", "Feb 17", "Mar 18", "Apr 17", "May 16", "Jun 15", "Jul 14", "Aug 12", "Sep 11", "Oct 10", "Nov 9", "Dec 8"];
 
+  // 🛠️ HELPER: Dynamic Wisdom Generator (Robust)
   function getDynamicContent(phase, zodiacSign, day) {
     try {
       if(!zodiacSign) return { whisper: "The stars are silent.", ritual: "Breathe." };
@@ -380,7 +667,6 @@
       let archetype = FULL_MOON_DATA[dStr];
       let content = getDynamicContent(phase, zod, date.getDate());
       
-      // V70 FIX: WHISPER_MATRIX fallback is simplified to prevent error
       const whisperFallback = "The stars guide you.";
       
       let whisper = archetype ? archetype.t + ": " + whisperFallback : content.whisper;
@@ -441,11 +727,10 @@
     const data = getCelestialData(date);
     document.documentElement.style.setProperty('--aura', data.elColor);
     
-    // V70 FIX: Redundancy check for Title vs Subheader
+    // Redundancy check
     const displayTitle = data.archetype ? data.archetype.n.toUpperCase() : `${data.phase.toUpperCase()} ${data.ico}`;
     document.getElementById("dashTitle").innerText = displayTitle;
     
-    // If the main title already contains the phase name, hide the top subheader text to avoid duplication
     if (displayTitle.includes(data.phase.toUpperCase())) {
        document.getElementById("detailedPhase").innerText = "";
     } else {
@@ -467,8 +752,6 @@
     if(data.isEvent) eventHTML += `<div class="event-badge retro-badge" onclick="openModal('${data.isEvent.n}', '${data.isEvent.d}', '${data.isEvent.l}')">👁️ ${data.isEvent.n.toUpperCase()}</div>`;
     
     eventHTML += `<div class="event-badge zodiac-badge" onclick="openZodiacModal('${data.zod.split(' ')[0]}')">✨ MOON IN ${data.zod.toUpperCase()}</div>`;
-    
-    // V70 NEW: Phase Intel Badge for ALL phases
     eventHTML += `<div class="event-badge phase-badge" onclick="openPhaseModal('${data.phase}')">🔮 PHASE INTEL</div>`;
     
     if(data.archetype && data.isFull) eventHTML += `<div class="event-badge moon-badge" onclick="openModal('${data.archetype.n}', 'Full Moon in ${data.zod}. Theme: ${data.archetype.t}.', '${data.archetype.l}')">👁️ INTEL</div>`;
@@ -497,13 +780,13 @@
     }
     
     db.zodCache[date.toDateString()] = data.zod;
-    localStorage.setItem('ancestral_moon_v70', JSON.stringify(db));
+    localStorage.setItem('ancestral_moon_v71', JSON.stringify(db));
   }
 
   function setEnergy(val) {
     let map = {'🔥':'fire','💧':'water','🌬️':'air','🪨':'earth'};
     db.energy[selectedDate] = map[val];
-    localStorage.setItem('ancestral_moon_v70', JSON.stringify(db));
+    localStorage.setItem('ancestral_moon_v71', JSON.stringify(db));
     updateDash(new Date(selectedDate));
   }
 
@@ -548,7 +831,7 @@
   }
 
   function jumpToDate(dateStr) { selectedDate = dateStr; activeD = new Date(dateStr); render(); updateDash(activeD); showView('dash'); }
-  function deleteEntry(dateStr) { if(confirm("Release this entry?")) { delete db.journals[dateStr]; delete db.logs[dateStr]; delete db.energy[dateStr]; localStorage.setItem('ancestral_moon_v70', JSON.stringify(db)); showView('grimoire'); } }
+  function deleteEntry(dateStr) { if(confirm("Release this entry?")) { delete db.journals[dateStr]; delete db.logs[dateStr]; delete db.energy[dateStr]; localStorage.setItem('ancestral_moon_v71', JSON.stringify(db)); showView('grimoire'); } }
 
   function backupData() {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db));
@@ -567,7 +850,7 @@
       try {
         const importedDb = JSON.parse(e.target.result);
         db = importedDb;
-        localStorage.setItem('ancestral_moon_v70', JSON.stringify(db));
+        localStorage.setItem('ancestral_moon_v71', JSON.stringify(db));
         alert("Grimoire Restored Successfully.");
         render(); updateDash(new Date(selectedDate)); showView('grimoire');
       } catch(err) { alert("Invalid backup file."); }
@@ -646,8 +929,8 @@
     }
   }
 
-  function saveData() { db.journals[selectedDate] = document.getElementById("journalInput").value; localStorage.setItem('ancestral_moon_v70', JSON.stringify(db)); }
-  function toggleFlow() { db.logs[selectedDate] = !db.logs[selectedDate]; localStorage.setItem('ancestral_moon_v70', JSON.stringify(db)); render(); updateDash(new Date(selectedDate)); }
+  function saveData() { db.journals[selectedDate] = document.getElementById("journalInput").value; localStorage.setItem('ancestral_moon_v71', JSON.stringify(db)); }
+  function toggleFlow() { db.logs[selectedDate] = !db.logs[selectedDate]; localStorage.setItem('ancestral_moon_v71', JSON.stringify(db)); render(); updateDash(new Date(selectedDate)); }
   function changeMonth(n) { activeD.setMonth(activeD.getMonth() + n); render(); }
 
   const sField = document.getElementById('starField');
