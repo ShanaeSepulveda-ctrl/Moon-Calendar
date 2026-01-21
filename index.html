@@ -10,7 +10,7 @@
       --space: #020105; --gold: #e6ccff; --glass: rgba(12, 6, 24, 0.96); 
       --blood: #ff3385; --aura: #9d50bb; --amethyst: #df80ff;
       --retro: #ff6b6b; --portal: #ffd700; --moon-glow: #a8e6cf; --zodiac: #99ccff; --phase: #b388ff;
-      --earth: #2ecc71;
+      --earth: #27ae60;
     }
     body { 
       font-family: 'Quicksand', sans-serif; background: var(--space); 
@@ -72,8 +72,8 @@
     .wisdom-text { font-family: 'Charm'; font-size: 1.15rem; line-height: 1.6; color: #eee; }
     .affirmation { font-family: 'Cinzel'; font-size: 0.7rem; color: var(--gold); margin-top: 12px; opacity: 0.8; font-style: italic; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 8px;}
     
-    /* V90: NATURE REMINDER STYLES */
-    .nature-card { text-align: left; background: rgba(46, 204, 113, 0.08); border: 1px solid rgba(46, 204, 113, 0.3); border-radius: 20px; padding: 15px; margin-bottom: 15px; }
+    /* V91: NATURE CARD STYLING */
+    .nature-card { text-align: left; background: rgba(39, 174, 96, 0.1); border: 1px solid rgba(39, 174, 96, 0.3); border-radius: 20px; padding: 15px; margin-bottom: 15px; }
     .nature-label { font-family: 'Cinzel'; font-size: 0.6rem; color: var(--earth); letter-spacing: 2px; display: block; margin-bottom: 5px; font-weight: bold; }
     .nature-text { font-family: 'Quicksand'; font-size: 0.85rem; color: #e8f8f5; font-style: italic; line-height: 1.4; }
 
@@ -363,20 +363,7 @@
     {d: "Jan 22, 2027", z: "Leo ♌"} 
   ];
 
-  const NEW_MOON_DATA = {
-    "Jan 18, 2026": {s: "Capricorn", w: "Architect. New Moon in Capricorn. You are standing at the base of a new mountain. This is not a time for wild emotion, but for cold, hard strategy. What empire do you wish to build this year? Lay the cornerstone today in the silence.", r: "1. Write a 1-year goal on a stone or paper. 2. Bury it in a pot of soil (or the earth). 3. Stand over it. 4. Visualize a massive tree growing from it. 5. Say: 'I build for the future.'"},
-    "Feb 17, 2026": {s: "Aquarius", w: "Visionary. New Moon in Aquarius. The old rules no longer apply. Break the mold. This moon asks you to detach from who you were expected to be and connect with who you authentically are. The future is streaming in; download the vision.", r: "1. Sit under the open sky (or a window). 2. Breathe in the cold air. 3. Visualize a lightning bolt of inspiration hitting your crown. 4. Write down the wildest idea you have. 5. Say: 'I am free.'"},
-    "Mar 18, 2026": {s: "Pisces", w: "Mystic. New Moon in Pisces. The final moon of the cycle. The veil is nonexistent. You are swimming in the cosmic ocean. Surrender your logic; it cannot help you here. Trust your dreams, your intuition, and the invisible currents.", r: "1. Take a salt bath by candlelight. 2. Play no music; just listen to water. 3. Imagine dissolving into the water. 4. Ask for a vision. 5. Say: 'I surrender to the flow.'"},
-    "Apr 17, 2026": {s: "Aries", w: "Spark. New Moon in Aries. The first moon of the new zodiac cycle. Absolute beginnings. The energy is raw, fast, and fiery. Do not overthink; act. Plant a seed of courage. What would you do if you knew you could not fail?", r: "1. Light a single red candle. 2. Stare at the flame until your eyes water. 3. Shout your intention out loud. 4. Feel the heat. 5. Say: 'I begin. I am.'"},
-    "May 16, 2026": {s: "Taurus", w: "Garden. New Moon in Taurus. Slow down. The fire of Aries settles into the earth. Plant seeds of worthiness, abundance, and peace. This is the time to set intentions for your physical body and your financial security.", r: "1. Hold a coin and a seed in your hand. 2. Walk barefoot on the earth. 3. Plant the seed and place the coin next to it (or on your altar). 4. Say: 'I grow in value.'"},
-    "Jun 15, 2026": {s: "Gemini", w: "Messenger. New Moon in Gemini. The air is buzzing with new ideas. It is time to open your mind and your throat chakra. Speak your intentions into existence. Write, talk, connect. The magic is in the word.", r: "1. Write a letter to the Universe. 2. Read it out loud to the wind. 3. Burn the letter and let the smoke carry the words. 4. Listen to the wind. 5. Say: 'My voice creates.'"},
-    "Jul 14, 2026": {s: "Cancer", w: "Womb. New Moon in Cancer. We return to the source. This is the most fertile moon of the year for emotional beginnings. Plant seeds of love, family, and self-care. Nurture yourself as you would a newborn.", r: "1. Create a cozy nest with pillows/blankets. 2. Hold a cup of water to your heart. 3. Whisper your needs into the water. 4. Drink it. 5. Say: 'I nourish myself.'"},
-    "Aug 12, 2026": {s: "Leo", w: "Crown. New Moon in Leo. A new cycle of creativity and confidence begins. The universe wants you to shine. Where have you been hiding? Step onto the stage of your own life and command the spotlight. You are worthy.", r: "1. Look in a mirror by candlelight. 2. Look into your own left eye. 3. Say 'I love you' 3 times. 4. Place a hand on your heart. 5. Say: 'I am the Queen of my life.'"},
-    "Sep 11, 2026": {s: "Virgo", w: "Healer. New Moon in Virgo. The party of Leo is over; now we do the work. It is time to purify, organize, and heal. Set intentions for your daily routine. How you live your days is how you live your life.", r: "1. Cleanse your space with sage or sound. 2. Write a precise list of 3 goals. 3. Place a crystal on the list. 4. Commit to one small action today. 5. Say: 'I am focused and pure.'"},
-    "Oct 10, 2026": {s: "Libra", w: "Mirror. New Moon in Libra. A new cycle for relationships. Balance is the key. Are you giving too much? Taking too much? Set intentions for harmony, beauty, and partnership. Invite peace into your heart.", r: "1. Light two white candles. 2. Tie a string between them loosely. 3. Visualize a relationship healing. 4. Cut the string to release old patterns. 5. Say: 'I am whole in myself.'"},
-    "Nov 9, 2026": {s: "Scorpio", w: "Shadow. New Moon in Scorpio. The deepest moon of the year. We go underground. It is time to face what you fear and transform it into power. Plant seeds of transformation in the dark. Magic is potent tonight.", r: "1. Sit in total darkness. 2. Breathe into your pelvis/root. 3. Visualize a secret desire you are afraid to admit. 4. Claim it in the dark. 5. Say: 'I am not afraid of the dark.'"},
-    "Dec 8, 2026": {s: "Sagittarius", w: "Arrow. New Moon in Sagittarius. The dark water of Scorpio finds a target. Aim high. This is the moon of freedom, expansion, and truth. What adventure is calling you? Set an intention that feels too big.", r: "1. Stand facing a direction you love. 2. Make a bow shape with your arms. 3. Visualize your intention as an arrow. 4. Release it with a breath. 5. Say: 'I fly free.'"}
-  };
+  const NEW_MOONS_ARRAY = ["Jan 18, 2026", "Feb 17, 2026", "Mar 18, 2026", "Apr 17, 2026", "May 16, 2026", "Jun 15, 2026", "Jul 14, 2026", "Aug 12, 2026", "Sep 11, 2026", "Oct 10, 2026", "Nov 9, 2026", "Dec 8, 2026"];
 
   const CELESTIAL_EVENTS = {
     "Feb 2": {n: "Imbolc Portal", d: "A sacred midpoint between Winter and Spring. The earth is stirring. Energy: Promise, Purification, First Light.", l: "spiritual meaning of imbolc"},
@@ -408,6 +395,7 @@
     "Pisces": "What reality am I escaping? Where do I need boundaries to protect my energy?"
   };
   
+  // V89.4: REFERENCE NEW MOONS FOR ANCHOR METHOD (Including late 2025 and early 2027)
   const REFERENCE_NEW_MOONS = [
     "Dec 19, 2025", "Jan 18, 2026", "Feb 17, 2026", "Mar 18, 2026", 
     "Apr 17, 2026", "May 16, 2026", "Jun 15, 2026", "Jul 14, 2026", 
@@ -415,7 +403,7 @@
     "Dec 8, 2026", "Jan 6, 2027"
   ];
   
-  // V90: NATURE TIPS DATABASE
+  // V91: NATURE TIPS DATABASE
   const NATURE_TIPS = [
     "Step outside and take three deep breaths of fresh air.",
     "Find a tree and touch its bark. Feel the texture.",
@@ -482,13 +470,15 @@
     }
   }
   
+  // V89.4: Helper to calculate accurate Lunar Day based on Reference Arrays
   function getLunarDayAnchor(date) {
     const dTime = date.getTime();
     let lastNewMoonDate = null;
     
+    // Find the most recent new moon that is <= current date
     for(let i = 0; i < REFERENCE_NEW_MOONS.length; i++) {
         const nm = new Date(REFERENCE_NEW_MOONS[i]);
-        if (nm.getTime() <= dTime + 3600000) { 
+        if (nm.getTime() <= dTime + 3600000) { // Add 1 hour buffer for timezone variance
              lastNewMoonDate = nm;
         } else {
              break;
@@ -503,7 +493,7 @@
          return exactDays + 1;
     }
     
-    return null;
+    return null; // Fallback if out of range
   }
 
   function getCelestialData(date) {
@@ -537,20 +527,26 @@
 
       let phase = "Waning Crescent", ico = "🌘";
       
+      // V89.4: Accurate Day Calculation
       let tDay = getLunarDayAnchor(date);
       if (!tDay) {
+          // Fallback if date is outside range (shouldn't happen for 2026)
           tDay = Math.floor((angle / 360) * 29.5) + 1;
       }
       
-      if (tDay === 1) { phase = "New Moon"; ico = "🌑"; isNew = true; } 
+      // Strict Phase Logic based on tDay for consistency
+      if (tDay === 1) { phase = "New Moon"; ico = "🌑"; isNew = true; } // Force New Moon on Day 1
       else if (tDay >= 2 && tDay <= 7) { phase = "Waxing Crescent"; ico = "🌒"; }
       else if (tDay >= 8 && tDay <= 9) { phase = "First Quarter"; ico = "🌓"; }
       else if (tDay >= 10 && tDay <= 14) { phase = "Waxing Gibbous"; ico = "🌔"; }
+      // Removed automatic "Full Moon" assignment for Day 15/16. 
+      // It is now strictly controlled by the array below.
       else if (tDay === 15) { phase = "Waxing Gibbous"; ico = "🌔"; } 
       else if (tDay >= 16 && tDay <= 21) { phase = "Waning Gibbous"; ico = "🌖"; }
       else if (tDay >= 22 && tDay <= 23) { phase = "Last Quarter"; ico = "🌗"; }
       else if (tDay >= 24) { phase = "Waning Crescent"; ico = "🌘"; }
 
+      // Override with exact Full Moon dates if available
       if (FULL_MOONS_ARRAY.some(m => m.d === dStrFull)) {
           phase = "Full Moon"; ico = "🌕"; isFull = true;
       }
@@ -627,6 +623,7 @@
     const data = getCelestialData(date);
     document.documentElement.style.setProperty('--aura', data.elColor);
     
+    // V83/V89: Master Title Logic - Always include the emoji
     const titleText = data.archetype ? data.archetype.n.toUpperCase() : data.phase.toUpperCase();
     const displayTitle = `${titleText} ${data.ico}`;
     
@@ -638,6 +635,7 @@
     
     let eventHTML = "";
     
+    // V89: UPDATED INTERACTIVE BADGES
     if(data.isPivot && data.isPivot.n === "Spring Equinox") {
       eventHTML += `<div class="event-badge newyear-badge" onclick="openSearch('${data.isPivot.l}')">HAPPY ANCESTRAL NEW YEAR! 🌸</div><br>`;
     } else if(data.isPivot) {
@@ -659,18 +657,19 @@
       document.getElementById("shadowCard").style.display = "none";
     }
     
-    // V90: NATURE TIP ROTATION LOGIC
+    // V91: NATURE TIP ROTATION LOGIC (Replaced Energy Logic)
     const start = new Date(date.getFullYear(), 0, 0);
     const diff = date - start;
     const oneDay = 1000 * 60 * 60 * 24;
     const dayOfYear = Math.floor(diff / oneDay);
     const tipIndex = dayOfYear % NATURE_TIPS.length;
     document.getElementById("natureText").innerText = NATURE_TIPS[tipIndex];
-
+    
     db.zodCache[date.toDateString()] = data.zod;
     localStorage.setItem('ancestral_moon_v89', JSON.stringify(db));
   }
 
+  // V83/V89: UPDATED MASTER MODAL - CLEAN & FOCUSED
   function openMasterModal(data) {
     const modal = document.getElementById("cosmicModal");
     const title = document.getElementById("modalTitle");
@@ -708,6 +707,13 @@
     overlay.style.display = "block";
   }
 
+  function setEnergy(val) {
+    let map = {'🔥':'fire','💧':'water','🌬️':'air','🪨':'earth'};
+    db.energy[selectedDate] = map[val];
+    localStorage.setItem('ancestral_moon_v89', JSON.stringify(db));
+    updateDash(new Date(selectedDate));
+  }
+
   function closeModal() { document.getElementById("cosmicModal").style.display = "none"; document.querySelector(".modal-overlay").style.display = "none"; }
 
   function copySisterReport() {
@@ -725,8 +731,8 @@
   function deleteEntry(dateStr) { if(confirm("Release this entry?")) { delete db.journals[dateStr]; delete db.logs[dateStr]; delete db.energy[dateStr]; localStorage.setItem('ancestral_moon_v89', JSON.stringify(db)); showView('grimoire'); } }
 
   function exportToCSV() {
-    let csv = "Date,Moon Phase,Zodiac,Element,Flow,Journal Entry\n";
-    const dates = Object.keys(db.journals).concat(Object.keys(db.logs)).sort((a,b) => new Date(b) - new Date(a));
+    let csv = "Date,Moon Phase,Zodiac,Element,Flow,Energy,Journal Entry\n";
+    const dates = Object.keys(db.journals).concat(Object.keys(db.logs), Object.keys(db.energy)).sort((a,b) => new Date(b) - new Date(a));
     const uniqueDates = [...new Set(dates)];
     
     uniqueDates.forEach(dStr => {
@@ -734,10 +740,11 @@
       const celestial = getCelestialData(d);
       
       let flow = db.logs[dStr] ? "Yes" : "No";
+      let energy = db.energy[dStr] ? db.energy[dStr].toUpperCase() : "N/A";
       let entry = db.journals[dStr] ? db.journals[dStr].replace(/(\r\n|\n|\r)/gm, " ").replace(/"/g, '""') : "";
       let phase = celestial.archetype ? celestial.archetype.n : celestial.phase;
       
-      csv += `"${dStr}","${phase}","${celestial.zod}","${celestial.el}","${flow}","${entry}"\n`;
+      csv += `"${dStr}","${phase}","${celestial.zod}","${celestial.el}","${flow}","${energy}","${entry}"\n`;
     });
 
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
@@ -762,11 +769,12 @@
     if(view === 'grimoire') {
       const g = document.getElementById('grimoireView'); g.style.display = 'block';
       const cont = document.getElementById('grimoireContent'); cont.innerHTML = "";
-      const dates = Object.keys(db.journals).concat(Object.keys(db.logs)).sort((a,b) => new Date(b) - new Date(a));
+      const dates = Object.keys(db.journals).concat(Object.keys(db.logs), Object.keys(db.energy)).sort((a,b) => new Date(b) - new Date(a));
       [...new Set(dates)].forEach(d => {
-        if(db.journals[d] || db.logs[d]) {
+        if(db.journals[d] || db.logs[d] || db.energy[d]) {
+          let en = db.energy[d] ? (db.energy[d] === 'fire' ? '🔥' : db.energy[d] === 'water' ? '💧' : db.energy[d] === 'air' ? '🌬️' : '🪨') : '';
           cont.innerHTML += `<div style="background:rgba(255,255,255,0.03); padding:15px; border-radius:15px; margin-bottom:10px; text-align:left; border-left:3px solid var(--aura);">
-            <div style="font-size:0.6rem; color:var(--gold); display:flex; justify-content:space-between; margin-bottom:5px;"><span>${d} • ${db.zodCache[d] || 'Cosmos'}</span> <span>${db.logs[d] ? '🩸' : ''}</span></div>
+            <div style="font-size:0.6rem; color:var(--gold); display:flex; justify-content:space-between; margin-bottom:5px;"><span>${d} • ${db.zodCache[d] || 'Cosmos'}</span> <span>${en} ${db.logs[d] ? '🩸' : ''}</span></div>
             <div style="font-family:'Charm'; font-size:1.1rem; color:#eee;">${db.journals[d] || "<i>Quiet.</i>"}</div>
             <div class="grim-actions"><button class="grim-btn" onclick="jumpToDate('${d}')">✏️</button><button class="grim-btn" onclick="deleteEntry('${d}')">🗑️</button></div>
           </div>`;
@@ -782,15 +790,18 @@
       
       yc.innerHTML += `<h4 style="color:var(--gold); font-family:'Cinzel'; margin-top:15px;">CELESTIAL PIVOTS</h4>`;
       
+      // V89: Chronological Sort for Pivots
       let sortedPivots = [];
       for(let p in PIVOT_DATA) {
         if(p.includes("Equinox") || p.includes("Solstice") || PIVOT_DATA[p].n.includes("Equinox") || PIVOT_DATA[p].n.includes("Solstice")) {
+             // Create a dummy date for sorting
              let d = new Date(`${p}, ${currentYear}`);
              sortedPivots.push({ date: d, key: p, name: PIVOT_DATA[p].n, link: PIVOT_DATA[p].l });
         }
       }
       sortedPivots.sort((a, b) => a.date - b.date);
 
+      // V89: INTERACTIVE LIST ITEMS
       sortedPivots.forEach(item => {
          if(currentYear === 2027 && (item.key === "Sep 22" || item.key === "Dec 21")) return; 
          if(currentYear === 2026 && (item.key === "Sep 23" || item.key === "Dec 22")) return; 
@@ -820,6 +831,7 @@
       });
     }
     
+    // V89: LIBRARY VIEW POPULATION
     if(view === 'library') {
       const lib = document.getElementById('libraryView'); lib.style.display = 'block';
       const cont = document.getElementById('libraryContent');
@@ -852,11 +864,12 @@
   function toggleFlow() { db.logs[selectedDate] = !db.logs[selectedDate]; localStorage.setItem('ancestral_moon_v89', JSON.stringify(db)); render(); updateDash(new Date(selectedDate)); }
   function changeMonth(n) { activeD.setMonth(activeD.getMonth() + n); render(); }
 
+  // V83: FINAL STAR ENGINE
   const sField = document.getElementById('starField');
   for(let i=0; i<200; i++) {
     const s = document.createElement('div'); s.className = 'star';
     s.style.left = Math.random()*100+'%'; s.style.top = Math.random()*100+'%';
-    s.style.width = Math.random()*2+'px'; s.style.height = s.style.width; 
+    s.style.width = Math.random()*2+'px'; s.style.height = s.style.width; // circular
     s.style.setProperty('--d', (Math.random()*4+2)+'s'); sField.appendChild(s);
   }
 
