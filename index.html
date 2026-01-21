@@ -17,7 +17,7 @@
       color: #fdfbff; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; overflow-x: hidden;
     }
     
-    /* V83 MAGICAL STAR FIELD */
+    /* STAR FIELD */
     .star-field { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
     .star { position: absolute; background: white; border-radius: 50%; animation: twinkle var(--d) infinite ease-in-out; box-shadow: 0 0 4px rgba(255, 255, 255, 0.8); }
     @keyframes twinkle { 
@@ -25,14 +25,14 @@
       50% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 8px rgba(255, 255, 255, 1); } 
     }
 
-    #oracleDash, #grimoireView, #yearlyView { 
+    #oracleDash, #grimoireView, #yearlyView, #libraryView { 
       width: 92%; max-width: 450px; background: var(--glass); backdrop-filter: blur(30px); 
       border: 1px solid rgba(230, 204, 255, 0.1); border-top: 3px solid var(--aura); 
       border-radius: 35px; padding: 20px; margin: 15px 0; box-shadow: 0 15px 50px rgba(0,0,0,0.9); text-align: center; display: none; position: relative;
     }
     #oracleDash { display: block; }
 
-    /* COSMIC MODAL STYLING */
+    /* MODAL */
     #cosmicModal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 85%; max-width: 400px; background: rgba(15, 5, 25, 0.98); border: 2px solid var(--gold); border-radius: 25px; padding: 25px; z-index: 1000; text-align: left; box-shadow: 0 0 50px rgba(200, 180, 255, 0.3); max-height: 80vh; overflow-y: auto; }
     .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 999; }
     
@@ -40,12 +40,11 @@
     .modal-section:last-child { border-bottom: none; }
     .modal-label { font-family: 'Cinzel'; font-size: 0.7rem; color: var(--gold); letter-spacing: 2px; display: block; margin-bottom: 8px; font-weight: bold; }
     .modal-content-text { font-family: 'Charm'; font-size: 1.2rem; color: #fff; line-height: 1.5; }
-    .modal-link { color: var(--zodiac); font-size: 0.8rem; text-decoration: underline; cursor: pointer; display: block; margin-top: 8px; font-family: 'Quicksand'; opacity: 0.8; }
 
+    /* CALENDAR GRID */
     #calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; width: 100%; max-width: 450px; margin-bottom: 10px; }
     .day-label { font-size: 0.55rem; color: var(--gold); font-family: 'Cinzel'; opacity: 0.6; }
     .day { background: rgba(255,255,255,0.02); border-radius: 10px; aspect-ratio: 1/1.2; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; border: 1.5px solid transparent; cursor: pointer; transition: 0.3s; }
-    
     .day.today { border: 2.5px solid var(--gold); box-shadow: 0 0 15px var(--gold); z-index: 2; }
     .day.full-moon-day { background: radial-gradient(circle, rgba(230, 204, 255, 0.3) 0%, transparent 70%); }
     .day.new-moon-day { background: radial-gradient(circle, rgba(75, 0, 130, 0.4) 0%, transparent 70%); }
@@ -58,7 +57,10 @@
     .m-ico { font-size: 1rem; margin-top: 5px; filter: drop-shadow(0 0 5px var(--aura)); }
     .z-ico { font-size: 0.45rem; color: var(--gold); margin-top: 2px; font-family: 'Cinzel'; }
 
-    .nav-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--gold); color: var(--gold); border-radius: 15px; padding: 8px 12px; font-family: 'Cinzel'; font-size: 0.6rem; margin: 5px; }
+    /* NAVIGATION */
+    .nav-container { display: flex; justify-content: space-between; width: 92%; max-width: 450px; flex-wrap: wrap; gap: 5px; }
+    .nav-btn { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid var(--gold); color: var(--gold); border-radius: 15px; padding: 8px; font-family: 'Cinzel'; font-size: 0.55rem; cursor: pointer; white-space: nowrap; }
+    
     .cycle-btn { border: 1.5px solid var(--blood); color: var(--blood); background: transparent; padding: 14px; border-radius: 30px; cursor: pointer; font-family: 'Cinzel'; font-size: 0.8rem; width: 100%; margin-top: 15px; transition: 0.3s; }
     .cycle-btn.active { background: var(--blood); color: white; box-shadow: 0 0 15px var(--blood); }
     .sister-btn { background: rgba(255,255,255,0.05); color: var(--gold); border: 1px solid var(--aura); padding: 10px; border-radius: 30px; cursor: pointer; font-family: 'Cinzel'; font-size: 0.65rem; width: 100%; margin-top: 10px; }
@@ -81,25 +83,15 @@
     .retro-badge { background: var(--retro); color: var(--space); box-shadow: 0 0 10px var(--retro); }
     .newyear-badge { background: linear-gradient(90deg, #2ecc71, #df80ff); color: white; box-shadow: 0 0 20px #2ecc71; padding: 8px 20px; font-size: 0.75rem; border: 1px solid white; cursor: pointer;}
     
-    /* V79/80: CLICKABLE GLOWING TITLE */
     .clickable-title { 
-      cursor: pointer; 
-      transition: all 0.4s ease; 
-      position: relative; 
-      display: inline-block;
-      text-shadow: 0 0 10px rgba(230, 204, 255, 0.3);
-      padding: 12px 30px;
-      background: rgba(230, 204, 255, 0.05);
-      border: 1px solid rgba(230, 204, 255, 0.25);
-      border-radius: 30px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      cursor: pointer; transition: all 0.4s ease; position: relative; display: inline-block;
+      text-shadow: 0 0 10px rgba(230, 204, 255, 0.3); padding: 12px 30px;
+      background: rgba(230, 204, 255, 0.05); border: 1px solid rgba(230, 204, 255, 0.25);
+      border-radius: 30px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
     }
     .clickable-title:hover { 
-      text-shadow: 0 0 20px var(--gold), 0 0 40px var(--aura); 
-      transform: scale(1.03) translateY(-3px);
-      color: #fff;
-      background: rgba(230, 204, 255, 0.12);
-      border-color: var(--gold);
+      text-shadow: 0 0 20px var(--gold), 0 0 40px var(--aura); transform: scale(1.03) translateY(-3px);
+      color: #fff; background: rgba(230, 204, 255, 0.12); border-color: var(--gold);
       box-shadow: 0 10px 25px rgba(230, 204, 255, 0.3), inset 0 0 15px rgba(230, 204, 255, 0.1);
     }
 
@@ -107,21 +99,26 @@
     .grim-btn { background: transparent; border: none; color: #aaa; font-size: 0.9rem; cursor: pointer; }
     .support-link { margin-top: 20px; font-size: 0.7rem; color: var(--gold); opacity: 0.7; cursor: pointer; text-decoration: underline; font-family: 'Cinzel'; display: block; }
     
+    /* LIBRARY STYLES */
+    .lib-section { margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; text-align: left; }
+    .lib-title { color: var(--gold); font-family: 'Cinzel'; font-size: 0.8rem; margin-bottom: 10px; display: block; letter-spacing: 2px;}
+    .lib-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .lib-btn { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); color: #ccc; padding: 10px; border-radius: 8px; font-size: 0.65rem; text-decoration: none; display: block; text-align: center; transition: 0.2s; font-family: 'Quicksand'; }
+    .lib-btn:hover { background: var(--aura); color: #fff; border-color: var(--gold); }
+
     .backup-section { border-top: 1px solid rgba(255,255,255,0.1); margin-top: 20px; padding-top: 20px; }
-    .backup-title { font-family: 'Cinzel'; font-size: 0.7rem; color: var(--gold); margin-bottom: 10px; display:block;}
-    .backup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .backup-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--gold); color: var(--gold); padding: 10px; border-radius: 10px; font-family: 'Cinzel'; font-size: 0.6rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; }
+    .backup-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--gold); color: var(--gold); padding: 12px; border-radius: 10px; font-family: 'Cinzel'; font-size: 0.7rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; width: 100%;}
     .backup-btn:hover { background: rgba(255,255,255,0.1); }
-    .export-btn { background: var(--aura); border: none; color: white; grid-column: span 2; }
   </style>
 </head>
 <body>
 
 <div class="star-field" id="starField"></div>
 
-<div style="display: flex; justify-content: space-between; width: 92%; max-width: 450px;">
+<div class="nav-container">
   <button class="nav-btn" onclick="showView('yearly')">YEARLY MAP</button>
   <button class="nav-btn" onclick="showView('grimoire')">MY HISTORY</button>
+  <button class="nav-btn" onclick="showView('library')">WISDOM LIBRARY</button>
 </div>
 
 <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 450px; margin: 10px 0;">
@@ -187,12 +184,8 @@
   
   <div class="backup-section">
     <span class="backup-title">DATA MANAGEMENT</span>
-    <div class="backup-grid">
-        <button class="backup-btn export-btn" onclick="exportToCSV()">📊 EXPORT SPREADSHEET (READABLE)</button>
-        <button class="backup-btn" onclick="backupData()">⬇️ BACKUP (FILE)</button>
-        <button class="backup-btn" onclick="document.getElementById('restoreInput').click()">⬆️ RESTORE</button>
-    </div>
-    <input type="file" id="restoreInput" style="display:none" onchange="restoreData(this)">
+    <button class="backup-btn export-btn" onclick="exportToCSV()">📊 EXPORT SPREADSHEET (READABLE)</button>
+    <div style="text-align:center; font-family:'Cinzel'; font-size:0.6rem; color:var(--gold); opacity:0.7; margin-top:5px;">✓ Auto-saving to this device</div>
   </div>
   
   <div id="grimoireContent" style="max-height: 350px; overflow-y: auto; margin-top: 15px;"></div>
@@ -205,10 +198,16 @@
   <div id="yearlyContent" style="text-align: left; padding: 10px; font-size: 0.75rem;"></div>
 </div>
 
+<div id="libraryView">
+  <span style="float:right; cursor:pointer;" onclick="showView('dash')">✕</span>
+  <h2 style="font-family:'Cinzel'; font-size: 1.2rem; margin-bottom: 20px;">WISDOM LIBRARY</h2>
+  <div id="libraryContent"></div>
+</div>
+
 <script>
   let activeD = new Date(2026, 0, 16); 
   let selectedDate = new Date().toDateString();
-  let db = JSON.parse(localStorage.getItem('ancestral_moon_v83')) || { logs: {}, journals: {}, zodCache: {}, energy: {} };
+  let db = JSON.parse(localStorage.getItem('ancestral_moon_v89')) || { logs: {}, journals: {}, zodCache: {}, energy: {} };
 
   const ELEMENTS = { "FIRE": "#ff4d4d", "EARTH": "#2ecc71", "AIR": "#3498db", "WATER": "#df80ff" };
   const ZOD_ELEMENTS = { "Aries ♈":"FIRE", "Leo ♌":"FIRE", "Sagittarius ♐":"FIRE", "Taurus ♉":"EARTH", "Virgo ♍":"EARTH", "Capricorn ♑":"EARTH", "Gemini ♊":"AIR", "Libra ♎":"AIR", "Aquarius ♒":"AIR", "Cancer ♋":"WATER", "Scorpio ♏":"WATER", "Pisces ♓":"WATER" };
@@ -438,7 +437,7 @@
       let sunLong = (280.466 + 36000.770 * T) % 360;
       let angle = (moonLong - sunLong + 360) % 360;
       
-      // Sun Sign Logic V83
+      // Sun Sign Logic V83/V89
       const sunSigns = ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"];
       const sunIndex = Math.floor(sunLong / 30);
       const sunZod = sunSigns[sunIndex] || "Aries";
@@ -539,7 +538,7 @@
     const data = getCelestialData(date);
     document.documentElement.style.setProperty('--aura', data.elColor);
     
-    // V83: Master Title Logic with Emoji
+    // V83/V89: Master Title Logic - Always include the emoji
     const titleText = data.archetype ? data.archetype.n.toUpperCase() : data.phase.toUpperCase();
     const displayTitle = `${titleText} ${data.ico}`;
     
@@ -581,10 +580,10 @@
     }
     
     db.zodCache[date.toDateString()] = data.zod;
-    localStorage.setItem('ancestral_moon_v83', JSON.stringify(db));
+    localStorage.setItem('ancestral_moon_v89', JSON.stringify(db));
   }
 
-  // V83: UPDATED MASTER MODAL WITH SUN SEASON LINK
+  // V83/V89: UPDATED MASTER MODAL - CLEAN & FOCUSED
   function openMasterModal(data) {
     const modal = document.getElementById("cosmicModal");
     const title = document.getElementById("modalTitle");
@@ -603,22 +602,18 @@
     <div class="modal-section">
       <span class="modal-label" style="color:var(--portal)">SUN IN ${data.sunZod.toUpperCase()} (THE SEASON)</span>
       <div class="modal-content-text">${sunMeaning}</div>
-      <a class="modal-link" href="https://www.google.com/search?q=sun+in+${data.sunZod}+season+spiritual+meaning" target="_blank">Explore ${data.sunZod} Season Energy</a>
     </div>
     <div class="modal-section">
       <span class="modal-label">MOON IN ${data.zod.toUpperCase()} (THE MOOD)</span>
       <div class="modal-content-text">${zodiacMeaning}</div>
-      <a class="modal-link" href="https://www.google.com/search?q=moon+in+${zodiacName}+spiritual+meaning" target="_blank">Dive Deeper into ${zodiacName} Moon</a>
     </div>
     <div class="modal-section">
       <span class="modal-label">PHASE INTEL: ${data.phase.toUpperCase()}</span>
       <div class="modal-content-text">${phaseMeaning}</div>
-      <a class="modal-link" href="https://www.google.com/search?q=${data.phase}+moon+spiritual+meaning" target="_blank">Explore ${data.phase} Energy</a>
     </div>
     <div class="modal-section" style="border-bottom:none;">
       <span class="modal-label" style="color:${data.elColor}">✧ ${data.el} ENERGY ✧</span>
       <div class="modal-content-text">${elementMeaning}</div>
-      <a class="modal-link" href="https://www.google.com/search?q=${data.el.toLowerCase()}+element+spiritual+meaning" target="_blank">Mastering ${data.el} Energy</a>
     </div>`;
     
     content.innerHTML = html;
@@ -629,7 +624,7 @@
   function setEnergy(val) {
     let map = {'🔥':'fire','💧':'water','🌬️':'air','🪨':'earth'};
     db.energy[selectedDate] = map[val];
-    localStorage.setItem('ancestral_moon_v83', JSON.stringify(db));
+    localStorage.setItem('ancestral_moon_v89', JSON.stringify(db));
     updateDash(new Date(selectedDate));
   }
 
@@ -647,32 +642,7 @@
   }
 
   function jumpToDate(dateStr) { selectedDate = dateStr; activeD = new Date(dateStr); render(); updateDash(activeD); showView('dash'); }
-  function deleteEntry(dateStr) { if(confirm("Release this entry?")) { delete db.journals[dateStr]; delete db.logs[dateStr]; delete db.energy[dateStr]; localStorage.setItem('ancestral_moon_v83', JSON.stringify(db)); showView('grimoire'); } }
-
-  function backupData() {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db));
-    const downloadAnchorNode = document.createElement('a');
-    downloadAnchorNode.setAttribute("href", dataStr);
-    downloadAnchorNode.setAttribute("download", "ancestral_moon_backup.json");
-    document.body.appendChild(downloadAnchorNode);
-    downloadAnchorNode.click();
-    downloadAnchorNode.remove();
-  }
-
-  function restoreData(input) {
-    const file = input.files[0];
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      try {
-        const importedDb = JSON.parse(e.target.result);
-        db = importedDb;
-        localStorage.setItem('ancestral_moon_v83', JSON.stringify(db));
-        alert("Grimoire Restored Successfully.");
-        render(); updateDash(new Date(selectedDate)); showView('grimoire');
-      } catch(err) { alert("Invalid backup file."); }
-    };
-    reader.readAsText(file);
-  }
+  function deleteEntry(dateStr) { if(confirm("Release this entry?")) { delete db.journals[dateStr]; delete db.logs[dateStr]; delete db.energy[dateStr]; localStorage.setItem('ancestral_moon_v89', JSON.stringify(db)); showView('grimoire'); } }
 
   function exportToCSV() {
     let csv = "Date,Moon Phase,Zodiac,Element,Flow,Energy,Journal Entry\n";
@@ -706,6 +676,8 @@
     document.getElementById('oracleDash').style.display = 'none';
     document.getElementById('grimoireView').style.display = 'none';
     document.getElementById('yearlyView').style.display = 'none';
+    document.getElementById('libraryView').style.display = 'none';
+    
     if(view === 'dash') document.getElementById('oracleDash').style.display = 'block';
     
     if(view === 'grimoire') {
@@ -731,14 +703,23 @@
       yc.innerHTML += `<h3 style="color:var(--gold); font-family:'Cinzel'; text-align:center;">${currentYear} CELESTIAL MAP</h3>`;
       
       yc.innerHTML += `<h4 style="color:var(--gold); font-family:'Cinzel'; margin-top:15px;">CELESTIAL PIVOTS</h4>`;
+      
+      // V89: Chronological Sort for Pivots
+      let sortedPivots = [];
       for(let p in PIVOT_DATA) {
-        if (p.includes("Equinox") || p.includes("Solstice") || PIVOT_DATA[p].n.includes("Equinox") || PIVOT_DATA[p].n.includes("Solstice")) {
-             if(currentYear === 2027 && (p === "Sep 22" || p === "Dec 21")) continue; 
-             if(currentYear === 2026 && (p === "Sep 23" || p === "Dec 22")) continue; 
-             
-             yc.innerHTML += `<div style="display:flex; justify-content:space-between; font-size:0.7rem; border-bottom:1px solid rgba(255,255,255,0.05); padding:5px 0;"><span>✨ ${PIVOT_DATA[p].n}</span> <span>${p}</span></div>`;
+        if(p.includes("Equinox") || p.includes("Solstice") || PIVOT_DATA[p].n.includes("Equinox") || PIVOT_DATA[p].n.includes("Solstice")) {
+             // Create a dummy date for sorting
+             let d = new Date(`${p}, ${currentYear}`);
+             sortedPivots.push({ date: d, key: p, name: PIVOT_DATA[p].n });
         }
       }
+      sortedPivots.sort((a, b) => a.date - b.date);
+
+      sortedPivots.forEach(item => {
+         if(currentYear === 2027 && (item.key === "Sep 22" || item.key === "Dec 21")) return; 
+         if(currentYear === 2026 && (item.key === "Sep 23" || item.key === "Dec 22")) return; 
+         yc.innerHTML += `<div style="display:flex; justify-content:space-between; font-size:0.7rem; border-bottom:1px solid rgba(255,255,255,0.05); padding:5px 0;"><span>✨ ${item.name}</span> <span>${item.key}</span></div>`;
+      });
       
       for(let e in CELESTIAL_EVENTS) yc.innerHTML += `<div style="display:flex; justify-content:space-between; font-size:0.7rem; border-bottom:1px solid rgba(255,255,255,0.05); padding:5px 0; color:var(--retro);"><span>🌀 ${CELESTIAL_EVENTS[e].n}</span> <span>${e}</span></div>`;
       
@@ -762,10 +743,35 @@
         yc.innerHTML += `<div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.05); padding:5px 0; color:var(--amethyst);"><span>🌑 ${displayDate} - New Moon</span> <span>${data.zod}</span></div>`;
       });
     }
+    
+    // V89: LIBRARY VIEW POPULATION
+    if(view === 'library') {
+      const lib = document.getElementById('libraryView'); lib.style.display = 'block';
+      const cont = document.getElementById('libraryContent');
+      if(!cont.innerHTML) {
+         let html = `<div class="lib-section"><span class="lib-title">SUN SIGNS (THE SEASONS)</span><div class="lib-grid">`;
+         for(let s in SUN_SIGN_DATA) html += `<a class="lib-btn" href="https://www.google.com/search?q=sun+in+${s}+spiritual+meaning" target="_blank">${s.toUpperCase()} ☀️</a>`;
+         html += `</div></div>`;
+         
+         html += `<div class="lib-section"><span class="lib-title">MOON SIGNS (THE MOOD)</span><div class="lib-grid">`;
+         for(let z in ZODIAC_WISDOM) html += `<a class="lib-btn" href="https://www.google.com/search?q=moon+in+${z}+spiritual+meaning" target="_blank">${z.toUpperCase()} 🌙</a>`;
+         html += `</div></div>`;
+         
+         html += `<div class="lib-section"><span class="lib-title">PHASES OF CREATION</span><div class="lib-grid">`;
+         for(let p in PHASE_MEANINGS) html += `<a class="lib-btn" href="https://www.google.com/search?q=${p}+moon+spiritual+meaning" target="_blank">${p.toUpperCase()}</a>`;
+         html += `</div></div>`;
+         
+         html += `<div class="lib-section"><span class="lib-title">ELEMENTAL ENERGY</span><div class="lib-grid">`;
+         for(let e in ELEMENT_MEANINGS) html += `<a class="lib-btn" href="https://www.google.com/search?q=${e.toLowerCase()}+element+spiritual+meaning" target="_blank">${e} ENERGY</a>`;
+         html += `</div></div>`;
+         
+         cont.innerHTML = html;
+      }
+    }
   }
 
-  function saveData() { db.journals[selectedDate] = document.getElementById("journalInput").value; localStorage.setItem('ancestral_moon_v83', JSON.stringify(db)); }
-  function toggleFlow() { db.logs[selectedDate] = !db.logs[selectedDate]; localStorage.setItem('ancestral_moon_v83', JSON.stringify(db)); render(); updateDash(new Date(selectedDate)); }
+  function saveData() { db.journals[selectedDate] = document.getElementById("journalInput").value; localStorage.setItem('ancestral_moon_v89', JSON.stringify(db)); }
+  function toggleFlow() { db.logs[selectedDate] = !db.logs[selectedDate]; localStorage.setItem('ancestral_moon_v89', JSON.stringify(db)); render(); updateDash(new Date(selectedDate)); }
   function changeMonth(n) { activeD.setMonth(activeD.getMonth() + n); render(); }
 
   // V83: FINAL STAR ENGINE
