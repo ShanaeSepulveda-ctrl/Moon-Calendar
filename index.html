@@ -209,7 +209,7 @@
   <h2 style="font-family:'Cinzel'; font-size: 1.2rem; margin-bottom: 20px;">WISDOM LIBRARY</h2>
   <div id="libraryContent"></div>
 </div>
-
+  
 <script>
   let activeD = new Date(2026, 0, 16); 
   let selectedDate = new Date().toDateString();
@@ -292,7 +292,7 @@
       "Waxing": ["Climb. The air is thin, but your lungs are strong. Capricorn rewards discipline. Keep going.", "Commit. You are building a legacy. Do not look for shortcuts; look for the stones that last.", "Build the empire. Every small action is a brick. Lay it with intention. You are the architect."], 
       "Waning": ["Put down the world. You have carried it long enough. Your shoulders need to rest.", "Flow around the rock. The mountain path twists. Do not force a straight line where there is a curve.", "The Elder rests. True authority comes from silence, not busy work. Sit and survey your kingdom."], 
       "Full": ["The Summit. Look how far you have come. Breathe in the view. You earned this altitude.", "Power manifested. Own your authority. You are the CEO of your own soul. Rule with wisdom.", "Structure illuminated. See the bones of your life. Give thanks for the stability that holds you."], 
-      "New": ["Blueprint in the dark. Plan the future in the silence. What legacy will you leave behind?", "What is your Great Work? Set an intention for your career and your calling.", "Ground your ambition. Root it in the earth before you try to touch the sky."] 
+      "New": ["Blueprint in the dark. Plan the future in the silence. What legacy will you leave behind?", "What is your Great Work? Set an intention for your career and your calling.", "Ground your ambition. Root it in the earth before you try to feed the world."] 
     },
     "Aquarius": { 
       "Waxing": ["Innovate. The old way is dead. Invent the new way. The ancestors applaud your rebellion.", "Connect to the web. You are a node in a vast network of light. Send out a signal of hope.", "Break the mold. Freedom is your fuel. Do not fit into the box; burn the box."], 
@@ -327,7 +327,6 @@
   const ZODIAC_WISDOM = { "Aries": "Warrior Energy. Initiation and Courage. A time to start.", "Taurus": "The Gardener. Grounding and Pleasure. A time to build.", "Gemini": "The Messenger. Connection and Wit. A time to speak.", "Cancer": "The Mother. Emotion and Safety. A time to nurture.", "Leo": "The Royal. Creativity and Joy. A time to shine.", "Virgo": "The Healer. Order and Service. A time to purify.", "Libra": "The Diplomat. Balance and Beauty. A time to relate.", "Scorpio": "The Alchemist. Depth and Transformation. A time to feel.", "Sagittarius": "The Explorer. Freedom and Truth. A time to seek.", "Capricorn": "The Architect. Ambition and Structure. A time to plan.", "Aquarius": "The Visionary. Innovation and Community. A time to dream.", "Pisces": "The Mystic. Dreams and Surrender. A time to trust." };
   const PHASE_MEANINGS = { "New Moon": "The Void. Potential and Planting. The start of the cycle.", "Waxing Crescent": "The Sprout. Courage and Growth. Taking the first step.", "First Quarter": "The Root. Action and Resistance. Overcoming obstacles.", "Waxing Gibbous": "The Bud. Refinement and perfecting. Adjusting the plan.", "Full Moon": "The Bloom. Peak energy and celebration. Illumination.", "Waning Gibbous": "The Fruit. Gratitude and Sharing. Harvesting.", "Last Quarter": "The Compost. Release and Forgiveness. Letting go.", "Waning Crescent": "The Seed. Rest and Surrender. Emptying the cup." };
   
-  // V89: UPDATED PIVOT DATA WITH SEARCH LINKS (l)
   const PIVOT_DATA = { 
     "Mar 20": {n: "Spring Equinox", w: "The Great Turning. Rebirth.", r: "Seed Ceremony.", l: "spiritual meaning of spring equinox ostara"}, 
     "Jun 21": {n: "Summer Solstice", w: "Zenith of Light. Power.", r: "Fire Crown.", l: "spiritual meaning of summer solstice litha"}, 
@@ -405,6 +404,14 @@
     "Aquarius": "Where do I detach to avoid feeling? Am I observing life instead of living it?",
     "Pisces": "What reality am I escaping? Where do I need boundaries to protect my energy?"
   };
+  
+  // V89.2: REFERENCE NEW MOONS FOR ANCHOR METHOD (Including late 2025 and early 2027)
+  const REFERENCE_NEW_MOONS = [
+    "Dec 19, 2025", "Jan 18, 2026", "Feb 17, 2026", "Mar 18, 2026", 
+    "Apr 17, 2026", "May 16, 2026", "Jun 15, 2026", "Jul 14, 2026", 
+    "Aug 12, 2026", "Sep 11, 2026", "Oct 10, 2026", "Nov 9, 2026", 
+    "Dec 8, 2026", "Jan 6, 2027"
+  ];
 
   function getDynamicContent(phase, zodiacSign, day) {
     try {
@@ -433,11 +440,41 @@
     return affirmations[element] || "I am aligned.";
   }
   
-  // V89: Helper for opening spiritual searches
   function openSearch(query) {
     if(query) {
       window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}`, '_blank');
     }
+  }
+  
+  // V89.2: Helper to calculate accurate Lunar Day based on Reference Arrays
+  function getLunarDayAnchor(date) {
+    const dTime = date.getTime();
+    let lastNewMoonDate = null;
+    
+    // Find the most recent new moon that is <= current date
+    for(let i = 0; i < REFERENCE_NEW_MOONS.length; i++) {
+        const nm = new Date(REFERENCE_NEW_MOONS[i]);
+        if (nm.getTime() <= dTime + 3600000) { // Add 1 hour buffer for timezone variance
+             lastNewMoonDate = nm;
+        } else {
+             break;
+        }
+    }
+    
+    if (lastNewMoonDate) {
+         const diffTime = Math.abs(date - lastNewMoonDate);
+         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+         // If same day, diffDays might be 0 or 1 depending on rounding
+         // We want New Moon date to be Day 1.
+         // Let's use strict day difference
+         const oneDay = 1000 * 60 * 60 * 24;
+         const d1 = new Date(lastNewMoonDate.getFullYear(), lastNewMoonDate.getMonth(), lastNewMoonDate.getDate());
+         const d2 = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+         const exactDays = Math.round((d2 - d1) / oneDay);
+         return exactDays + 1;
+    }
+    
+    return null; // Fallback if out of range
   }
 
   function getCelestialData(date) {
@@ -458,7 +495,6 @@
       let sunLong = (280.466 + 36000.770 * T) % 360;
       let angle = (moonLong - sunLong + 360) % 360;
       
-      // Sun Sign Logic V83/V89
       const sunSigns = ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"];
       const sunIndex = Math.floor(sunLong / 30);
       const sunZod = sunSigns[sunIndex] || "Aries";
@@ -471,18 +507,29 @@
       let isEvent = CELESTIAL_EVENTS[dStrShort];
 
       let phase = "Waning Crescent", ico = "🌘";
-      if (isFull) { phase = "Full Moon"; ico = "🌕"; }
-      else if (isNew) { phase = "New Moon"; ico = "🌑"; }
-      else if (angle < 90) { phase = "Waxing Crescent"; ico = "🌒"; }
-      else if (angle < 100) { phase = "First Quarter"; ico = "🌓"; }
-      else if (angle < 180) { phase = "Waxing Gibbous"; ico = "🌔"; }
-      else if (angle < 260) { phase = "Waning Gibbous"; ico = "🌖"; }
-      else if (angle < 280) { phase = "Last Quarter"; ico = "🌗"; }
-
-      let tDay = 1;
-      tDay = Math.floor((angle / 360) * 29.5) + 1;
-      if (tDay < 1) tDay = 1; if (tDay > 30) tDay = 1;
       
+      // V89.2: Accurate Day Calculation
+      let tDay = getLunarDayAnchor(date);
+      if (!tDay) {
+          // Fallback if date is outside range (shouldn't happen for 2026)
+          tDay = Math.floor((angle / 360) * 29.5) + 1;
+      }
+      
+      // Strict Phase Logic based on tDay for consistency
+      if (tDay === 1) { phase = "New Moon"; ico = "🌑"; isNew = true; } // Force New Moon on Day 1
+      else if (tDay >= 2 && tDay <= 7) { phase = "Waxing Crescent"; ico = "🌒"; }
+      else if (tDay >= 8 && tDay <= 9) { phase = "First Quarter"; ico = "🌓"; }
+      else if (tDay >= 10 && tDay <= 14) { phase = "Waxing Gibbous"; ico = "🌔"; }
+      else if (tDay >= 15 && tDay <= 16) { phase = "Full Moon"; ico = "🌕"; isFull = true; } // Approx Full Moon
+      else if (tDay >= 17 && tDay <= 21) { phase = "Waning Gibbous"; ico = "🌖"; }
+      else if (tDay >= 22 && tDay <= 23) { phase = "Last Quarter"; ico = "🌗"; }
+      else if (tDay >= 24) { phase = "Waning Crescent"; ico = "🌘"; }
+
+      // Override with exact Full Moon dates if available
+      if (FULL_MOONS_ARRAY.some(m => m.d === dStrFull)) {
+          phase = "Full Moon"; ico = "🌕"; isFull = true;
+      }
+
       let whisper, ritual, affirm;
       let fullMoonData = FULL_MOON_DATA[dStrFull];
       let newMoonData = NEW_MOON_DATA[dStrFull];
@@ -509,10 +556,6 @@
       let shadow = "";
       if (isNew) {
         shadow = SHADOW_WORK[zod.split(' ')[0]] || "What is hidden?";
-      }
-
-      if (dStrFull.includes("Jan 22, 2027")) {
-         // Override logic for 13th moon handled by FULL_MOON_DATA lookup
       }
 
       return { phase, ico, zod, sunZod, tDay, el, elColor: ELEMENTS[el], dStr: dStrShort, year: date.getFullYear(), isFull, isNew, isPivot: pivotData, isEvent, archetype: fullMoonData, whisper, ritual, shadow, affirm };
@@ -559,7 +602,6 @@
     const data = getCelestialData(date);
     document.documentElement.style.setProperty('--aura', data.elColor);
     
-    // V83/V89: Master Title Logic - Always include the emoji
     const titleText = data.archetype ? data.archetype.n.toUpperCase() : data.phase.toUpperCase();
     const displayTitle = `${titleText} ${data.ico}`;
     
@@ -571,7 +613,6 @@
     
     let eventHTML = "";
     
-    // V89: UPDATED INTERACTIVE BADGES
     if(data.isPivot && data.isPivot.n === "Spring Equinox") {
       eventHTML += `<div class="event-badge newyear-badge" onclick="openSearch('${data.isPivot.l}')">HAPPY ANCESTRAL NEW YEAR! 🌸</div><br>`;
     } else if(data.isPivot) {
@@ -608,7 +649,6 @@
     localStorage.setItem('ancestral_moon_v89', JSON.stringify(db));
   }
 
-  // V83/V89: UPDATED MASTER MODAL - CLEAN & FOCUSED
   function openMasterModal(data) {
     const modal = document.getElementById("cosmicModal");
     const title = document.getElementById("modalTitle");
@@ -729,18 +769,15 @@
       
       yc.innerHTML += `<h4 style="color:var(--gold); font-family:'Cinzel'; margin-top:15px;">CELESTIAL PIVOTS</h4>`;
       
-      // V89: Chronological Sort for Pivots
       let sortedPivots = [];
       for(let p in PIVOT_DATA) {
         if(p.includes("Equinox") || p.includes("Solstice") || PIVOT_DATA[p].n.includes("Equinox") || PIVOT_DATA[p].n.includes("Solstice")) {
-             // Create a dummy date for sorting
              let d = new Date(`${p}, ${currentYear}`);
              sortedPivots.push({ date: d, key: p, name: PIVOT_DATA[p].n, link: PIVOT_DATA[p].l });
         }
       }
       sortedPivots.sort((a, b) => a.date - b.date);
 
-      // V89: INTERACTIVE LIST ITEMS
       sortedPivots.forEach(item => {
          if(currentYear === 2027 && (item.key === "Sep 22" || item.key === "Dec 21")) return; 
          if(currentYear === 2026 && (item.key === "Sep 23" || item.key === "Dec 22")) return; 
@@ -770,7 +807,6 @@
       });
     }
     
-    // V89: LIBRARY VIEW POPULATION
     if(view === 'library') {
       const lib = document.getElementById('libraryView'); lib.style.display = 'block';
       const cont = document.getElementById('libraryContent');
@@ -800,12 +836,11 @@
   function toggleFlow() { db.logs[selectedDate] = !db.logs[selectedDate]; localStorage.setItem('ancestral_moon_v89', JSON.stringify(db)); render(); updateDash(new Date(selectedDate)); }
   function changeMonth(n) { activeD.setMonth(activeD.getMonth() + n); render(); }
 
-  // V83: FINAL STAR ENGINE
   const sField = document.getElementById('starField');
   for(let i=0; i<200; i++) {
     const s = document.createElement('div'); s.className = 'star';
     s.style.left = Math.random()*100+'%'; s.style.top = Math.random()*100+'%';
-    s.style.width = Math.random()*2+'px'; s.style.height = s.style.width; // circular
+    s.style.width = Math.random()*2+'px'; s.style.height = s.style.width; 
     s.style.setProperty('--d', (Math.random()*4+2)+'s'); sField.appendChild(s);
   }
 
