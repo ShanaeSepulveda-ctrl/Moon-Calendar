@@ -10,6 +10,7 @@
       --space: #020105; --gold: #e6ccff; --glass: rgba(12, 6, 24, 0.96); 
       --blood: #ff3385; --aura: #9d50bb; --amethyst: #df80ff;
       --retro: #ff6b6b; --portal: #ffd700; --moon-glow: #a8e6cf; --zodiac: #99ccff; --phase: #b388ff;
+      --earth: #2ecc71;
     }
     body { 
       font-family: 'Quicksand', sans-serif; background: var(--space); 
@@ -71,10 +72,10 @@
     .wisdom-text { font-family: 'Charm'; font-size: 1.15rem; line-height: 1.6; color: #eee; }
     .affirmation { font-family: 'Cinzel'; font-size: 0.7rem; color: var(--gold); margin-top: 12px; opacity: 0.8; font-style: italic; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 8px;}
     
-    .energy-row { display: flex; justify-content: space-between; margin-bottom: 5px; }
-    .energy-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 8px; flex: 1; margin: 0 3px; cursor: pointer; font-size: 1.2rem; transition: 0.3s; }
-    .energy-btn.active { background: var(--aura); border-color: var(--gold); box-shadow: 0 0 10px var(--aura); transform: scale(1.1); }
-    .energy-label { font-family: 'Cinzel'; font-size: 0.55rem; color: var(--gold); margin-bottom: 15px; height: 10px; letter-spacing: 1px; }
+    /* V90: NATURE REMINDER STYLES */
+    .nature-card { text-align: left; background: rgba(46, 204, 113, 0.08); border: 1px solid rgba(46, 204, 113, 0.3); border-radius: 20px; padding: 15px; margin-bottom: 15px; }
+    .nature-label { font-family: 'Cinzel'; font-size: 0.6rem; color: var(--earth); letter-spacing: 2px; display: block; margin-bottom: 5px; font-weight: bold; }
+    .nature-text { font-family: 'Quicksand'; font-size: 0.85rem; color: #e8f8f5; font-style: italic; line-height: 1.4; }
 
     #journalInput { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 15px; color: #fff; font-family: 'Charm'; font-size: 1.2rem; min-height: 100px; box-sizing: border-box; outline: none; }
     
@@ -156,13 +157,10 @@
     <div class="wisdom-text" id="ritualText"></div>
   </div>
 
-  <div class="energy-row">
-    <div class="energy-btn" onclick="setEnergy('🔥')" id="e-fire">🔥</div>
-    <div class="energy-btn" onclick="setEnergy('💧')" id="e-water">💧</div>
-    <div class="energy-btn" onclick="setEnergy('🌬️')" id="e-air">🌬️</div>
-    <div class="energy-btn" onclick="setEnergy('🪨')" id="e-earth">🪨</div>
+  <div class="nature-card">
+    <span class="nature-label">DAILY EARTH CONNECTION</span>
+    <div id="natureText" class="nature-text"></div>
   </div>
-  <div id="energyLabel" class="energy-label">Select your dominant energy</div>
 
   <textarea id="journalInput" placeholder="Scribe your soul's journey..." oninput="saveData()"></textarea>
   
@@ -209,7 +207,7 @@
   <h2 style="font-family:'Cinzel'; font-size: 1.2rem; margin-bottom: 20px;">WISDOM LIBRARY</h2>
   <div id="libraryContent"></div>
 </div>
-  
+
 <script>
   let activeD = new Date(2026, 0, 16); 
   let selectedDate = new Date().toDateString();
@@ -380,8 +378,6 @@
     "Dec 8, 2026": {s: "Sagittarius", w: "Arrow. New Moon in Sagittarius. The dark water of Scorpio finds a target. Aim high. This is the moon of freedom, expansion, and truth. What adventure is calling you? Set an intention that feels too big.", r: "1. Stand facing a direction you love. 2. Make a bow shape with your arms. 3. Visualize your intention as an arrow. 4. Release it with a breath. 5. Say: 'I fly free.'"}
   };
 
-  const NEW_MOONS_ARRAY = ["Jan 18, 2026", "Feb 17, 2026", "Mar 18, 2026", "Apr 17, 2026", "May 16, 2026", "Jun 15, 2026", "Jul 14, 2026", "Aug 12, 2026", "Sep 11, 2026", "Oct 10, 2026", "Nov 9, 2026", "Dec 8, 2026"];
-
   const CELESTIAL_EVENTS = {
     "Feb 2": {n: "Imbolc Portal", d: "A sacred midpoint between Winter and Spring. The earth is stirring. Energy: Promise, Purification, First Light.", l: "spiritual meaning of imbolc"},
     "Aug 8": {n: "Lion's Gate Portal", d: "A massive alignment of Earth, Sirius, and the Sun. High-frequency light codes for ascension and bold manifestation.", l: "lions gate portal spiritual meaning"},
@@ -417,6 +413,40 @@
     "Apr 17, 2026", "May 16, 2026", "Jun 15, 2026", "Jul 14, 2026", 
     "Aug 12, 2026", "Sep 11, 2026", "Oct 10, 2026", "Nov 9, 2026", 
     "Dec 8, 2026", "Jan 6, 2027"
+  ];
+  
+  // V90: NATURE TIPS DATABASE
+  const NATURE_TIPS = [
+    "Step outside and take three deep breaths of fresh air.",
+    "Find a tree and touch its bark. Feel the texture.",
+    "Look up at the sky. Watch the clouds drift for one minute.",
+    "Stand barefoot on the grass or soil for 5 minutes.",
+    "Listen closely. Can you hear a bird singing?",
+    "Find a natural object (stone, leaf) and hold it.",
+    "Turn your face to the sun and close your eyes.",
+    "Walk slowly and notice the small plants in the cracks.",
+    "Observe an insect going about its day.",
+    "Touch a leaf. Is it smooth, fuzzy, or waxy?",
+    "Watch the movement of the wind in the trees.",
+    "Find something beautiful that is smaller than your thumb.",
+    "Sit on a rock or the ground and just be.",
+    "Look for the moon, even in the daylight.",
+    "Notice the color of the sky at twilight.",
+    "Find a flower (wild or planted) and smell it.",
+    "Pick up a piece of litter and help the earth.",
+    "Listen to the sound of the wind or rain.",
+    "Notice the shadows stretching on the ground.",
+    "Find a pattern in nature (a spiral, a symmetry).",
+    "Find water (a puddle, stream, or fountain) and watch the ripples.",
+    "Touch the earth with your palms.",
+    "Look for a spiderweb and admire the engineering.",
+    "Find a rock that feels good in your hand.",
+    "Walk without your phone for 10 minutes.",
+    "Notice how the light changes through the leaves.",
+    "Find a bird and watch it fly.",
+    "Smell the air after the rain or in the morning.",
+    "Find a pinecone or a seed pod.",
+    "Just stand still and let the earth support you."
   ];
 
   function getDynamicContent(phase, zodiacSign, day) {
@@ -512,20 +542,15 @@
           tDay = Math.floor((angle / 360) * 29.5) + 1;
       }
       
-      // V89.4: STRICT SINGLE-DAY FULL MOON LOGIC
-      // Day 1 is always New Moon
       if (tDay === 1) { phase = "New Moon"; ico = "🌑"; isNew = true; } 
       else if (tDay >= 2 && tDay <= 7) { phase = "Waxing Crescent"; ico = "🌒"; }
       else if (tDay >= 8 && tDay <= 9) { phase = "First Quarter"; ico = "🌓"; }
       else if (tDay >= 10 && tDay <= 14) { phase = "Waxing Gibbous"; ico = "🌔"; }
-      // Removed automatic "Full Moon" assignment for Day 15/16. 
-      // It is now strictly controlled by the array below.
       else if (tDay === 15) { phase = "Waxing Gibbous"; ico = "🌔"; } 
       else if (tDay >= 16 && tDay <= 21) { phase = "Waning Gibbous"; ico = "🌖"; }
       else if (tDay >= 22 && tDay <= 23) { phase = "Last Quarter"; ico = "🌗"; }
       else if (tDay >= 24) { phase = "Waning Crescent"; ico = "🌘"; }
 
-      // OVERRIDE: Source of Truth for Full Moon (1 Day Only)
       if (FULL_MOONS_ARRAY.some(m => m.d === dStrFull)) {
           phase = "Full Moon"; ico = "🌕"; isFull = true;
       }
@@ -634,17 +659,14 @@
       document.getElementById("shadowCard").style.display = "none";
     }
     
-    const savedEnergy = db.energy[date.toDateString()];
-    document.querySelectorAll('.energy-btn').forEach(btn => btn.classList.remove('active'));
-    if(savedEnergy) {
-      const map = {'fire':'e-fire','water':'e-water','air':'e-air','earth':'e-earth'};
-      if(document.getElementById(map[savedEnergy])) document.getElementById(map[savedEnergy]).classList.add('active');
-      const labels = {'fire':'FIRE: HIGH / CREATIVE','water':'WATER: EMOTIONAL / FLOW','air':'AIR: MENTAL / CLEAR','earth':'EARTH: REST / GROUNDED'};
-      document.getElementById("energyLabel").innerText = labels[savedEnergy];
-    } else {
-      document.getElementById("energyLabel").innerText = "Select your dominant energy";
-    }
-    
+    // V90: NATURE TIP ROTATION LOGIC
+    const start = new Date(date.getFullYear(), 0, 0);
+    const diff = date - start;
+    const oneDay = 1000 * 60 * 60 * 24;
+    const dayOfYear = Math.floor(diff / oneDay);
+    const tipIndex = dayOfYear % NATURE_TIPS.length;
+    document.getElementById("natureText").innerText = NATURE_TIPS[tipIndex];
+
     db.zodCache[date.toDateString()] = data.zod;
     localStorage.setItem('ancestral_moon_v89', JSON.stringify(db));
   }
@@ -686,13 +708,6 @@
     overlay.style.display = "block";
   }
 
-  function setEnergy(val) {
-    let map = {'🔥':'fire','💧':'water','🌬️':'air','🪨':'earth'};
-    db.energy[selectedDate] = map[val];
-    localStorage.setItem('ancestral_moon_v89', JSON.stringify(db));
-    updateDash(new Date(selectedDate));
-  }
-
   function closeModal() { document.getElementById("cosmicModal").style.display = "none"; document.querySelector(".modal-overlay").style.display = "none"; }
 
   function copySisterReport() {
@@ -710,8 +725,8 @@
   function deleteEntry(dateStr) { if(confirm("Release this entry?")) { delete db.journals[dateStr]; delete db.logs[dateStr]; delete db.energy[dateStr]; localStorage.setItem('ancestral_moon_v89', JSON.stringify(db)); showView('grimoire'); } }
 
   function exportToCSV() {
-    let csv = "Date,Moon Phase,Zodiac,Element,Flow,Energy,Journal Entry\n";
-    const dates = Object.keys(db.journals).concat(Object.keys(db.logs), Object.keys(db.energy)).sort((a,b) => new Date(b) - new Date(a));
+    let csv = "Date,Moon Phase,Zodiac,Element,Flow,Journal Entry\n";
+    const dates = Object.keys(db.journals).concat(Object.keys(db.logs)).sort((a,b) => new Date(b) - new Date(a));
     const uniqueDates = [...new Set(dates)];
     
     uniqueDates.forEach(dStr => {
@@ -719,11 +734,10 @@
       const celestial = getCelestialData(d);
       
       let flow = db.logs[dStr] ? "Yes" : "No";
-      let energy = db.energy[dStr] ? db.energy[dStr].toUpperCase() : "N/A";
       let entry = db.journals[dStr] ? db.journals[dStr].replace(/(\r\n|\n|\r)/gm, " ").replace(/"/g, '""') : "";
       let phase = celestial.archetype ? celestial.archetype.n : celestial.phase;
       
-      csv += `"${dStr}","${phase}","${celestial.zod}","${celestial.el}","${flow}","${energy}","${entry}"\n`;
+      csv += `"${dStr}","${phase}","${celestial.zod}","${celestial.el}","${flow}","${entry}"\n`;
     });
 
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
@@ -748,12 +762,11 @@
     if(view === 'grimoire') {
       const g = document.getElementById('grimoireView'); g.style.display = 'block';
       const cont = document.getElementById('grimoireContent'); cont.innerHTML = "";
-      const dates = Object.keys(db.journals).concat(Object.keys(db.logs), Object.keys(db.energy)).sort((a,b) => new Date(b) - new Date(a));
+      const dates = Object.keys(db.journals).concat(Object.keys(db.logs)).sort((a,b) => new Date(b) - new Date(a));
       [...new Set(dates)].forEach(d => {
-        if(db.journals[d] || db.logs[d] || db.energy[d]) {
-          let en = db.energy[d] ? (db.energy[d] === 'fire' ? '🔥' : db.energy[d] === 'water' ? '💧' : db.energy[d] === 'air' ? '🌬️' : '🪨') : '';
+        if(db.journals[d] || db.logs[d]) {
           cont.innerHTML += `<div style="background:rgba(255,255,255,0.03); padding:15px; border-radius:15px; margin-bottom:10px; text-align:left; border-left:3px solid var(--aura);">
-            <div style="font-size:0.6rem; color:var(--gold); display:flex; justify-content:space-between; margin-bottom:5px;"><span>${d} • ${db.zodCache[d] || 'Cosmos'}</span> <span>${en} ${db.logs[d] ? '🩸' : ''}</span></div>
+            <div style="font-size:0.6rem; color:var(--gold); display:flex; justify-content:space-between; margin-bottom:5px;"><span>${d} • ${db.zodCache[d] || 'Cosmos'}</span> <span>${db.logs[d] ? '🩸' : ''}</span></div>
             <div style="font-family:'Charm'; font-size:1.1rem; color:#eee;">${db.journals[d] || "<i>Quiet.</i>"}</div>
             <div class="grim-actions"><button class="grim-btn" onclick="jumpToDate('${d}')">✏️</button><button class="grim-btn" onclick="deleteEntry('${d}')">🗑️</button></div>
           </div>`;
