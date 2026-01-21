@@ -218,7 +218,6 @@
   const ELEMENTS = { "FIRE": "#ff4d4d", "EARTH": "#2ecc71", "AIR": "#3498db", "WATER": "#df80ff" };
   const ZOD_ELEMENTS = { "Aries ♈":"FIRE", "Leo ♌":"FIRE", "Sagittarius ♐":"FIRE", "Taurus ♉":"EARTH", "Virgo ♍":"EARTH", "Capricorn ♑":"EARTH", "Gemini ♊":"AIR", "Libra ♎":"AIR", "Aquarius ♒":"AIR", "Cancer ♋":"WATER", "Scorpio ♏":"WATER", "Pisces ♓":"WATER" };
   
-  // V89.3: ADDED ZODIAC DATES
   const ZODIAC_DATES = {
     "Aries": "Mar 21 - Apr 19", "Taurus": "Apr 20 - May 20", "Gemini": "May 21 - Jun 20",
     "Cancer": "Jun 21 - Jul 22", "Leo": "Jul 23 - Aug 22", "Virgo": "Aug 23 - Sep 22",
@@ -513,15 +512,20 @@
           tDay = Math.floor((angle / 360) * 29.5) + 1;
       }
       
+      // V89.4: STRICT SINGLE-DAY FULL MOON LOGIC
+      // Day 1 is always New Moon
       if (tDay === 1) { phase = "New Moon"; ico = "🌑"; isNew = true; } 
       else if (tDay >= 2 && tDay <= 7) { phase = "Waxing Crescent"; ico = "🌒"; }
       else if (tDay >= 8 && tDay <= 9) { phase = "First Quarter"; ico = "🌓"; }
       else if (tDay >= 10 && tDay <= 14) { phase = "Waxing Gibbous"; ico = "🌔"; }
-      else if (tDay >= 15 && tDay <= 16) { phase = "Full Moon"; ico = "🌕"; isFull = true; } 
-      else if (tDay >= 17 && tDay <= 21) { phase = "Waning Gibbous"; ico = "🌖"; }
+      // Removed automatic "Full Moon" assignment for Day 15/16. 
+      // It is now strictly controlled by the array below.
+      else if (tDay === 15) { phase = "Waxing Gibbous"; ico = "🌔"; } 
+      else if (tDay >= 16 && tDay <= 21) { phase = "Waning Gibbous"; ico = "🌖"; }
       else if (tDay >= 22 && tDay <= 23) { phase = "Last Quarter"; ico = "🌗"; }
       else if (tDay >= 24) { phase = "Waning Crescent"; ico = "🌘"; }
 
+      // OVERRIDE: Source of Truth for Full Moon (1 Day Only)
       if (FULL_MOONS_ARRAY.some(m => m.d === dStrFull)) {
           phase = "Full Moon"; ico = "🌕"; isFull = true;
       }
@@ -808,7 +812,6 @@
       const cont = document.getElementById('libraryContent');
       if(!cont.innerHTML) {
          let html = `<div class="lib-section"><span class="lib-title">SUN SIGNS (THE SEASONS)</span><div class="lib-grid">`;
-         // V89.3: UPDATED LOOP TO INCLUDE DATES
          for(let s in SUN_SIGN_DATA) {
              const range = ZODIAC_DATES[s] || "";
              html += `<a class="lib-btn" href="https://www.google.com/search?q=sun+in+${s}+spiritual+meaning" target="_blank">${s.toUpperCase()} ☀️<br><span style="font-size:0.55rem; opacity:0.6">${range}</span></a>`;
