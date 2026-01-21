@@ -97,10 +97,10 @@
     .grim-btn { background: transparent; border: none; color: #aaa; font-size: 0.9rem; cursor: pointer; }
     .support-link { margin-top: 20px; font-size: 0.7rem; color: var(--gold); opacity: 0.7; cursor: pointer; text-decoration: underline; font-family: 'Cinzel'; display: block; }
     
-    /* LIBRARY STYLES */
+    /* LIBRARY STYLES - RESTORED TO SIDE-BY-SIDE */
     .lib-section { margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; text-align: left; }
     .lib-title { color: var(--gold); font-family: 'Cinzel'; font-size: 0.8rem; margin-bottom: 10px; display: block; letter-spacing: 2px;}
-    .lib-grid { display: grid; grid-template-columns: 1fr; gap: 8px; }
+    .lib-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .lib-btn { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); color: #ccc; padding: 12px; border-radius: 8px; font-size: 0.75rem; text-decoration: none; display: block; text-align: left; transition: 0.2s; font-family: 'Quicksand'; }
     .lib-btn:hover { background: var(--aura); color: #fff; border-color: var(--gold); }
 
@@ -333,21 +333,23 @@
     "Mar 20": {n: "Spring Equinox", w: "The Great Turning. Rebirth.", r: "Seed Ceremony.", l: "spiritual meaning of spring equinox ostara"}, 
     "Jun 21": {n: "Summer Solstice", w: "Zenith of Light. Power.", r: "Fire Crown.", l: "spiritual meaning of summer solstice litha"}, 
     "Sep 22": {n: "Autumn Equinox", w: "Second Harvest. Balance.", r: "Release Leaf.", l: "spiritual meaning of autumn equinox mabon"}, 
-    "Dec 21": {n: "Winter Solstice", w: "Womb of Night. Stillness.", r: "Return of Light.", l: "spiritual meaning of winter solstice yule"}, 
-    "Sep 23": {n: "Autumn Equinox", w: "Second Harvest.", r: "Release Leaf.", l: "spiritual meaning of autumn equinox mabon"}, 
-    "Dec 22": {n: "Winter Solstice", w: "Womb of Night.", r: "Return of Light.", l: "spiritual meaning of winter solstice yule"} 
+    "Dec 21": {n: "Winter Solstice", w: "Womb of Night. Stillness.", r: "Return of Light.", l: "spiritual meaning of winter solstice yule"},
+    "Feb 17": {n: "Solar Eclipse", w: "The Great Reset. A Ring of Fire in the sky. Sudden endings and beginnings.", r: "Do not manifest. Just be.", l: "spiritual meaning of solar eclipse feb 2026"},
+    "Mar 3": {n: "Lunar Eclipse", w: "Blood Moon. Deep emotional purging. What is leaving you is meant to go.", r: "Release Ritual.", l: "spiritual meaning of lunar eclipse mar 2026"},
+    "Aug 12": {n: "Solar Eclipse", w: "Total Blackout. Destiny shifts. The path changes under your feet.", r: "Trust the dark.", l: "spiritual meaning of solar eclipse aug 2026"},
+    "Aug 28": {n: "Lunar Eclipse", w: "Shadow Release. Old karmic cycles are breaking.", r: "Cord cutting.", l: "spiritual meaning of lunar eclipse aug 2026"}
   };
   
   const FULL_MOON_DATA = {
     "Jan 3, 2026": {n: "Wolf Moon", w: "Endurance. Loyalty to your pack. Hunger that drives you forward. In the cold, your voice carries further. What truth have you been afraid to voice? Now is the time to throw your head back and let it out.", r: "1. Stand outside or near a window. 2. Visualize the wolf spirit beside you. 3. Howl (or hum loudly) your deepest truth to the moon. 4. Feel the vibration in your chest. 5. Affirm: 'My voice is my power.'"},
     "Feb 1, 2026": {n: "Snow Moon", w: "Purity. The world is frozen, purified by the white blanket of the Snow Moon. Underneath, life is sleeping, not dead. This moon asks for patience and deep cleansing. It is a time to freeze out the distractions and focus on the pristine clarity of your own soul.", r: "1. Gather a bowl of clean snow or ice. 2. Whisper your worries into the ice. 3. Watch it melt, transforming the hard worry into fluid water. 4. Pour the water into the earth. 5. Say: 'I dissolve what binds me.'"},
-    "Mar 3, 2026": {n: "Worm Moon", w: "Awakening. The earth softens. The Worm Moon signals the return of life from the soil. It is the moon of awakening, of movement after stagnation. Shake off the winter lethargy. Your roots are stirring; it is time to push upward toward the light.", r: "1. Stand barefoot on the floor or earth. 2. Pulse your toes, imagining waking up the soil. 3. Shake your whole body for 60 seconds. 4. Feel the blood rushing. 5. Say: 'I am awake. I am alive.'"},
+    "Mar 3, 2026": {n: "Worm Moon (Eclipse)", w: "Awakening & Eclipse. The earth softens and the shadow falls. This is a time of deep, karmic purging. The Worm Moon signals the return of life, while the Eclipse demands you release the dead weight.", r: "1. Stand barefoot on the floor or earth. 2. Pulse your toes, imagining waking up the soil. 3. Shake your whole body for 60 seconds. 4. Feel the blood rushing. 5. Say: 'I am awake. I am alive.'"},
     "Apr 2, 2026": {n: "Pink Moon", w: "Emergence. The Pink Moon is not named for its color, but for the wild ground phlox, the first flowers of spring. It is the moon of emergence and blooming. You have survived the dark; now you must risk being seen. Show your colors to the world.", r: "1. Find a pink flower or stone (or visualize pink light). 2. Anoint your forehead and heart with water. 3. Hold the object to your heart. 4. Visualize a bud opening in your chest. 5. Say: 'I bloom without apology.'"},
     "May 1, 2026": {n: "Flower Moon", w: "Abundance. The Flower Moon celebrates the fullness of potential. The world is fertile, scented, and alive. This energy supports your creativity and your sensuality. You are a garden; tend to yourself with delight.", r: "1. Create a mandala of leaves/petals (or draw one). 2. Sit in the center (or focus on the center). 3. Breathe in the energy of growth. 4. Whisper one desire into the center. 5. Say: 'I am open to receive.'"},
     "May 31, 2026": {n: "Strawberry Moon", w: "Sweetness and ripeness. The Strawberry Moon is the time of harvesting the first fruits of your labor. Life is meant to be tasted, not just observed. Savor the moment. Find the sweetness in your daily life, even in the small things.", r: "1. Eat a sweet fruit (strawberry or other) very slowly. 2. Feel the juice and texture. 3. Offer gratitude for the sweetness of life. 4. Visualize your life filling with nectar. 5. Say: 'My life is sweet and full.'"},
     "Jun 29, 2026": {n: "Buck Moon", w: "Strength. The buck's antlers are in full velvet, growing rapidly. This is the moon of masculine strength, ambition, and claiming your territory. Stand tall in your convictions. It is a time to regenerate your power and show the world who you are.", r: "1. Stand with legs wide, arms reaching up like antlers. 2. Breathe deeply into your belly. 3. Visualize energy rooting you down and pulling you up. 4. Claim your space. 5. Roar or exhale loudly: 'I am here. I am strong.'"},
     "Jul 29, 2026": {n: "Sturgeon Moon", w: "Depth. The ancient fish of the deep lakes. The Sturgeon Moon connects you to the deep, primal waters of your subconscious. You are resilient, capable of swimming against the current. Survival is in your DNA. Trust your ancient instincts.", r: "1. Submerge your hands in a bowl of water. 2. Close your eyes and imagine diving deep. 3. Ask the water: 'What do I need to know?' 4. Listen for the silence. 5. Say: 'I trust my depth.'"},
-    "Aug 28, 2026": {n: "Harvest Moon", w: "Gathering. The bright moon that allows farmers to work late. The Harvest Moon is about gathering what you have grown. Look at your life: what is ready to be collected? Gratitude is the tool that harvests the gold from the straw.", r: "1. Hold a handful of grains, rice, or seeds. 2. Name 3 things you have 'grown' this year. 3. Blow thanks into the seeds. 4. Offer them to the birds or the wind. 5. Say: 'I receive my harvest.'"},
+    "Aug 28, 2026": {n: "Harvest Moon (Eclipse)", w: "Gathering & Shadow. A powerful partial lunar eclipse. The Harvest Moon usually brings abundance, but this shadow asks you to look at what you have harvested that is rotten. Discard it now.", r: "1. Hold a handful of grains, rice, or seeds. 2. Name 3 things you have 'grown' this year. 3. Blow thanks into the seeds. 4. Offer them to the birds or the wind. 5. Say: 'I receive my harvest.'"},
     "Sep 26, 2026": {n: "Hunter's Moon", w: "Preparation. The fields are bare; the hunt begins. The Hunter's Moon is about preparation and release. It is a time to hunt down the habits, fears, and doubts that will not serve you in the winter. Be ruthless in clearing your path.", r: "1. Light a candle. 2. Stare at the flame. 3. Identify one habit to 'hunt' and release. 4. Blow out the candle sharply to seal the end of that habit. 5. Say: 'It is done. I am free.'"},
     "Oct 25, 2026": {n: "Beaver Moon", w: "Security. The beaver builds the dam to ensure safety. This moon asks you to secure your spiritual and physical home. Check your foundations. Do you have enough spiritual sustenance to last the winter?", r: "1. Physically clean your altar or a sacred shelf. 2. Light incense or sage to clear the air. 3. Sit in the clean space. 4. Visualize a golden shield around your home. 5. Say: 'My sanctuary is safe.'"},
     "Nov 24, 2026": {n: "Cold Moon", w: "Stillness. The nights are long, the air is sharp. The Cold Moon brings the gift of stillness. The chaos of growth has stopped; now is the time of integration. In the silence of the winter night, you can finally hear the voice of your own soul.", r: "1. Sit in total darkness for 5 minutes. 2. Do not move. 3. Find the internal light that glows when the world is dark. 4. Focus on your heartbeat. 5. Say: 'I am the light in the winter.'"},
@@ -362,13 +364,13 @@
 
   const NEW_MOON_DATA = {
     "Jan 18, 2026": {s: "Capricorn", w: "Architect. New Moon in Capricorn. You are standing at the base of a new mountain. This is not a time for wild emotion, but for cold, hard strategy. What empire do you wish to build this year? Lay the cornerstone today in the silence.", r: "1. Write a 1-year goal on a stone or paper. 2. Bury it in a pot of soil (or the earth). 3. Stand over it. 4. Visualize a massive tree growing from it. 5. Say: 'I build for the future.'"},
-    "Feb 17, 2026": {s: "Aquarius", w: "Visionary. New Moon in Aquarius. The old rules no longer apply. Break the mold. This moon asks you to detach from who you were expected to be and connect with who you authentically are. The future is streaming in; download the vision.", r: "1. Sit under the open sky (or a window). 2. Breathe in the cold air. 3. Visualize a lightning bolt of inspiration hitting your crown. 4. Write down the wildest idea you have. 5. Say: 'I am free.'"},
+    "Feb 17, 2026": {s: "Aquarius", w: "Visionary & Eclipse. New Moon in Aquarius. A Solar Eclipse opens a portal of destiny. The old rules are incinerated. Break the mold. This moon asks you to detach from who you were expected to be and connect with who you authentically are.", r: "1. Sit under the open sky (or a window). 2. Breathe in the cold air. 3. Visualize a lightning bolt of inspiration hitting your crown. 4. Write down the wildest idea you have. 5. Say: 'I am free.'"},
     "Mar 18, 2026": {s: "Pisces", w: "Mystic. New Moon in Pisces. The final moon of the cycle. The veil is nonexistent. You are swimming in the cosmic ocean. Surrender your logic; it cannot help you here. Trust your dreams, your intuition, and the invisible currents.", r: "1. Take a salt bath by candlelight. 2. Play no music; just listen to water. 3. Imagine dissolving into the water. 4. Ask for a vision. 5. Say: 'I surrender to the flow.'"},
     "Apr 17, 2026": {s: "Aries", w: "Spark. New Moon in Aries. The first moon of the new zodiac cycle. Absolute beginnings. The energy is raw, fast, and fiery. Do not overthink; act. Plant a seed of courage. What would you do if you knew you could not fail?", r: "1. Light a single red candle. 2. Stare at the flame until your eyes water. 3. Shout your intention out loud. 4. Feel the heat. 5. Say: 'I begin. I am.'"},
     "May 16, 2026": {s: "Taurus", w: "Garden. New Moon in Taurus. Slow down. The fire of Aries settles into the earth. Plant seeds of worthiness, abundance, and peace. This is the time to set intentions for your physical body and your financial security.", r: "1. Hold a coin and a seed in your hand. 2. Walk barefoot on the earth. 3. Plant the seed and place the coin next to it (or on your altar). 4. Say: 'I grow in value.'"},
     "Jun 15, 2026": {s: "Gemini", w: "Messenger. New Moon in Gemini. The air is buzzing with new ideas. It is time to open your mind and your throat chakra. Speak your intentions into existence. Write, talk, connect. The magic is in the word.", r: "1. Write a letter to the Universe. 2. Read it out loud to the wind. 3. Burn the letter and let the smoke carry the words. 4. Listen to the wind. 5. Say: 'My voice creates.'"},
     "Jul 14, 2026": {s: "Cancer", w: "Womb. New Moon in Cancer. We return to the source. This is the most fertile moon of the year for emotional beginnings. Plant seeds of love, family, and self-care. Nurture yourself as you would a newborn.", r: "1. Create a cozy nest with pillows/blankets. 2. Hold a cup of water to your heart. 3. Whisper your needs into the water. 4. Drink it. 5. Say: 'I nourish myself.'"},
-    "Aug 12, 2026": {s: "Leo", w: "Crown. New Moon in Leo. A new cycle of creativity and confidence begins. The universe wants you to shine. Where have you been hiding? Step onto the stage of your own life and command the spotlight. You are worthy.", r: "1. Look in a mirror by candlelight. 2. Look into your own left eye. 3. Say 'I love you' 3 times. 4. Place a hand on your heart. 5. Say: 'I am the Queen of my life.'"},
+    "Aug 12, 2026": {s: "Leo", w: "Crown & Eclipse. New Moon in Leo. A Total Solar Eclipse. The king is dead, long live the king. A massive ego death and rebirth. The universe wants you to shine, but first you must drop the mask.", r: "1. Look in a mirror by candlelight. 2. Look into your own left eye. 3. Say 'I love you' 3 times. 4. Place a hand on your heart. 5. Say: 'I am the Queen of my life.'"},
     "Sep 11, 2026": {s: "Virgo", w: "Healer. New Moon in Virgo. The party of Leo is over; now we do the work. It is time to purify, organize, and heal. Set intentions for your daily routine. How you live your days is how you live your life.", r: "1. Cleanse your space with sage or sound. 2. Write a precise list of 3 goals. 3. Place a crystal on the list. 4. Commit to one small action today. 5. Say: 'I am focused and pure.'"},
     "Oct 10, 2026": {s: "Libra", w: "Mirror. New Moon in Libra. A new cycle for relationships. Balance is the key. Are you giving too much? Taking too much? Set intentions for harmony, beauty, and partnership. Invite peace into your heart.", r: "1. Light two white candles. 2. Tie a string between them loosely. 3. Visualize a relationship healing. 4. Cut the string to release old patterns. 5. Say: 'I am whole in myself.'"},
     "Nov 9, 2026": {s: "Scorpio", w: "Shadow. New Moon in Scorpio. The deepest moon of the year. We go underground. It is time to face what you fear and transform it into power. Plant seeds of transformation in the dark. Magic is potent tonight.", r: "1. Sit in total darkness. 2. Breathe into your pelvis/root. 3. Visualize a secret desire you are afraid to admit. 4. Claim it in the dark. 5. Say: 'I am not afraid of the dark.'"},
@@ -384,8 +386,13 @@
     "Feb 26": {n: "Mercury Retrograde Begins", d: "Communication turns inward. Do not fear; review. Energy: Reflection, Rewriting, Pausing.", l: "mercury retrograde spiritual meaning"},
     "Mar 20": {n: "Mercury Direct", d: "The shadow period clears. Move forward with the wisdom learned in the silence.", l: "mercury direct spiritual meaning"},
     "Jun 29": {n: "Mercury Retrograde Begins", d: "Thoughts turn nostalgic. Old friends may return. Energy: Reconnecting, Revisiting, Remembering.", l: "mercury retrograde in cancer spiritual meaning"},
-    "Oct 21": {n: "Mercury Retrograde Begins", d: "Deep psychological review. Secrets are revealed for healing.", l: "mercury retrograde in scorpio spiritual meaning"},
-    "Jan 1": {n: "Mars Retrograde", d: "Action turns passive. Anger requires understanding, not expression. Energy: Internal Drive, Patience.", l: "mars retrograde spiritual meaning"}
+    "Jul 23": {n: "Mercury Direct", d: "Direct motion returns. Proceed with the plans you reviewed.", l: "mercury direct july 2026"},
+    "Oct 24": {n: "Mercury Retrograde Begins", d: "Deep psychological review. Secrets are revealed for healing.", l: "mercury retrograde in scorpio spiritual meaning"},
+    "Nov 12": {n: "Mercury Direct", d: "Clarity returns. Speak your truth.", l: "mercury direct november 2026"},
+    "Feb 17": {n: "Solar Eclipse", d: "A Ring of Fire. Major new beginnings.", l: "solar eclipse feb 2026 spiritual"},
+    "Mar 3": {n: "Lunar Eclipse", d: "Total Lunar Eclipse. Blood Moon. Release.", l: "lunar eclipse march 2026 spiritual"},
+    "Aug 12": {n: "Solar Eclipse", d: "Total Solar Eclipse. Destiny shifts.", l: "solar eclipse aug 2026 spiritual"},
+    "Aug 28": {n: "Lunar Eclipse", d: "Partial Lunar Eclipse. Shadow work.", l: "lunar eclipse aug 2026 spiritual"}
   };
 
   const MOON_ANCHORS = [
@@ -407,7 +414,7 @@
     "Pisces": "What reality am I escaping? Where do I need boundaries to protect my energy?"
   };
   
-  // V89.2: REFERENCE NEW MOONS FOR ANCHOR METHOD (Including late 2025 and early 2027)
+  // V90: ACCURATE NEW MOONS FOR DAY 1 ANCHOR
   const REFERENCE_NEW_MOONS = [
     "Dec 19, 2025", "Jan 18, 2026", "Feb 17, 2026", "Mar 18, 2026", 
     "Apr 17, 2026", "May 16, 2026", "Jun 15, 2026", "Jul 14, 2026", 
@@ -448,15 +455,20 @@
     }
   }
   
-  // V89.2: Helper to calculate accurate Lunar Day based on Reference Arrays
+  // V90: Strict Calculation - If day matches array, it IS Day 1.
   function getLunarDayAnchor(date) {
     const dTime = date.getTime();
+    const dStrFull = date.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
+    
+    // Exact match override
+    if(NEW_MOONS_ARRAY.includes(dStrFull)) return 1;
+
     let lastNewMoonDate = null;
     
     // Find the most recent new moon that is <= current date
     for(let i = 0; i < REFERENCE_NEW_MOONS.length; i++) {
         const nm = new Date(REFERENCE_NEW_MOONS[i]);
-        if (nm.getTime() <= dTime + 3600000) { // Add 1 hour buffer for timezone variance
+        if (nm.getTime() <= dTime + 7200000) { // Add buffer
              lastNewMoonDate = nm;
         } else {
              break;
@@ -464,19 +476,13 @@
     }
     
     if (lastNewMoonDate) {
-         const diffTime = Math.abs(date - lastNewMoonDate);
-         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
-         // If same day, diffDays might be 0 or 1 depending on rounding
-         // We want New Moon date to be Day 1.
-         // Let's use strict day difference
          const oneDay = 1000 * 60 * 60 * 24;
          const d1 = new Date(lastNewMoonDate.getFullYear(), lastNewMoonDate.getMonth(), lastNewMoonDate.getDate());
          const d2 = new Date(date.getFullYear(), date.getMonth(), date.getDate());
          const exactDays = Math.round((d2 - d1) / oneDay);
          return exactDays + 1;
     }
-    
-    return null; // Fallback if out of range
+    return null; 
   }
 
   function getCelestialData(date) {
@@ -501,6 +507,7 @@
       const sunIndex = Math.floor(sunLong / 30);
       const sunZod = sunSigns[sunIndex] || "Aries";
 
+      // EXACT DATE CHECK for Moon Phase
       let isFull = FULL_MOONS_ARRAY.some(m => m.d === dStrFull);
       let isNew = NEW_MOONS_ARRAY.includes(dStrFull);
       
@@ -510,27 +517,24 @@
 
       let phase = "Waning Crescent", ico = "🌘";
       
-      // V89.2: Accurate Day Calculation
+      // Calculate Day
       let tDay = getLunarDayAnchor(date);
-      if (!tDay) {
-          // Fallback if date is outside range (shouldn't happen for 2026)
-          tDay = Math.floor((angle / 360) * 29.5) + 1;
-      }
+      if (!tDay) tDay = Math.floor((angle / 360) * 29.5) + 1;
       
-      // Strict Phase Logic based on tDay for consistency
-      if (tDay === 1) { phase = "New Moon"; ico = "🌑"; isNew = true; } // Force New Moon on Day 1
+      // V90: STRICT PHASE LOGIC (No Duplicate Full Moons)
+      if (isNew) { phase = "New Moon"; ico = "🌑"; tDay = 1; }
+      else if (isFull) { phase = "Full Moon"; ico = "🌕"; }
       else if (tDay >= 2 && tDay <= 7) { phase = "Waxing Crescent"; ico = "🌒"; }
       else if (tDay >= 8 && tDay <= 9) { phase = "First Quarter"; ico = "🌓"; }
-      else if (tDay >= 10 && tDay <= 14) { phase = "Waxing Gibbous"; ico = "🌔"; }
-      else if (tDay >= 15 && tDay <= 16) { phase = "Full Moon"; ico = "🌕"; isFull = true; } // Approx Full Moon
+      else if (tDay >= 10 && tDay <= 14) { phase = "Waxing Gibbous"; ico = "🌔"; } // Prevent range overlaps
+      else if (tDay >= 15 && tDay <= 16) { 
+        // IF it is day 15/16 but NOT the exact Full Moon date from array, call it Gibbous or Disseminating
+        phase = "Waxing Gibbous"; ico = "🌔"; 
+        if(tDay > 15.5) { phase = "Waning Gibbous"; ico = "🌖"; }
+      }
       else if (tDay >= 17 && tDay <= 21) { phase = "Waning Gibbous"; ico = "🌖"; }
       else if (tDay >= 22 && tDay <= 23) { phase = "Last Quarter"; ico = "🌗"; }
       else if (tDay >= 24) { phase = "Waning Crescent"; ico = "🌘"; }
-
-      // Override with exact Full Moon dates if available
-      if (FULL_MOONS_ARRAY.some(m => m.d === dStrFull)) {
-          phase = "Full Moon"; ico = "🌕"; isFull = true;
-      }
 
       let whisper, ritual, affirm;
       let fullMoonData = FULL_MOON_DATA[dStrFull];
@@ -635,8 +639,6 @@
     } else {
       document.getElementById("shadowCard").style.display = "none";
     }
-    
-    // Removed Energy Selection Logic
     
     db.zodCache[date.toDateString()] = data.zod;
     localStorage.setItem('ancestral_moon_v89', JSON.stringify(db));
@@ -798,7 +800,6 @@
       const cont = document.getElementById('libraryContent');
       if(!cont.innerHTML) {
           let html = `<div class="lib-section"><span class="lib-title">SUN SIGNS (THE SEASONS)</span><div class="lib-grid">`;
-          // Now includes standard zodiac date ranges
           for(let s in SUN_SIGN_DATA) {
             const dates = SUN_SIGN_DATES[s] || "";
             html += `<a class="lib-btn" href="https://www.google.com/search?q=sun+in+${s}+spiritual+meaning" target="_blank">${s.toUpperCase()} <br><span style="font-size:0.6rem; opacity:0.7;">${dates}</span> ☀️</a>`;
