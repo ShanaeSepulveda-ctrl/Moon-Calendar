@@ -72,7 +72,7 @@
     .wisdom-text { font-family: 'Charm'; font-size: 1.15rem; line-height: 1.6; color: #eee; }
     .affirmation { font-family: 'Cinzel'; font-size: 0.7rem; color: var(--gold); margin-top: 12px; opacity: 0.8; font-style: italic; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 8px;}
     
-    /* V91: NATURE CARD STYLING */
+    /* V93: NATURE CARD (No Energy Buttons) */
     .nature-card { text-align: left; background: rgba(39, 174, 96, 0.1); border: 1px solid rgba(39, 174, 96, 0.3); border-radius: 20px; padding: 15px; margin-bottom: 15px; }
     .nature-label { font-family: 'Cinzel'; font-size: 0.6rem; color: var(--earth); letter-spacing: 2px; display: block; margin-bottom: 5px; font-weight: bold; }
     .nature-text { font-family: 'Quicksand'; font-size: 0.85rem; color: #e8f8f5; font-style: italic; line-height: 1.4; }
@@ -376,6 +376,10 @@
     "Jan 1": {n: "Mars Retrograde", d: "Action turns passive. Anger requires understanding, not expression. Energy: Internal Drive, Patience.", l: "mars retrograde spiritual meaning"}
   };
 
+  const MOON_ANCHORS = [
+    {d: new Date(2026, 0, 3), n: "Wolf Moon"}, {d: new Date(2027, 0, 22), n: "Wolf Moon"}
+  ];
+
   const SHADOW_WORK = {
     "Aries": "Where am I afraid to be weak, and does my anger protect a deeper hurt?",
     "Taurus": "What comfort zone has become a cage? What am I hoarding out of fear?",
@@ -391,7 +395,14 @@
     "Pisces": "What reality am I escaping? Where do I need boundaries to protect my energy?"
   };
   
-  // V91: NATURE TIPS DATABASE
+  // V93: RESTORED REFERENCE NEW MOONS (The critical list for accurate alignment)
+  const REFERENCE_NEW_MOONS = [
+    "Dec 19, 2025", "Jan 18, 2026", "Feb 17, 2026", "Mar 18, 2026", 
+    "Apr 17, 2026", "May 16, 2026", "Jun 15, 2026", "Jul 14, 2026", 
+    "Aug 12, 2026", "Sep 11, 2026", "Oct 10, 2026", "Nov 9, 2026", 
+    "Dec 8, 2026", "Jan 6, 2027"
+  ];
+  
   const NATURE_TIPS = [
     "Step outside and take three deep breaths of fresh air.",
     "Find a tree and touch its bark. Feel the texture.",
@@ -458,29 +469,36 @@
     }
   }
   
-  // V92: ROBUST ASTRONOMICAL AGE CALCULATOR (REPLACES FRAGILE ANCHOR LIST)
-  function getAccurateMoonAge(date) {
-    // Reference New Moon: Jan 18, 2026 at 10:53 UTC (approx)
-    const knownNewMoon = new Date('2026-01-18T10:53:00Z'); 
-    const synodicMonth = 29.53059;
+  // V93: RESTORED ANCHOR LOGIC (Day 1 = Exact New Moon Date)
+  function getLunarDayAnchor(date) {
+    const dTime = date.getTime();
+    let lastNewMoonDate = null;
     
-    // Calculate difference in milliseconds
-    const diff = date.getTime() - knownNewMoon.getTime();
-    const daysSince = diff / (1000 * 60 * 60 * 24);
+    // Find the most recent new moon that is <= current date
+    for(let i = 0; i < REFERENCE_NEW_MOONS.length; i++) {
+        const nm = new Date(REFERENCE_NEW_MOONS[i]);
+        if (nm.getTime() <= dTime + 3600000) { 
+             lastNewMoonDate = nm;
+        } else {
+             break;
+        }
+    }
     
-    // Calculate position in cycle
-    let age = daysSince % synodicMonth;
-    if(age < 0) age += synodicMonth; // Handle dates before reference
+    if (lastNewMoonDate) {
+         const oneDay = 1000 * 60 * 60 * 24;
+         const d1 = new Date(lastNewMoonDate.getFullYear(), lastNewMoonDate.getMonth(), lastNewMoonDate.getDate());
+         const d2 = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+         const exactDays = Math.round((d2 - d1) / oneDay);
+         return exactDays + 1;
+    }
     
-    return Math.floor(age) + 1; // Return Day 1 to 30
+    return null;
   }
 
   function getCelestialData(date) {
     try {
       const dStrFull = date.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
       const dStrShort = date.toLocaleDateString('en-US', {month:'short', day:'numeric'});
-      
-      // Calculate Zodiac (Approximate)
       const jd = (date.getTime() / 86400000) + 2440587.5;
       const T = (jd - 2451545.0) / 36525;
       let moonLong = (218.316 + 481267.881 * T + 6.289 * Math.sin((135.27 + 477198.87 * T) * Math.PI / 180));
@@ -492,8 +510,9 @@
       const zod = signs[zodIndex] || "Aries ♈";
       const el = ZOD_ELEMENTS[zod] || "EARTH";
       
-      // Sun Sign Logic
       let sunLong = (280.466 + 36000.770 * T) % 360;
+      let angle = (moonLong - sunLong + 360) % 360;
+      
       const sunSigns = ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"];
       const sunIndex = Math.floor(sunLong / 30);
       const sunZod = sunSigns[sunIndex] || "Aries";
@@ -505,29 +524,26 @@
       let isPivot = !!pivotData;
       let isEvent = CELESTIAL_EVENTS[dStrShort];
 
-      // V92: Use Robust Math
-      let tDay = getAccurateMoonAge(date);
-      
       let phase = "Waning Crescent", ico = "🌘";
       
-      // Strict Phase Logic based on tDay
+      let tDay = getLunarDayAnchor(date);
+      if (!tDay) {
+          tDay = Math.floor((angle / 360) * 29.5) + 1;
+      }
+      
+      // V93: RESTORED PHASE LOGIC BASED ON DAY COUNT
       if (tDay === 1) { phase = "New Moon"; ico = "🌑"; isNew = true; } 
       else if (tDay >= 2 && tDay <= 7) { phase = "Waxing Crescent"; ico = "🌒"; }
       else if (tDay >= 8 && tDay <= 9) { phase = "First Quarter"; ico = "🌓"; }
       else if (tDay >= 10 && tDay <= 14) { phase = "Waxing Gibbous"; ico = "🌔"; }
-      else if (tDay === 15) { phase = "Waxing Gibbous"; ico = "🌔"; } // Gap day before full
+      // Removed automatic "Full Moon" assignment for Day 15/16 to enforce 1-day rule
+      else if (tDay === 15) { phase = "Waxing Gibbous"; ico = "🌔"; } 
       else if (tDay >= 16 && tDay <= 21) { phase = "Waning Gibbous"; ico = "🌖"; }
       else if (tDay >= 22 && tDay <= 23) { phase = "Last Quarter"; ico = "🌗"; }
       else if (tDay >= 24) { phase = "Waning Crescent"; ico = "🌘"; }
 
-      // OVERRIDE: Source of Truth for Full Moon (1 Day Only)
       if (FULL_MOONS_ARRAY.some(m => m.d === dStrFull)) {
           phase = "Full Moon"; ico = "🌕"; isFull = true;
-      }
-      
-      // OVERRIDE: Source of Truth for New Moon
-      if (NEW_MOONS_ARRAY.includes(dStrFull)) {
-          phase = "New Moon"; ico = "🌑"; isNew = true;
       }
 
       let whisper, ritual, affirm;
@@ -634,7 +650,7 @@
       document.getElementById("shadowCard").style.display = "none";
     }
     
-    // V91: NATURE TIP ROTATION LOGIC
+    // V93: NATURE TIP ROTATION LOGIC
     const start = new Date(date.getFullYear(), 0, 0);
     const diff = date - start;
     const oneDay = 1000 * 60 * 60 * 24;
@@ -759,15 +775,18 @@
       
       yc.innerHTML += `<h4 style="color:var(--gold); font-family:'Cinzel'; margin-top:15px;">CELESTIAL PIVOTS</h4>`;
       
+      // V89: Chronological Sort for Pivots
       let sortedPivots = [];
       for(let p in PIVOT_DATA) {
         if(p.includes("Equinox") || p.includes("Solstice") || PIVOT_DATA[p].n.includes("Equinox") || PIVOT_DATA[p].n.includes("Solstice")) {
+             // Create a dummy date for sorting
              let d = new Date(`${p}, ${currentYear}`);
              sortedPivots.push({ date: d, key: p, name: PIVOT_DATA[p].n, link: PIVOT_DATA[p].l });
         }
       }
       sortedPivots.sort((a, b) => a.date - b.date);
 
+      // V89: INTERACTIVE LIST ITEMS
       sortedPivots.forEach(item => {
          if(currentYear === 2027 && (item.key === "Sep 22" || item.key === "Dec 21")) return; 
          if(currentYear === 2026 && (item.key === "Sep 23" || item.key === "Dec 22")) return; 
@@ -797,6 +816,7 @@
       });
     }
     
+    // V89: LIBRARY VIEW POPULATION
     if(view === 'library') {
       const lib = document.getElementById('libraryView'); lib.style.display = 'block';
       const cont = document.getElementById('libraryContent');
@@ -842,4 +862,3 @@
 </script>
 </body>
 </html>
-
