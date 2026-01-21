@@ -3,15 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  
   <title>The Ancient Rhythm</title>
-  <meta name="apple-mobile-web-app-title" content="Ancient Rhythm">
-  <meta name="application-name" content="The Ancient Rhythm">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
-  <link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAMAAAAKE/YAAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAABQVBMVEUAAAAA//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8A//8AAAD///8+Uq1fAAAAXnRSTlMAQObYz2O/1F6b6P7M9Y6q4f32i/D88rK9hW+g0v2s2Jt2d4CAjXp68/H00L65rKyfm5uPj4J+e3twaGZkXltQT05JSEVBPz46NzAqJyUjGxUTDQsIBgUEAgEAAAF7271iAAAAAWJLR0QAiAUdSAAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB+kBEw4vH7l46zAAAAKASURBVFjD7drbjtMwFADQdE/pC4888P//2R6q9oB0l5i4x3pme5IkF9uJc7hJ2g4AAAAAAAAAAAAAAAAAALiL1f1y/b/fX65/L5f9/nK5rOs6X9/W+3V9Xy7n9W29n9f3/X47n9f39X49r+/r/Xpe39f79by+r/freX1f79fzen+/v8+39X49r/f3+/t8W+/X83p/v7/Pt/V+Pa/39/v7fFvv1/N6f7+/z7f1fj2v9/f7+3xb79fzen+/v8+39X49r/f3+/t8W+/X83p/v7/Pt/V+Pa/39/v7fFvv1/N6f7+/z7f1fj2v9/f7+3xb79fzen+/v8+39X49r/f3+/t8W+/X83p/v7/Pt/V+Pa/39/v7fFvv1/N6f7+/z7f1fj2v9/f7+3xb79fzen+/v8+39X49r/f3+/t8W+/X83p/v7/Pt/V+Pa/39/v7fFvv1/N6f7+/z7f1fj2v9/f7+3xb79fzen+/v8+39X49r/f3+/t8W+/X83p/v7/Pt/V+Pa/39/v7fFvv1/N6f7+/z7f1fj2v9/f7+3xb79fz+n//HwAAAAAAAAAAAAAAAAD4n34B2x5f8W6kZ8MAAAAASUVORK5CYII=" />
-
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Charm:wght@400;700&family=Quicksand:wght@300;500&display=swap" rel="stylesheet">
   <style>
     :root { 
@@ -25,6 +17,7 @@
       color: #fdfbff; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; overflow-x: hidden;
     }
     
+    /* V83 MAGICAL STAR FIELD */
     .star-field { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
     .star { position: absolute; background: white; border-radius: 50%; animation: twinkle var(--d) infinite ease-in-out; box-shadow: 0 0 4px rgba(255, 255, 255, 0.8); }
     @keyframes twinkle { 
@@ -39,6 +32,7 @@
     }
     #oracleDash { display: block; }
 
+    /* COSMIC MODAL STYLING */
     #cosmicModal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 85%; max-width: 400px; background: rgba(15, 5, 25, 0.98); border: 2px solid var(--gold); border-radius: 25px; padding: 25px; z-index: 1000; text-align: left; box-shadow: 0 0 50px rgba(200, 180, 255, 0.3); max-height: 80vh; overflow-y: auto; }
     .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 999; }
     
@@ -87,6 +81,7 @@
     .retro-badge { background: var(--retro); color: var(--space); box-shadow: 0 0 10px var(--retro); }
     .newyear-badge { background: linear-gradient(90deg, #2ecc71, #df80ff); color: white; box-shadow: 0 0 20px #2ecc71; padding: 8px 20px; font-size: 0.75rem; border: 1px solid white; cursor: pointer;}
     
+    /* V79/80: CLICKABLE GLOWING TITLE */
     .clickable-title { 
       cursor: pointer; 
       transition: all 0.4s ease; 
@@ -114,10 +109,10 @@
     
     .backup-section { border-top: 1px solid rgba(255,255,255,0.1); margin-top: 20px; padding-top: 20px; }
     .backup-title { font-family: 'Cinzel'; font-size: 0.7rem; color: var(--gold); margin-bottom: 10px; display:block;}
-    .backup-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
-    .backup-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--gold); color: var(--gold); padding: 12px; border-radius: 10px; font-family: 'Cinzel'; font-size: 0.7rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; width: 100%;}
+    .backup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .backup-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--gold); color: var(--gold); padding: 10px; border-radius: 10px; font-family: 'Cinzel'; font-size: 0.6rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; }
     .backup-btn:hover { background: rgba(255,255,255,0.1); }
-    .export-btn { background: var(--aura); border: none; color: white; }
+    .export-btn { background: var(--aura); border: none; color: white; grid-column: span 2; }
   </style>
 </head>
 <body>
@@ -194,8 +189,10 @@
     <span class="backup-title">DATA MANAGEMENT</span>
     <div class="backup-grid">
         <button class="backup-btn export-btn" onclick="exportToCSV()">📊 EXPORT SPREADSHEET (READABLE)</button>
-        <div style="text-align:center; font-family:'Cinzel'; font-size:0.6rem; color:var(--gold); opacity:0.7; margin-top:5px;">✓ Auto-saving to this device</div>
+        <button class="backup-btn" onclick="backupData()">⬇️ BACKUP (FILE)</button>
+        <button class="backup-btn" onclick="document.getElementById('restoreInput').click()">⬆️ RESTORE</button>
     </div>
+    <input type="file" id="restoreInput" style="display:none" onchange="restoreData(this)">
   </div>
   
   <div id="grimoireContent" style="max-height: 350px; overflow-y: auto; margin-top: 15px;"></div>
@@ -211,7 +208,7 @@
 <script>
   let activeD = new Date(2026, 0, 16); 
   let selectedDate = new Date().toDateString();
-  let db = JSON.parse(localStorage.getItem('ancestral_moon_v88')) || { logs: {}, journals: {}, zodCache: {}, energy: {} };
+  let db = JSON.parse(localStorage.getItem('ancestral_moon_v83')) || { logs: {}, journals: {}, zodCache: {}, energy: {} };
 
   const ELEMENTS = { "FIRE": "#ff4d4d", "EARTH": "#2ecc71", "AIR": "#3498db", "WATER": "#df80ff" };
   const ZOD_ELEMENTS = { "Aries ♈":"FIRE", "Leo ♌":"FIRE", "Sagittarius ♐":"FIRE", "Taurus ♉":"EARTH", "Virgo ♍":"EARTH", "Capricorn ♑":"EARTH", "Gemini ♊":"AIR", "Libra ♎":"AIR", "Aquarius ♒":"AIR", "Cancer ♋":"WATER", "Scorpio ♏":"WATER", "Pisces ♓":"WATER" };
@@ -232,33 +229,93 @@
   };
 
   const DAILY_WISDOM_LIBRARY = {
-    "Aries": { "Waxing": ["The spark has caught. Fan the flame.", "Warrior spirit supports you.", "Initiate action now."], "Waning": ["Release anger.", "Reflect on battles.", "Pause and rest."], "Full": ["Passion is a beacon.", "Stand tall.", "Celebrate victory."], "New": ["Seed of fire.", "Void is potential.", "Silence before strike."] },
-    "Taurus": { "Waxing": ["Build slowly.", "Nourish the seed.", "Ground intentions."], "Waning": ["Release clutter.", "Compost excess.", "Let go of stubbornness."], "Full": ["Harvest pleasure.", "Honor the body.", "Solid manifestation."], "New": ["Plant deep.", "Intention for peace.", "Rest in earth."] },
-    "Gemini": { "Waxing": ["Speak truth.", "Connect ideas.", "Curiosity is key."], "Waning": ["Quiet mind.", "Unlearn.", "Wind settles."], "Full": ["Illuminate mind.", "Open conversation.", "Share light."], "New": ["Plant thought.", "Set voice intention.", "Blank page."] },
-    "Cancer": { "Waxing": ["Nurture dream.", "Flow with tide.", "Build safety."], "Waning": ["Release weight.", "Forgive past.", "Return to source."], "Full": ["Overflowing heart.", "Mother shines.", "Trust intuition."], "New": ["Womb of world.", "Plant love.", "Retreat inward."] },
-    "Leo": { "Waxing": ["Shine.", "Create.", "Play."], "Waning": ["Release applause.", "Ego rests.", "Shed mask."], "Full": ["Radiance.", "Lead with love.", "Celebrate self."], "New": ["Seed of creativity.", "Intention for joy.", "Listen to heart."] },
-    "Virgo": { "Waxing": ["Refine plan.", "Attend ritual.", "Purify intent."], "Waning": ["Cleanse.", "Release perfection.", "Analyze."], "Full": ["Service is magic.", "Order from chaos.", "Healing light."], "New": ["Seed of order.", "Health intention.", "Quiet service."] },
-    "Libra": { "Waxing": ["Balance scales.", "Beautify path.", "Connect."], "Waning": ["Release pleasing.", "Trust choice.", "Unbind."], "Full": ["Mirror magic.", "Climax of beauty.", "Justice."], "New": ["Peace intention.", "Sow partnership.", "Equilibrium."] },
-    "Scorpio": { "Waxing": ["Dive deep.", "Invest energy.", "Trust gut."], "Waning": ["Shed skin.", "Release grudge.", "Compost soul."], "Full": ["Phoenix rises.", "Secrets revealed.", "Intense magic."], "New": ["The void.", "Die to be born.", "Plant secret."] },
-    "Sagittarius": { "Waxing": ["Aim high.", "Explore.", "Expand vision."], "Waning": ["Release dogma.", "Simplify.", "Wanderer rests."], "Full": ["Truth illuminates.", "Wild celebration.", "Teacher speaks."], "New": ["Seed of freedom.", "Seek truth.", "Trust path."] },
-    "Capricorn": { "Waxing": ["Climb.", "Commit.", "Build legacy."], "Waning": ["Release burden.", "Flow around.", "Elder rests."], "Full": ["The summit.", "Power manifested.", "Structure."], "New": ["Blueprint.", "Great Work.", "Ground ambition."] },
-    "Aquarius": { "Waxing": ["Innovate.", "Connect web.", "Break mold."], "Waning": ["Release detachment.", "Just be.", "Clear static."], "Full": ["Cosmic connection.", "Rebel shines.", "Future vision."], "New": ["Download vision.", "Need space.", "Seed for collective."] },
-    "Pisces": { "Waxing": ["Dream.", "Flow.", "Create."], "Waning": ["Dissolve.", "Surrender.", "Cleansing rain."], "Full": ["Mystical union.", "Dreamer awakens.", "Ocean of light."], "New": ["Womb of universe.", "Pray.", "Drift."] }
+    "Aries": { 
+      "Waxing": ["The spark has caught the wind. You are not waiting for permission; you are the permission. Act before the impulse cools.", "The ancestors lend you their iron will today. Push through the inertia. The only way out is through.", "Initiation requires a reckless kind of faith. Jump, and build your wings on the way down."], 
+      "Waning": ["Lay down your sword. The war is over for today. Your strength now lies in your capacity to rest without apology.", "The fire burns low, warming the hearth instead of the battlefield. Tend to your inner flame; it needs protection, not fuel.", "Shed the need to conquer. There is a victory in simply existing. Breathe into your belly and find the stillness."], 
+      "Full": ["You are the bonfire on the mountain. Burn bright enough to be seen from the valley. Your existence is a signal fire.", "Claim your sovereignty. You are the author of this moment. Stand tall in your own light and let the shadows fall behind.", "A climax of will. What you desire is rushing toward you. Do not flinch. Open your arms and receive the heat."], 
+      "New": ["In the velvet dark, a new seed of courage is planted. Do not rush the sprouting. Strength gathers in the silence.", "The void is electric with potential. You are being re-wired for bravery. Rest in the darkness before the dawn.", "Silence before the strike. The arrow is being pulled back. Trust the tension; it promises distance."] 
+    },
+    "Taurus": { 
+      "Waxing": ["Build your life like a cathedral—stone by stone, with absolute reverence. There is no rush when you are building for eternity.", "The earth supports your weight. Lean into the process. Growth is not a race; it is a deepening of roots.", "Solidify your dreams. Make them tangible. Touch the earth, eat good food, and remind your spirit it has a home."], 
+      "Waning": ["Release the clutter. You cannot receive the new harvest if your hands are full of yesterday's withered leaves.", "Compost what is heavy. Let the earth metabolize your grief and turn it into fuel for the coming spring.", "The season of shedding. Let go of the stubborn need to control. Yielding to the cycle is the ultimate strength."], 
+      "Full": ["Your body is the altar. Feast on the present moment. If it does not bring deep, resonant pleasure, why are you holding it?", "Abundance is not a number; it is a feeling in the bones. Soak in the richness of your life right now.", "The garden is in full bloom. Stop working and start admiring. You have grown a life of beauty; pause to smell it."], 
+      "New": ["Plant your intentions in the dark, rich soil of silence. Do not dig them up to check on them. Trust the dark.", "Rest in the embrace of the Great Mother. You are safe here. You are held. You do not need to strive.", "A quiet germination. Seeds of wealth and worthiness are awakening underground. Sleep, and let them grow."] 
+    },
+    "Gemini": { 
+      "Waxing": ["Your words are spells today. Speak only what you wish to become true. The air is listening to your command.", "Follow the golden thread of curiosity. It may seem like a distraction, but it is leading you to a necessary door.", "Connect the dots. Your mind is a loom, weaving disparate threads into a tapestry of understanding."], 
+      "Waning": ["Quiet the mental storm. Let the winds die down so you can hear the birdsong. Your mind needs a Sabbath.", "Unlearn the stories that keep you small. You are the narrator, and you have the power to edit the script.", "Release the need to know the answer. Rest in the question. The mystery is a friend, not a puzzle to solve."], 
+      "Full": ["Illumination strikes like lightning. The fog lifts, and you see the path clearly. Do not look away from the truth.", "Your voice is a bridge. Share your story today; someone is waiting on the other side of the river for your words.", "A whirlwind of connection. You are a node in the cosmic web. Vibrate with truth and watch the web tremble."], 
+      "New": ["The air is still. A blank page lies before you. Pick up the quill. What is the first sentence of your new life?", "Plant a seed of communication. Is there a silence that needs to be broken? Resolve to speak.", "The mind is a calm lake. Drop a single intention into the center and watch the ripples touch the shore."] 
+    },
+    "Cancer": { 
+      "Waxing": ["Protect your dream like a mother protects a child. It is too young for the harsh air of criticism. Keep it close.", "Flow with the rising water. Your intuition is a river; do not try to dam it. Let it take you where you need to go.", "Build your sanctuary. You cannot bloom if you do not feel safe. Create a soft place to land."], 
+      "Waning": ["The tide goes out, taking the debris with it. Let your tears wash away the dust of the world. Cleansing is holy.", "Forgive the past, not for them, but to unchain your own ankle. You are too light to carry such heavy rocks.", "Return to the shell. It is safe to retreat. In the quiet of your inner world, you will find the pearl."], 
+      "Full": ["Your heart is an ocean, vast and deep. Do not apologize for the size of your waves. Let them crash.", "The Mother shines upon you. You are the keeper of the ancient flame of comfort. Warm yourself by your own fire.", "High tide of the soul. Secrets float to the surface. Look at them with love, for they are parts of you returning home."], 
+      "New": ["The womb of the universe. Floating in the dark waters of potential. You are being knit together in secret.", "Plant seeds of belonging. You are not an orphan of the cosmos; you are its beloved child. Rest in that truth.", "Retreat to the source. The crab buries itself in the sand to dream. Close your eyes and drift."] 
+    },
+    "Leo": { 
+      "Waxing": ["The sun climbs the sky. You are asked to be visible. Do not shrink; the world needs your specific frequency of light.", "Create from the heart. Art is your prayer today. Make something beautiful, not for money, but for your soul.", "Play is a sacred act. The inner child holds the keys to the kingdom. What made you laugh when you were five?"], 
+      "Waning": ["The sun sets so the stars can shine. Step back from the spotlight and find the quiet dignity of the shadows.", "Release the need for applause. Your worth is an internal gold mine, not an external currency.", "Shed the performance. Take off the mask and feel the cool night air on your true face. You are enough."], 
+      "Full": ["You are the center of your universe. Radiate warmth. Your joy is a gravity that pulls good things into your orbit.", "Lead with the heart. A true queen rules with compassion, not force. Your vulnerability is your crown.", "Celebrate your existence. It is a miracle that you are here, breathing, alive. Dance in honor of your own life."], 
+      "New": ["A seed of creativity glows in the dark. What masterpiece is waiting in the wings? Dream it into being.", "Set an intention for joy. Where have you become too rigid? Invite the chaotic, messy energy of delight.", "The heart beats in the silence. Listen to its rhythm. It is the drum of your destiny."] 
+    },
+    "Virgo": { 
+      "Waxing": ["God is in the details. The small step, taken with great love, is the most powerful magic. Attend to the little things.", "Refine your vessel. Your body is the temple where the ritual happens. Treat it with exquisite care.", "Purify your intent. Ask yourself: 'Does this serve my highest good?' If not, gently prune it away."], 
+      "Waning": ["Sweep the temple. Clear the dust from your mind and your floor. Outer order invites inner peace.", "Release perfectionism. It is a cage, not a shield. Embrace the crack in the vase; that is where the light gets in.", "Analyze less, feel more. The mind can dissect, but only the heart can heal. Put down the scalpel."], 
+      "Full": ["The High Priestess stands tall. Your service to others is your magic, but do not forget to serve yourself first.", "Order emerges from chaos. You can see the pattern in the weaving now. Trust the design.", "Healing light floods the system. You are being repaired on a cellular level. Drink water and rest."], 
+      "New": ["Plant a seed of order. Organize your inner world so that the outer world can reflect it. Peace begins in the quiet mind.", "Set an intention for health. Your body is the vessel for your magic. Ask it what it needs, and promise to listen.", "Quiet service. How can you serve your soul in the dark? Tend to your own garden before you try to feed the world."] 
+    },
+    "Libra": { 
+      "Waxing": ["Balance is not a destination; it is a dance. Move with grace between the poles of your life.", "Beautify your path. Beauty is a high vibration that heals the spirit. Add a flower, a song, a color.", "Connect. You do not have to walk this path alone. Reach out your hand; someone is waiting to hold it."], 
+      "Waning": ["Release the need to please. You cannot set yourself on fire to keep others warm. Reclaim your energy.", "Let go of indecision. Standing at the crossroads only delays the journey. Choose a path and walk it.", "Unbind yourself from expectations. Their disappointment is not your burden. Be true to your own soul."], 
+      "Full": ["The mirror of relationship. What you see in others is a reflection of yourself. Look with love.", "A climax of harmony. Surround yourself with what you love. Let art, music, and softness be your armor against the hardness of the world.", "Justice and harmony. Seek the middle path in the full light. Where there is conflict, bring the medicine of listening."], 
+      "New": ["Set an intention for peace. Call a ceasefire in the war against yourself. Invite tranquility in.", "Sow seeds of partnership. Call in your divine mirrors. You are ready for a higher octave of love.", "Rest in the center point. The pendulum stops swinging in the dark. Find the stillness."] 
+    },
+    "Scorpio": { 
+      "Waxing": ["Dive. The surface is boring; the treasure is in the deep. Do not be afraid of your own intensity.", "Invest your energy fully. Scorpio asks for total commitment. Burn the boats; there is no going back.", "Trust your gut. Your intuition is a razor today. It cuts through the lies. Follow the blade."], 
+      "Waning": ["Shed the skin. It is tight and dry. It no longer fits who you are becoming. Peel it off and leave it behind.", "Release the grudge. It is drinking your poison. Let it go, not for them, but so you can finally breathe.", "Compost the soul. Let the dead leaves of the past rot down into fertilizer for your future."], 
+      "Full": ["The Phoenix rises. You are being reborn in the fire. Spread your wings and dry them in the sun.", "Secrets revealed. The shadow is brought into the light. Do not look away; look with compassion.", "Intense magic. Your gaze has power today. Use it to heal, to transform, to alchemize lead into gold."], 
+      "New": ["The Void. Sit in the absolute dark. You are unmaking yourself so you can be remade better.", "What must die to be born? Offer it to the dark mother. She will take it and give you life.", "Plant a secret. Keep your magic hidden. Power grows best in the silence of the underground."] 
+    },
+    "Sagittarius": { 
+      "Waxing": ["Aim higher. Your arrow can fly further than you think. Do not settle for the low-hanging fruit.", "Explore. The unknown is calling. Say yes to the adventure, even if you don't know the destination.", "Expand your vision. The ancestors are widening the path. Walk with a stride of freedom."], 
+      "Waning": ["Release the dogma. You do not need to be 'right' to be true. Let go of the need to convince others.", "Simplify the quest. You are carrying too much baggage. Drop the heavy rocks and keep only the map.", "The wanderer rests. Wisdom is found in the stillness by the campfire, not just on the road."], 
+      "Full": ["Truth illuminates. The big picture snaps into focus. You see the divine comedy of it all. Laugh.", "Wild celebration. Dance with the cosmos. Your spirit is too big to be contained. Let it spill out.", "The Teacher speaks. Share your wisdom. Your story is the medicine someone else is praying for."], 
+      "New": ["Plant a seed of freedom. Where do you feel trapped? Chew through the leash in the dark.", "Seek the philosophy that frees you. Ask the big questions. The universe loves a seeker.", "Trust the path in the dark. You don't need to see the destination to know you are heading home."] 
+    },
+    "Capricorn": { 
+      "Waxing": ["Climb. The air is thin, but your lungs are strong. Capricorn rewards discipline. Keep going.", "Commit. You are building a legacy. Do not look for shortcuts; look for the stones that last.", "Build the empire. Every small action is a brick. Lay it with intention. You are the architect."], 
+      "Waning": ["Put down the world. You have carried it long enough. Your shoulders need to rest.", "Flow around the rock. The mountain path twists. Do not force a straight line where there is a curve.", "The Elder rests. True authority comes from silence, not busy work. Sit and survey your kingdom."], 
+      "Full": ["The Summit. Look how far you have come. Breathe in the view. You earned this altitude.", "Power manifested. Own your authority. You are the CEO of your own soul. Rule with wisdom.", "Structure illuminated. See the bones of your life. Give thanks for the stability that holds you."], 
+      "New": ["Blueprint in the dark. Plan the future in the silence. What legacy will you leave behind?", "What is your Great Work? Set an intention for your career and your calling.", "Ground your ambition. Root it in the earth before you try to touch the sky."] 
+    },
+    "Aquarius": { 
+      "Waxing": ["Innovate. The old way is dead. Invent the new way. The ancestors applaud your rebellion.", "Connect to the web. You are a node in a vast network of light. Send out a signal of hope.", "Break the mold. Freedom is your fuel. Do not fit into the box; burn the box."], 
+      "Waning": ["Release the detachment. Come down from the ivory tower and feel the beat of the human heart.", "Just be. You do not need to be different to be special. You are unique simply because you exist.", "Clear the static. Tune your frequency to a clearer channel. The noise of the world is not your song."], 
+      "Full": ["Cosmic connection. You are stardust made form. Feel the electricity of the universe in your veins.", "The Rebel shines. Stand for what you believe in, even if you stand alone. Your truth is a revolution.", "A vision of the future. You can see what is coming. Hold the torch high so others can see the way."], 
+      "New": ["Download the vision. The frequency is open. Listen to the electric hum of the new age.", "Set an intention for freedom. Where do you need space? Break the chains in the dark.", "Plant a seed for the collective. Dream not just for yourself, but for the world."] 
+    },
+    "Pisces": { 
+      "Waxing": ["Dream. The veil is gossamer thin. Listen to the whispers of the unseen. Magic is real.", "Flow. Do not push the river; float with it. Surrender control and let the current take you.", "Create from the soul. Your imagination is the workshop of reality. Paint your desires."], 
+      "Waning": ["Dissolve. Let the boundaries melt. You are not the drop; you are the ocean.", "Release the illusion. Surrender to the great mystery. What you lose is only the shell; the pearl remains.", "Cleansing rain. Cry for the world. Let your tears join the waters of the earth in a sacred release."], 
+      "Full": ["Mystical union. You are one with the divine. Feel the god-spark burning in your chest.", "The dreamer awakens. You know the truth without words. Trust the silent, psychic knowing.", "Ocean of light. Bathe in the spiritual waters. Let the waves of cosmic love wash you clean."], 
+      "New": ["The womb of the universe. Anything is possible in the void. Drift in the potential.", "Pray. Speak to the ancestors and listen for the soft reply. You are never alone.", "Drift in the silence. Let the current take you where you need to go. Trust the water."] 
+    }
   };
 
   const DAILY_RITUALS = {
-    "Aries": ["Light a red candle.", "Move vigorously.", "Breathe fire."],
-    "Taurus": ["Walk barefoot.", "Eat fruit slowly.", "Hold a stone."],
-    "Gemini": ["Write a letter.", "Whisper to wind.", "Burn incense."],
-    "Cancer": ["Bath with salt.", "Moon water.", "Hand on heart."],
-    "Leo": ["Wear gold.", "Dance.", "Sun gaze."],
-    "Virgo": ["Clean a corner.", "Herbal tea.", "List gratitude."],
-    "Libra": ["Light two candles.", "Flowers.", "Listen to bell."],
-    "Scorpio": ["Sit in darkness.", "Burn fear.", "Scry in water."],
-    "Sagittarius": ["Walk new path.", "Purple candle.", "Look at horizon."],
-    "Capricorn": ["Stand like mountain.", "Plant seed.", "Hold quartz."],
-    "Aquarius": ["Meditate on stars.", "Fresh air.", "Web of light."],
-    "Pisces": ["Listen to water.", "Feet in water.", "Sleep with crystal."]
+    "Aries": ["Light a red candle. Stare into the flame until your vision blurs. Inhale the heat. Exhale fear.", "Stomp your feet on the earth. Shout 'I AM' three times. Feel the vibration rattle your bones.", "Stand in the sun. Close your eyes. Drink the fire through your eyelids. You are solar-powered."],
+    "Taurus": ["Walk barefoot on the soil. Imagine roots growing from your heels. Give your heaviness to the earth.", "Eat a piece of chocolate or fruit with total slowness. Let the pleasure be a prayer of gratitude.", "Hold a river stone. Feel its cold weight. Rub your thumb over it and ground your energy."],
+    "Gemini": ["Write a wish on a bay leaf. Burn it and watch the smoke carry your message to the air spirits.", "Stand in the wind. Whisper your worries to the breeze. Let the air carry them away.", "Light incense. Watch the smoke curl. Divinate messages in the shapes it forms."],
+    "Cancer": ["Fill a bowl with water. Whisper your love into it. Wash your face with this blessed water.", "Take a salt bath by candlelight. Imagine the water drawing all grief out of your pores.", "Hold your hand over your heart. Feel the rhythm. Tap your chest gently and say 'I am home.'"],
+    "Leo": ["Wear gold jewelry or yellow clothes. Adorn yourself like the royalty you are.", "Dance wildly to one song. Shake your hips. Let the joy rise from your belly.", "Gaze at the sunrise or sunset. Breathe in the golden light. Fill your solar plexus with it."],
+    "Virgo": ["Clean one shelf or corner with intention. As you wipe the dust, say 'I clear my mind.'", "Brew herbal tea. Hold the warm cup. Thank the plants for their medicine before you sip.", "Write a list of 3 things you love about your life. Place a crystal on the list to amplify it."],
+    "Libra": ["Light two candles. Sit between them. Visualize your inner scales coming into perfect balance.", "Buy or pick a flower. Place it in a vase. Stare at its symmetry and breathe in beauty.", "Ring a bell or chime. Listen to the sound fade into silence. Rest in that silence."],
+    "Scorpio": ["Sit in a pitch-black room. Eyes open. Do not fear the dark; let it hold you like a velvet cloak.", "Write a secret on paper. Shred it or burn it. Release the energy of keeping it hidden.", "Fill a dark bowl with water. Stare into the black reflection. Ask your intuition a question."],
+    "Sagittarius": ["Walk a path you have never taken. Look for a sign (a feather, a coin, a bird).", "Light a purple candle. Close your eyes. Visualize your mind expanding to the size of the sky.", "Stand facing the horizon. Raise your arms. Claim your freedom. Breathe in the distance."],
+    "Capricorn": ["Stand in Mountain Pose. Feet wide. Feel unshakeable. You are ancient stone.", "Plant a seed in a pot. Whisper a long-term goal to it. Water it with patience.", "Hold a piece of quartz. Feel its structure. Organize your thoughts to match its clarity."],
+    "Aquarius": ["Go outside at night. Look at the stars. Feel the invisible web connecting you to them.", "Open all windows. Let the cross-breeze sweep your home. Visualize stagnant energy leaving.", "Hum a low tone. Feel the vibration in your skull. Tune your frequency to the cosmic hum."],
+    "Pisces": ["Listen to a recording of rain or ocean waves. Drift. Dissolve into the sound.", "Dip your feet in a bowl of warm water with flowers. Bless your feet for carrying you.", "Sleep with an amethyst under your pillow. Ask for a healing dream. Trust the night."]
   };
 
   const ELEMENT_MEANINGS = { "FIRE": "Action, Spirit, Passion, Transformation. Fire energy asks you to move, burn away the old, and ignite your will. It is the spark of creation.", "EARTH": "Grounding, Body, Stability, Manifestation. Earth energy asks you to root down, care for your physical vessel, and build slowly with patience.", "AIR": "Intellect, Communication, Vision, Breath. Air energy asks you to speak your truth, clarify your thoughts, and connect with ideas.", "WATER": "Emotion, Intuition, Healing, Flow. Water energy asks you to feel deeply, cleanse your spirit, and trust the mystery of the unknown." };
@@ -289,24 +346,22 @@
     {d: "Jan 22, 2027", z: "Leo ♌"} 
   ];
 
-  // V88: UPDATED NEW MOON DATA WITH DEEP CONTENT AND CORRECT DATES
   const NEW_MOON_DATA = {
     "Jan 18, 2026": {s: "Capricorn", w: "Architect. New Moon in Capricorn. You are standing at the base of a new mountain. This is not a time for wild emotion, but for cold, hard strategy. What empire do you wish to build this year? Lay the cornerstone today in the silence.", r: "1. Write a 1-year goal on a stone or paper. 2. Bury it in a pot of soil (or the earth). 3. Stand over it. 4. Visualize a massive tree growing from it. 5. Say: 'I build for the future.'"},
     "Feb 17, 2026": {s: "Aquarius", w: "Visionary. New Moon in Aquarius. The old rules no longer apply. Break the mold. This moon asks you to detach from who you were expected to be and connect with who you authentically are. The future is streaming in; download the vision.", r: "1. Sit under the open sky (or a window). 2. Breathe in the cold air. 3. Visualize a lightning bolt of inspiration hitting your crown. 4. Write down the wildest idea you have. 5. Say: 'I am free.'"},
     "Mar 18, 2026": {s: "Pisces", w: "Mystic. New Moon in Pisces. The final moon of the cycle. The veil is nonexistent. You are swimming in the cosmic ocean. Surrender your logic; it cannot help you here. Trust your dreams, your intuition, and the invisible currents.", r: "1. Take a salt bath by candlelight. 2. Play no music; just listen to water. 3. Imagine dissolving into the water. 4. Ask for a vision. 5. Say: 'I surrender to the flow.'"},
     "Apr 17, 2026": {s: "Aries", w: "Spark. New Moon in Aries. The first moon of the new zodiac cycle. Absolute beginnings. The energy is raw, fast, and fiery. Do not overthink; act. Plant a seed of courage. What would you do if you knew you could not fail?", r: "1. Light a single red candle. 2. Stare at the flame until your eyes water. 3. Shout your intention out loud. 4. Feel the heat. 5. Say: 'I begin. I am.'"},
     "May 16, 2026": {s: "Taurus", w: "Garden. New Moon in Taurus. Slow down. The fire of Aries settles into the earth. Plant seeds of worthiness, abundance, and peace. This is the time to set intentions for your physical body and your financial security.", r: "1. Hold a coin and a seed in your hand. 2. Walk barefoot on the earth. 3. Plant the seed and place the coin next to it (or on your altar). 4. Say: 'I grow in value.'"},
-    "Jun 14, 2026": {s: "Gemini", w: "Messenger. New Moon in Gemini. The air is buzzing with new ideas. It is time to open your mind and your throat chakra. Speak your intentions into existence. Write, talk, connect. The magic is in the word.", r: "1. Write a letter to the Universe. 2. Read it out loud to the wind. 3. Burn the letter and let the smoke carry the words. 4. Listen to the wind. 5. Say: 'My voice creates.'"},
+    "Jun 15, 2026": {s: "Gemini", w: "Messenger. New Moon in Gemini. The air is buzzing with new ideas. It is time to open your mind and your throat chakra. Speak your intentions into existence. Write, talk, connect. The magic is in the word.", r: "1. Write a letter to the Universe. 2. Read it out loud to the wind. 3. Burn the letter and let the smoke carry the words. 4. Listen to the wind. 5. Say: 'My voice creates.'"},
     "Jul 14, 2026": {s: "Cancer", w: "Womb. New Moon in Cancer. We return to the source. This is the most fertile moon of the year for emotional beginnings. Plant seeds of love, family, and self-care. Nurture yourself as you would a newborn.", r: "1. Create a cozy nest with pillows/blankets. 2. Hold a cup of water to your heart. 3. Whisper your needs into the water. 4. Drink it. 5. Say: 'I nourish myself.'"},
     "Aug 12, 2026": {s: "Leo", w: "Crown. New Moon in Leo. A new cycle of creativity and confidence begins. The universe wants you to shine. Where have you been hiding? Step onto the stage of your own life and command the spotlight. You are worthy.", r: "1. Look in a mirror by candlelight. 2. Look into your own left eye. 3. Say 'I love you' 3 times. 4. Place a hand on your heart. 5. Say: 'I am the Queen of my life.'"},
-    "Sep 10, 2026": {s: "Virgo", w: "Healer. New Moon in Virgo. The party of Leo is over; now we do the work. It is time to purify, organize, and heal. Set intentions for your daily routine. How you live your days is how you live your life.", r: "1. Cleanse your space with sage or sound. 2. Write a precise list of 3 goals. 3. Place a crystal on the list. 4. Commit to one small action today. 5. Say: 'I am focused and pure.'"},
+    "Sep 11, 2026": {s: "Virgo", w: "Healer. New Moon in Virgo. The party of Leo is over; now we do the work. It is time to purify, organize, and heal. Set intentions for your daily routine. How you live your days is how you live your life.", r: "1. Cleanse your space with sage or sound. 2. Write a precise list of 3 goals. 3. Place a crystal on the list. 4. Commit to one small action today. 5. Say: 'I am focused and pure.'"},
     "Oct 10, 2026": {s: "Libra", w: "Mirror. New Moon in Libra. A new cycle for relationships. Balance is the key. Are you giving too much? Taking too much? Set intentions for harmony, beauty, and partnership. Invite peace into your heart.", r: "1. Light two white candles. 2. Tie a string between them loosely. 3. Visualize a relationship healing. 4. Cut the string to release old patterns. 5. Say: 'I am whole in myself.'"},
-    "Nov 8, 2026": {s: "Scorpio", w: "Shadow. New Moon in Scorpio. The deepest moon of the year. We go underground. It is time to face what you fear and transform it into power. Plant seeds of transformation in the dark. Magic is potent tonight.", r: "1. Sit in total darkness. 2. Breathe into your pelvis/root. 3. Visualize a secret desire you are afraid to admit. 4. Claim it in the dark. 5. Say: 'I am not afraid of the dark.'"},
+    "Nov 9, 2026": {s: "Scorpio", w: "Shadow. New Moon in Scorpio. The deepest moon of the year. We go underground. It is time to face what you fear and transform it into power. Plant seeds of transformation in the dark. Magic is potent tonight.", r: "1. Sit in total darkness. 2. Breathe into your pelvis/root. 3. Visualize a secret desire you are afraid to admit. 4. Claim it in the dark. 5. Say: 'I am not afraid of the dark.'"},
     "Dec 8, 2026": {s: "Sagittarius", w: "Arrow. New Moon in Sagittarius. The dark water of Scorpio finds a target. Aim high. This is the moon of freedom, expansion, and truth. What adventure is calling you? Set an intention that feels too big.", r: "1. Stand facing a direction you love. 2. Make a bow shape with your arms. 3. Visualize your intention as an arrow. 4. Release it with a breath. 5. Say: 'I fly free.'"}
   };
 
-  // V88: Dates Updated
-  const NEW_MOONS_ARRAY = ["Jan 18, 2026", "Feb 17, 2026", "Mar 18, 2026", "Apr 17, 2026", "May 16, 2026", "Jun 14, 2026", "Jul 14, 2026", "Aug 12, 2026", "Sep 10, 2026", "Oct 10, 2026", "Nov 8, 2026", "Dec 8, 2026"];
+  const NEW_MOONS_ARRAY = ["Jan 18, 2026", "Feb 17, 2026", "Mar 18, 2026", "Apr 17, 2026", "May 16, 2026", "Jun 15, 2026", "Jul 14, 2026", "Aug 12, 2026", "Sep 11, 2026", "Oct 10, 2026", "Nov 9, 2026", "Dec 8, 2026"];
 
   const CELESTIAL_EVENTS = {
     "Feb 2": {n: "Imbolc Portal", d: "A sacred midpoint between Winter and Spring. The earth is stirring. Energy: Promise, Purification, First Light.", l: "spiritual meaning of imbolc"},
@@ -316,11 +371,7 @@
     "Mar 20": {n: "Mercury Direct", d: "The shadow period clears. Move forward with the wisdom learned in the silence.", l: "mercury direct spiritual meaning"},
     "Jun 29": {n: "Mercury Retrograde Begins", d: "Thoughts turn nostalgic. Old friends may return. Energy: Reconnecting, Revisiting, Remembering.", l: "mercury retrograde in cancer spiritual meaning"},
     "Oct 21": {n: "Mercury Retrograde Begins", d: "Deep psychological review. Secrets are revealed for healing.", l: "mercury retrograde in scorpio spiritual meaning"},
-    "Jan 1": {n: "Mars Retrograde", d: "Action turns passive. Anger requires understanding, not expression. Energy: Internal Drive, Patience.", l: "mars retrograde spiritual meaning"},
-    "Feb 17": {n: "Annular Solar Eclipse", d: "A Ring of Fire. The moon covers the sun but leaves a ring of light. A powerful portal for new beginnings. This New Moon is supercharged.", l: "spiritual meaning of annular solar eclipse"},
-    "Mar 3": {n: "Total Lunar Eclipse", d: "Blood Moon. The shadow of the Earth covers the moon. Deep emotional release and transformation during this Full Moon.", l: "spiritual meaning of total lunar eclipse"},
-    "Aug 12": {n: "Total Solar Eclipse", d: "The Great Darkness. The sun is completely blocked. A moment of stillness and profound reset during this New Moon.", l: "spiritual meaning of total solar eclipse"},
-    "Aug 28": {n: "Partial Lunar Eclipse", d: "A partial shadow. Emotional clarity and partial release. Check your feelings during this Full Moon.", l: "spiritual meaning of partial lunar eclipse"}
+    "Jan 1": {n: "Mars Retrograde", d: "Action turns passive. Anger requires understanding, not expression. Energy: Internal Drive, Patience.", l: "mars retrograde spiritual meaning"}
   };
 
   const MOON_ANCHORS = [
@@ -387,6 +438,7 @@
       let sunLong = (280.466 + 36000.770 * T) % 360;
       let angle = (moonLong - sunLong + 360) % 360;
       
+      // Sun Sign Logic V83
       const sunSigns = ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"];
       const sunIndex = Math.floor(sunLong / 30);
       const sunZod = sunSigns[sunIndex] || "Aries";
@@ -408,15 +460,8 @@
       else if (angle < 280) { phase = "Last Quarter"; ico = "🌗"; }
 
       let tDay = 1;
-      let lastNM = new Date(NEW_MOONS_ARRAY[0]);
-      for(let nmStr of NEW_MOONS_ARRAY) {
-          let nmDate = new Date(nmStr);
-          if(nmDate <= date) lastNM = nmDate;
-          else break;
-      }
-      let diffTime = date - lastNM;
-      tDay = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
-      if(tDay > 30) tDay = 1; 
+      tDay = Math.floor((angle / 360) * 29.5) + 1;
+      if (tDay < 1) tDay = 1; if (tDay > 30) tDay = 1;
       
       let whisper, ritual, affirm;
       let fullMoonData = FULL_MOON_DATA[dStrFull];
@@ -446,7 +491,9 @@
         shadow = SHADOW_WORK[zod.split(' ')[0]] || "What is hidden?";
       }
 
-      if (dStrFull.includes("Jan 22, 2027")) { }
+      if (dStrFull.includes("Jan 22, 2027")) {
+         // Override logic for 13th moon handled by FULL_MOON_DATA lookup
+      }
 
       return { phase, ico, zod, sunZod, tDay, el, elColor: ELEMENTS[el], dStr: dStrShort, year: date.getFullYear(), isFull, isNew, isPivot: pivotData, isEvent, archetype: fullMoonData, whisper, ritual, shadow, affirm };
     } catch(e) {
@@ -492,17 +539,8 @@
     const data = getCelestialData(date);
     document.documentElement.style.setProperty('--aura', data.elColor);
     
-    // V88: Correct Moon Title Logic
-    let titleText = data.phase.toUpperCase();
-    if (data.archetype && data.isFull) {
-        titleText = data.archetype.n.toUpperCase();
-    } else if (data.isNew) {
-        titleText = "NEW MOON";
-    }
-    
-    if (data.isEvent && data.isEvent.n.includes("Eclipse")) {
-        titleText = data.isEvent.n.toUpperCase();
-    }
+    // V83: Master Title Logic with Emoji
+    const titleText = data.archetype ? data.archetype.n.toUpperCase() : data.phase.toUpperCase();
     const displayTitle = `${titleText} ${data.ico}`;
     
     const titleEl = document.getElementById("dashTitle");
@@ -517,11 +555,7 @@
     } else if(data.isPivot) {
       eventHTML += `<div class="event-badge portal-badge">✨ ${data.isPivot.n.toUpperCase()}</div>`;
     }
-    if(data.isEvent) {
-       if (!data.isEvent.n.includes("Eclipse")) {
-           eventHTML += `<div class="event-badge retro-badge">👁️ ${data.isEvent.n.toUpperCase()}</div>`;
-       }
-    }
+    if(data.isEvent) eventHTML += `<div class="event-badge retro-badge">👁️ ${data.isEvent.n.toUpperCase()}</div>`;
     
     document.getElementById("eventDisplay").innerHTML = eventHTML;
     document.getElementById("guidanceText").innerText = data.whisper;
@@ -547,9 +581,10 @@
     }
     
     db.zodCache[date.toDateString()] = data.zod;
-    localStorage.setItem('ancestral_moon_v88', JSON.stringify(db));
+    localStorage.setItem('ancestral_moon_v83', JSON.stringify(db));
   }
 
+  // V83: UPDATED MASTER MODAL WITH SUN SEASON LINK
   function openMasterModal(data) {
     const modal = document.getElementById("cosmicModal");
     const title = document.getElementById("modalTitle");
@@ -564,18 +599,7 @@
     const elementMeaning = ELEMENT_MEANINGS[data.el] || "Balance your energy.";
     const sunMeaning = SUN_SIGN_DATA[data.sunZod] || "The Season of Life.";
     
-    let eclipseHTML = "";
-    if (data.isEvent && data.isEvent.n.includes("Eclipse")) {
-        eclipseHTML = `
-        <div class="modal-section" style="border-left: 3px solid var(--blood); padding-left: 10px;">
-          <span class="modal-label" style="color:var(--blood)">${data.isEvent.n.toUpperCase()}</span>
-          <div class="modal-content-text">${data.isEvent.d}</div>
-          <a class="modal-link" href="https://www.google.com/search?q=${encodeURIComponent(data.isEvent.l)}" target="_blank">Dive Deeper into ${data.isEvent.n}</a>
-        </div>`;
-    }
-    
     let html = `
-    ${eclipseHTML}
     <div class="modal-section">
       <span class="modal-label" style="color:var(--portal)">SUN IN ${data.sunZod.toUpperCase()} (THE SEASON)</span>
       <div class="modal-content-text">${sunMeaning}</div>
@@ -605,7 +629,7 @@
   function setEnergy(val) {
     let map = {'🔥':'fire','💧':'water','🌬️':'air','🪨':'earth'};
     db.energy[selectedDate] = map[val];
-    localStorage.setItem('ancestral_moon_v88', JSON.stringify(db));
+    localStorage.setItem('ancestral_moon_v83', JSON.stringify(db));
     updateDash(new Date(selectedDate));
   }
 
@@ -623,7 +647,7 @@
   }
 
   function jumpToDate(dateStr) { selectedDate = dateStr; activeD = new Date(dateStr); render(); updateDash(activeD); showView('dash'); }
-  function deleteEntry(dateStr) { if(confirm("Release this entry?")) { delete db.journals[dateStr]; delete db.logs[dateStr]; delete db.energy[dateStr]; localStorage.setItem('ancestral_moon_v88', JSON.stringify(db)); showView('grimoire'); } }
+  function deleteEntry(dateStr) { if(confirm("Release this entry?")) { delete db.journals[dateStr]; delete db.logs[dateStr]; delete db.energy[dateStr]; localStorage.setItem('ancestral_moon_v83', JSON.stringify(db)); showView('grimoire'); } }
 
   function backupData() {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db));
@@ -642,7 +666,7 @@
       try {
         const importedDb = JSON.parse(e.target.result);
         db = importedDb;
-        localStorage.setItem('ancestral_moon_v88', JSON.stringify(db));
+        localStorage.setItem('ancestral_moon_v83', JSON.stringify(db));
         alert("Grimoire Restored Successfully.");
         render(); updateDash(new Date(selectedDate)); showView('grimoire');
       } catch(err) { alert("Invalid backup file."); }
@@ -740,11 +764,11 @@
     }
   }
 
-  function saveData() { db.journals[selectedDate] = document.getElementById("journalInput").value; localStorage.setItem('ancestral_moon_v88', JSON.stringify(db)); }
-  function toggleFlow() { db.logs[selectedDate] = !db.logs[selectedDate]; localStorage.setItem('ancestral_moon_v88', JSON.stringify(db)); render(); updateDash(new Date(selectedDate)); }
+  function saveData() { db.journals[selectedDate] = document.getElementById("journalInput").value; localStorage.setItem('ancestral_moon_v83', JSON.stringify(db)); }
+  function toggleFlow() { db.logs[selectedDate] = !db.logs[selectedDate]; localStorage.setItem('ancestral_moon_v83', JSON.stringify(db)); render(); updateDash(new Date(selectedDate)); }
   function changeMonth(n) { activeD.setMonth(activeD.getMonth() + n); render(); }
 
-  // V88: FINAL STAR ENGINE
+  // V83: FINAL STAR ENGINE
   const sField = document.getElementById('starField');
   for(let i=0; i<200; i++) {
     const s = document.createElement('div'); s.className = 'star';
