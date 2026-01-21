@@ -78,7 +78,10 @@
 
     #journalInput { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 15px; color: #fff; font-family: 'Charm'; font-size: 1.2rem; min-height: 100px; box-sizing: border-box; outline: none; }
     
-    .event-badge { font-size: 0.6rem; padding: 4px 12px; border-radius: 15px; display: inline-block; margin-bottom: 5px; font-family: 'Cinzel'; letter-spacing: 1px; cursor: pointer; }
+    .event-badge { font-size: 0.6rem; padding: 6px 15px; border-radius: 15px; display: inline-block; margin-bottom: 8px; font-family: 'Cinzel'; letter-spacing: 1px; cursor: pointer; transition: 0.3s; position: relative; }
+    .event-badge:hover { transform: scale(1.05); filter: brightness(1.2); }
+    .event-badge::after { content: " ↗"; font-family: sans-serif; opacity: 0.7; }
+    
     .portal-badge { background: var(--portal); color: var(--space); box-shadow: 0 0 10px var(--portal); }
     .retro-badge { background: var(--retro); color: var(--space); box-shadow: 0 0 10px var(--retro); }
     .newyear-badge { background: linear-gradient(90deg, #2ecc71, #df80ff); color: white; box-shadow: 0 0 20px #2ecc71; padding: 8px 20px; font-size: 0.75rem; border: 1px solid white; cursor: pointer;}
@@ -105,6 +108,9 @@
     .lib-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .lib-btn { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); color: #ccc; padding: 10px; border-radius: 8px; font-size: 0.65rem; text-decoration: none; display: block; text-align: center; transition: 0.2s; font-family: 'Quicksand'; }
     .lib-btn:hover { background: var(--aura); color: #fff; border-color: var(--gold); }
+
+    .clickable-event { cursor: pointer; transition: 0.2s; }
+    .clickable-event:hover { background: rgba(255,255,255,0.05); border-radius: 5px; padding-left: 5px; }
 
     .backup-section { border-top: 1px solid rgba(255,255,255,0.1); margin-top: 20px; padding-top: 20px; }
     .backup-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--gold); color: var(--gold); padding: 12px; border-radius: 10px; font-family: 'Cinzel'; font-size: 0.7rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; width: 100%;}
@@ -321,7 +327,15 @@
   const ZODIAC_WISDOM = { "Aries": "Warrior Energy. Initiation and Courage. A time to start.", "Taurus": "The Gardener. Grounding and Pleasure. A time to build.", "Gemini": "The Messenger. Connection and Wit. A time to speak.", "Cancer": "The Mother. Emotion and Safety. A time to nurture.", "Leo": "The Royal. Creativity and Joy. A time to shine.", "Virgo": "The Healer. Order and Service. A time to purify.", "Libra": "The Diplomat. Balance and Beauty. A time to relate.", "Scorpio": "The Alchemist. Depth and Transformation. A time to feel.", "Sagittarius": "The Explorer. Freedom and Truth. A time to seek.", "Capricorn": "The Architect. Ambition and Structure. A time to plan.", "Aquarius": "The Visionary. Innovation and Community. A time to dream.", "Pisces": "The Mystic. Dreams and Surrender. A time to trust." };
   const PHASE_MEANINGS = { "New Moon": "The Void. Potential and Planting. The start of the cycle.", "Waxing Crescent": "The Sprout. Courage and Growth. Taking the first step.", "First Quarter": "The Root. Action and Resistance. Overcoming obstacles.", "Waxing Gibbous": "The Bud. Refinement and perfecting. Adjusting the plan.", "Full Moon": "The Bloom. Peak energy and celebration. Illumination.", "Waning Gibbous": "The Fruit. Gratitude and Sharing. Harvesting.", "Last Quarter": "The Compost. Release and Forgiveness. Letting go.", "Waning Crescent": "The Seed. Rest and Surrender. Emptying the cup." };
   
-  const PIVOT_DATA = { "Mar 20": {n: "Spring Equinox", w: "The Great Turning. Rebirth.", r: "Seed Ceremony."}, "Jun 21": {n: "Summer Solstice", w: "Zenith of Light. Power.", r: "Fire Crown."}, "Sep 22": {n: "Autumn Equinox", w: "Second Harvest. Balance.", r: "Release Leaf."}, "Dec 21": {n: "Winter Solstice", w: "Womb of Night. Stillness.", r: "Return of Light."}, "Sep 23": {n: "Autumn Equinox", w: "Second Harvest.", r: "Release Leaf."}, "Dec 22": {n: "Winter Solstice", w: "Womb of Night.", r: "Return of Light."} };
+  // V89: UPDATED PIVOT DATA WITH SEARCH LINKS (l)
+  const PIVOT_DATA = { 
+    "Mar 20": {n: "Spring Equinox", w: "The Great Turning. Rebirth.", r: "Seed Ceremony.", l: "spiritual meaning of spring equinox ostara"}, 
+    "Jun 21": {n: "Summer Solstice", w: "Zenith of Light. Power.", r: "Fire Crown.", l: "spiritual meaning of summer solstice litha"}, 
+    "Sep 22": {n: "Autumn Equinox", w: "Second Harvest. Balance.", r: "Release Leaf.", l: "spiritual meaning of autumn equinox mabon"}, 
+    "Dec 21": {n: "Winter Solstice", w: "Womb of Night. Stillness.", r: "Return of Light.", l: "spiritual meaning of winter solstice yule"}, 
+    "Sep 23": {n: "Autumn Equinox", w: "Second Harvest.", r: "Release Leaf.", l: "spiritual meaning of autumn equinox mabon"}, 
+    "Dec 22": {n: "Winter Solstice", w: "Womb of Night.", r: "Return of Light.", l: "spiritual meaning of winter solstice yule"} 
+  };
   
   const FULL_MOON_DATA = {
     "Jan 3, 2026": {n: "Wolf Moon", w: "Endurance. Loyalty to your pack. Hunger that drives you forward. In the cold, your voice carries further. What truth have you been afraid to voice? Now is the time to throw your head back and let it out.", r: "1. Stand outside or near a window. 2. Visualize the wolf spirit beside you. 3. Howl (or hum loudly) your deepest truth to the moon. 4. Feel the vibration in your chest. 5. Affirm: 'My voice is my power.'"},
@@ -417,6 +431,13 @@
   function getAffirmation(element) {
     const affirmations = { "FIRE": "I am the flame.", "EARTH": "I am the mountain.", "AIR": "I am the wind.", "WATER": "I am the river." };
     return affirmations[element] || "I am aligned.";
+  }
+  
+  // V89: Helper for opening spiritual searches
+  function openSearch(query) {
+    if(query) {
+      window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}`, '_blank');
+    }
   }
 
   function getCelestialData(date) {
@@ -549,12 +570,16 @@
     document.getElementById("dashSub").innerText = `LUNAR DAY ${data.tDay} • ${data.dStr}, ${data.year}`;
     
     let eventHTML = "";
+    
+    // V89: UPDATED INTERACTIVE BADGES
     if(data.isPivot && data.isPivot.n === "Spring Equinox") {
-      eventHTML += `<div class="event-badge newyear-badge">HAPPY ANCESTRAL NEW YEAR! 🌸</div><br>`;
+      eventHTML += `<div class="event-badge newyear-badge" onclick="openSearch('${data.isPivot.l}')">HAPPY ANCESTRAL NEW YEAR! 🌸</div><br>`;
     } else if(data.isPivot) {
-      eventHTML += `<div class="event-badge portal-badge">✨ ${data.isPivot.n.toUpperCase()}</div>`;
+      eventHTML += `<div class="event-badge portal-badge" onclick="openSearch('${data.isPivot.l}')">✨ ${data.isPivot.n.toUpperCase()}</div>`;
     }
-    if(data.isEvent) eventHTML += `<div class="event-badge retro-badge">👁️ ${data.isEvent.n.toUpperCase()}</div>`;
+    if(data.isEvent) {
+       eventHTML += `<div class="event-badge retro-badge" onclick="openSearch('${data.isEvent.l}')">👁️ ${data.isEvent.n.toUpperCase()}</div>`;
+    }
     
     document.getElementById("eventDisplay").innerHTML = eventHTML;
     document.getElementById("guidanceText").innerText = data.whisper;
@@ -710,18 +735,19 @@
         if(p.includes("Equinox") || p.includes("Solstice") || PIVOT_DATA[p].n.includes("Equinox") || PIVOT_DATA[p].n.includes("Solstice")) {
              // Create a dummy date for sorting
              let d = new Date(`${p}, ${currentYear}`);
-             sortedPivots.push({ date: d, key: p, name: PIVOT_DATA[p].n });
+             sortedPivots.push({ date: d, key: p, name: PIVOT_DATA[p].n, link: PIVOT_DATA[p].l });
         }
       }
       sortedPivots.sort((a, b) => a.date - b.date);
 
+      // V89: INTERACTIVE LIST ITEMS
       sortedPivots.forEach(item => {
          if(currentYear === 2027 && (item.key === "Sep 22" || item.key === "Dec 21")) return; 
          if(currentYear === 2026 && (item.key === "Sep 23" || item.key === "Dec 22")) return; 
-         yc.innerHTML += `<div style="display:flex; justify-content:space-between; font-size:0.7rem; border-bottom:1px solid rgba(255,255,255,0.05); padding:5px 0;"><span>✨ ${item.name}</span> <span>${item.key}</span></div>`;
+         yc.innerHTML += `<div class="clickable-event" onclick="openSearch('${item.link}')" style="display:flex; justify-content:space-between; font-size:0.7rem; border-bottom:1px solid rgba(255,255,255,0.05); padding:5px 0;"><span>✨ ${item.name} ↗</span> <span>${item.key}</span></div>`;
       });
       
-      for(let e in CELESTIAL_EVENTS) yc.innerHTML += `<div style="display:flex; justify-content:space-between; font-size:0.7rem; border-bottom:1px solid rgba(255,255,255,0.05); padding:5px 0; color:var(--retro);"><span>🌀 ${CELESTIAL_EVENTS[e].n}</span> <span>${e}</span></div>`;
+      for(let e in CELESTIAL_EVENTS) yc.innerHTML += `<div class="clickable-event" onclick="openSearch('${CELESTIAL_EVENTS[e].l}')" style="display:flex; justify-content:space-between; font-size:0.7rem; border-bottom:1px solid rgba(255,255,255,0.05); padding:5px 0; color:var(--retro);"><span>🌀 ${CELESTIAL_EVENTS[e].n} ↗</span> <span>${e}</span></div>`;
       
       yc.innerHTML += `<h4 style="color:var(--gold); font-family:'Cinzel'; margin-top:20px;">13 FULL MOONS</h4>`;
       
@@ -787,3 +813,4 @@
 </script>
 </body>
 </html>
+
