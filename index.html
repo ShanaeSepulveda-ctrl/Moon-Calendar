@@ -218,6 +218,14 @@
   const ELEMENTS = { "FIRE": "#ff4d4d", "EARTH": "#2ecc71", "AIR": "#3498db", "WATER": "#df80ff" };
   const ZOD_ELEMENTS = { "Aries ♈":"FIRE", "Leo ♌":"FIRE", "Sagittarius ♐":"FIRE", "Taurus ♉":"EARTH", "Virgo ♍":"EARTH", "Capricorn ♑":"EARTH", "Gemini ♊":"AIR", "Libra ♎":"AIR", "Aquarius ♒":"AIR", "Cancer ♋":"WATER", "Scorpio ♏":"WATER", "Pisces ♓":"WATER" };
   
+  // V89.3: ADDED ZODIAC DATES
+  const ZODIAC_DATES = {
+    "Aries": "Mar 21 - Apr 19", "Taurus": "Apr 20 - May 20", "Gemini": "May 21 - Jun 20",
+    "Cancer": "Jun 21 - Jul 22", "Leo": "Jul 23 - Aug 22", "Virgo": "Aug 23 - Sep 22",
+    "Libra": "Sep 23 - Oct 22", "Scorpio": "Oct 23 - Nov 21", "Sagittarius": "Nov 22 - Dec 21",
+    "Capricorn": "Dec 22 - Jan 19", "Aquarius": "Jan 20 - Feb 18", "Pisces": "Feb 19 - Mar 20"
+  };
+
   const SUN_SIGN_DATA = {
     "Aries": "THE SEASON OF ACTION. The world wakes up. Fire energy.",
     "Taurus": "THE SEASON OF GROUNDING. Roots go deep. Earth energy.",
@@ -405,7 +413,6 @@
     "Pisces": "What reality am I escaping? Where do I need boundaries to protect my energy?"
   };
   
-  // V89.2: REFERENCE NEW MOONS FOR ANCHOR METHOD (Including late 2025 and early 2027)
   const REFERENCE_NEW_MOONS = [
     "Dec 19, 2025", "Jan 18, 2026", "Feb 17, 2026", "Mar 18, 2026", 
     "Apr 17, 2026", "May 16, 2026", "Jun 15, 2026", "Jul 14, 2026", 
@@ -446,15 +453,13 @@
     }
   }
   
-  // V89.2: Helper to calculate accurate Lunar Day based on Reference Arrays
   function getLunarDayAnchor(date) {
     const dTime = date.getTime();
     let lastNewMoonDate = null;
     
-    // Find the most recent new moon that is <= current date
     for(let i = 0; i < REFERENCE_NEW_MOONS.length; i++) {
         const nm = new Date(REFERENCE_NEW_MOONS[i]);
-        if (nm.getTime() <= dTime + 3600000) { // Add 1 hour buffer for timezone variance
+        if (nm.getTime() <= dTime + 3600000) { 
              lastNewMoonDate = nm;
         } else {
              break;
@@ -462,11 +467,6 @@
     }
     
     if (lastNewMoonDate) {
-         const diffTime = Math.abs(date - lastNewMoonDate);
-         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
-         // If same day, diffDays might be 0 or 1 depending on rounding
-         // We want New Moon date to be Day 1.
-         // Let's use strict day difference
          const oneDay = 1000 * 60 * 60 * 24;
          const d1 = new Date(lastNewMoonDate.getFullYear(), lastNewMoonDate.getMonth(), lastNewMoonDate.getDate());
          const d2 = new Date(date.getFullYear(), date.getMonth(), date.getDate());
@@ -474,7 +474,7 @@
          return exactDays + 1;
     }
     
-    return null; // Fallback if out of range
+    return null;
   }
 
   function getCelestialData(date) {
@@ -508,24 +508,20 @@
 
       let phase = "Waning Crescent", ico = "🌘";
       
-      // V89.2: Accurate Day Calculation
       let tDay = getLunarDayAnchor(date);
       if (!tDay) {
-          // Fallback if date is outside range (shouldn't happen for 2026)
           tDay = Math.floor((angle / 360) * 29.5) + 1;
       }
       
-      // Strict Phase Logic based on tDay for consistency
-      if (tDay === 1) { phase = "New Moon"; ico = "🌑"; isNew = true; } // Force New Moon on Day 1
+      if (tDay === 1) { phase = "New Moon"; ico = "🌑"; isNew = true; } 
       else if (tDay >= 2 && tDay <= 7) { phase = "Waxing Crescent"; ico = "🌒"; }
       else if (tDay >= 8 && tDay <= 9) { phase = "First Quarter"; ico = "🌓"; }
       else if (tDay >= 10 && tDay <= 14) { phase = "Waxing Gibbous"; ico = "🌔"; }
-      else if (tDay >= 15 && tDay <= 16) { phase = "Full Moon"; ico = "🌕"; isFull = true; } // Approx Full Moon
+      else if (tDay >= 15 && tDay <= 16) { phase = "Full Moon"; ico = "🌕"; isFull = true; } 
       else if (tDay >= 17 && tDay <= 21) { phase = "Waning Gibbous"; ico = "🌖"; }
       else if (tDay >= 22 && tDay <= 23) { phase = "Last Quarter"; ico = "🌗"; }
       else if (tDay >= 24) { phase = "Waning Crescent"; ico = "🌘"; }
 
-      // Override with exact Full Moon dates if available
       if (FULL_MOONS_ARRAY.some(m => m.d === dStrFull)) {
           phase = "Full Moon"; ico = "🌕"; isFull = true;
       }
@@ -812,7 +808,11 @@
       const cont = document.getElementById('libraryContent');
       if(!cont.innerHTML) {
          let html = `<div class="lib-section"><span class="lib-title">SUN SIGNS (THE SEASONS)</span><div class="lib-grid">`;
-         for(let s in SUN_SIGN_DATA) html += `<a class="lib-btn" href="https://www.google.com/search?q=sun+in+${s}+spiritual+meaning" target="_blank">${s.toUpperCase()} ☀️</a>`;
+         // V89.3: UPDATED LOOP TO INCLUDE DATES
+         for(let s in SUN_SIGN_DATA) {
+             const range = ZODIAC_DATES[s] || "";
+             html += `<a class="lib-btn" href="https://www.google.com/search?q=sun+in+${s}+spiritual+meaning" target="_blank">${s.toUpperCase()} ☀️<br><span style="font-size:0.55rem; opacity:0.6">${range}</span></a>`;
+         }
          html += `</div></div>`;
          
          html += `<div class="lib-section"><span class="lib-title">MOON SIGNS (THE MOOD)</span><div class="lib-grid">`;
