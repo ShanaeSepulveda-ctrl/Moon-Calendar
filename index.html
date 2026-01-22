@@ -97,7 +97,7 @@
     .grim-btn { background: transparent; border: none; color: #aaa; font-size: 0.9rem; cursor: pointer; }
     .support-link { margin-top: 20px; font-size: 0.7rem; color: var(--gold); opacity: 0.7; cursor: pointer; text-decoration: underline; font-family: 'Cinzel'; display: block; }
     
-    /* LIBRARY STYLES - SIDE BY SIDE RESTORED */
+    /* LIBRARY STYLES - SIDE BY SIDE */
     .lib-section { margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; text-align: left; }
     .lib-title { color: var(--gold); font-family: 'Cinzel'; font-size: 0.8rem; margin-bottom: 10px; display: block; letter-spacing: 2px;}
     .lib-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
@@ -778,7 +778,9 @@
       yearFullMoons.forEach(m => {
         const arch = FULL_MOON_DATA[m.d] || {n:"Moon"};
         const displayDate = m.d.replace(`, ${currentYear}`, '');
-        yc.innerHTML += `<div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.05); padding:5px 0;"><span>🌕 ${displayDate} - ${arch.n}</span> <span>${m.z}</span></div>`;
+        // Search query: e.g. "spiritual meaning of Wolf Moon"
+        const query = `spiritual meaning of ${arch.n}`;
+        yc.innerHTML += `<div class="clickable-event" onclick="openSearch('${query}')" style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.05); padding:5px 0;"><span>🌕 ${displayDate} - ${arch.n} ↗</span> <span>${m.z}</span></div>`;
       });
 
       yc.innerHTML += `<h4 style="color:var(--gold); font-family:'Cinzel'; margin-top:20px;">13 NEW MOONS</h4>`;
