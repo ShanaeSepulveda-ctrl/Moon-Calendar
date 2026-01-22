@@ -790,10 +790,11 @@
         const d = new Date(dStrFull);
         const data = getCelestialData(d);
         const displayDate = dStrFull.replace(`, ${currentYear}`, '');
-        yc.innerHTML += `<div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.05); padding:5px 0; color:var(--amethyst);"><span>🌑 ${displayDate} - New Moon</span> <span>${data.zod}</span></div>`;
+        const signName = data.zod.split(' ')[0];
+        const query = `spiritual meaning of new moon in ${signName}`;
+        yc.innerHTML += `<div class="clickable-event" onclick="openSearch('${query}')" style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.05); padding:5px 0; color:var(--amethyst);"><span>🌑 ${displayDate} - New Moon ↗</span> <span>${data.zod}</span></div>`;
       });
       
-      // DISCLAIMER ADDED HERE
       yc.innerHTML += `<div style="margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; font-size: 0.6rem; color: var(--gold); opacity: 0.7; text-align: center; font-style: italic;">This calendar follows the rhythm of the Rocky Mountains (MST). If you are on the coasts, your exact peak lunar moment may vary by a few hours, but the energy remains true.</div>`;
     }
     
